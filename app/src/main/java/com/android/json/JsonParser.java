@@ -424,6 +424,8 @@ public class JsonParser {
             sb.append("\"" + key + "\":");
             if (value.startsWith("[") && value.endsWith("]")) {
                 sb.append(value);
+            } else if (value.startsWith("{") && value.endsWith("}")) {
+                sb.append(value);
             } else {
                 sb.append("\"" + value + "\"");
             }
@@ -433,7 +435,7 @@ public class JsonParser {
             sb.deleteCharAt(sb.lastIndexOf(","));
         }
         sb.append("}");
-        return sb.toString();
+        return format(sb.toString());
     }
 
     /**
@@ -458,7 +460,7 @@ public class JsonParser {
             sb.deleteCharAt(sb.lastIndexOf(","));
         }
         sb.append("]");
-        return sb.toString();
+        return format(sb.toString());
     }
 
     /**
@@ -489,7 +491,7 @@ public class JsonParser {
                 try {
                     sb.append("\"" + name + "\":");
                     value = String.valueOf(field.get(obj));
-                    System.out.println("->1 " + name+" = "+ value);
+                    System.out.println("->1 " + name + " = " + value);
                     sb.append("\"" + value + "\"");
                     sb.append(",");
                 } catch (IllegalAccessException e) {
@@ -508,9 +510,9 @@ public class JsonParser {
                     sb.append("[");
                     int size = list == null ? 0 : list.size();
                     for (int i = 0; i < size; i++) {
-                        if (list.get(i).getClass()== String.class){
-                            value = "\""+list.get(i)+"\"";
-                        }else{
+                        if (list.get(i).getClass() == String.class) {
+                            value = "\"" + list.get(i) + "\"";
+                        } else {
                             value = parseObject(list.get(i));
                         }
                         sb.append(value);
@@ -586,6 +588,35 @@ public class JsonParser {
             return list;
         }
         return new ArrayList<>();
+    }
+
+    /**
+     * JSON格式化
+     *
+     * @param json
+     * @return
+     */
+    public static String format(String json) {
+        if (json == null) {
+            return json;
+        }
+        if (json.startsWith("{") && json.endsWith("}")) {
+            try {
+                JSONObject object = new JSONObject(json);
+                json = object.toString(2);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        if (json.startsWith("[") && json.endsWith("]")) {
+            try {
+                JSONArray array = new JSONArray(json);
+                json = array.toString(2);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return json;
     }
 
 }

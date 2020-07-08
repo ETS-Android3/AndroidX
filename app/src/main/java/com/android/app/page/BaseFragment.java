@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,7 +65,11 @@ public abstract class BaseFragment extends Fragment implements ActivityCompat.On
     private View content_view;
 
     /**
-     * Fragment 除了标题栏的内容
+     * Fragment 根视图
+     */
+    private LinearLayout root_view;
+    /**
+     * Fragment 容器视图
      */
     private FrameLayout base_container_view;
 
@@ -201,6 +206,24 @@ public abstract class BaseFragment extends Fragment implements ActivityCompat.On
     }
 
     /**
+     * 获取根视图
+     *
+     * @return
+     */
+    public LinearLayout getRootView() {
+        return root_view;
+    }
+
+    /**
+     * 获取基本容器
+     *
+     * @return
+     */
+    public FrameLayout getBaseContainerView() {
+        return base_container_view;
+    }
+
+    /**
      * 桥梁参数
      *
      * @param obj
@@ -284,10 +307,10 @@ public abstract class BaseFragment extends Fragment implements ActivityCompat.On
      * @param visibility
      */
     public void setNavigationBarVisibility(int visibility) {
-        if (defineNavigationBarView!=null){
+        if (defineNavigationBarView != null) {
             defineNavigationBarView.setVisibility(visibility);
         }
-        if (navigationBar!=null){
+        if (navigationBar != null) {
             navigationBar.setVisibility(visibility);
         }
         if (navigationBarView == null) {
@@ -381,6 +404,7 @@ public abstract class BaseFragment extends Fragment implements ActivityCompat.On
             }
         });
         base_container_view = (FrameLayout) layout.findViewById(R.id.base_container_view);
+        root_view = (LinearLayout) layout.findViewById(R.id.root_view);
         defineNavigationBarView = (FrameLayout) layout.findViewById(R.id.define_title);
         //=======设置内容=======
         contentView.onCreateContentView(getContext(), inflater, base_container_view, setContentLayoutById(), 1, this.getClass().getSimpleName());

@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,6 +64,10 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpLi
      */
     private FrameLayout defineNavigationBarView;
 
+    /**
+     * Activity根视图
+     */
+    private LinearLayout root_view;
     /**
      * Activity容器视图
      */
@@ -236,6 +241,24 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpLi
     }
 
     /**
+     * 获取根视图
+     *
+     * @return
+     */
+    public LinearLayout getRootView() {
+        return root_view;
+    }
+
+    /**
+     * 获取基本容器
+     *
+     * @return
+     */
+    public FrameLayout getBaseContainerView() {
+        return base_container_view;
+    }
+
+    /**
      * 设置状态栏颜色
      *
      * @param color 16进制颜色
@@ -282,10 +305,10 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpLi
      * @param visibility
      */
     public void setNavigationBarVisibility(int visibility) {
-        if (defineNavigationBarView!=null){
+        if (defineNavigationBarView != null) {
             defineNavigationBarView.setVisibility(visibility);
         }
-        if (navigationBar!=null){
+        if (navigationBar != null) {
             navigationBar.setVisibility(visibility);
         }
         if (navigationBarView == null) {
@@ -422,6 +445,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpLi
         setContentView(R.layout.android_af_base);
         inflater = LayoutInflater.from(this);
         defineNavigationBarView = findViewById(R.id.define_title);
+        root_view = findViewById(R.id.root_view);
         base_container_view = findViewById(R.id.base_container_view);
         contentView.onCreateContentView(this, inflater, base_container_view, setContentLayoutById(), 0, this.getClass().getSimpleName());
         exceptionView.onCreateExceptionView(this, inflater, base_container_view);

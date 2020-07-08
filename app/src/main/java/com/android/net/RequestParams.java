@@ -37,6 +37,7 @@ public class RequestParams {
      */
     public static final int REQUEST_CONTENT_TYPE = 0x0006;
 
+
     /**
      * 最大连接数
      */
@@ -61,7 +62,18 @@ public class RequestParams {
      * Cookie默认过期时间 - 如果服务器后台没返回就按照这个过滤
      */
     public static final int COOKIE_EXPIRES_SECONDS = 0x0011;
-
+    /**
+     * 转义替换 - 默认关闭
+     */
+    public static final int REQUEST_CONTENT_ESCAPE = 0x0012;
+    /**
+     * 开启转义替换
+     */
+    public static final String REQUEST_CONTENT_ESCAPE_ENABLE = "1";
+    /**
+     * 关闭转义替换
+     */
+    public static final String REQUEST_CONTENT_ESCAPE_DISABLE = "0";
     /**
      * 默认最大连接数
      */
@@ -274,6 +286,7 @@ public class RequestParams {
             optionParams = new TreeMap<>();
             optionParams.put(REQUEST_CONTENT_TYPE, REQUEST_CONTENT_FORM);
             optionParams.put(COOKIE_EXPIRES_SECONDS, DEFAULT_COOKIE_EXPIRES + "");
+            optionParams.put(REQUEST_CONTENT_ESCAPE, REQUEST_CONTENT_ESCAPE_DISABLE);
         }
         return optionParams;
     }

@@ -4,7 +4,12 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.android.app.BaseApplication;
+import com.android.json.JsonParser;
 import com.android.utils.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by Relin
@@ -137,7 +142,8 @@ public class HttpHandler extends Handler {
                     logBuffer.append("\n");
                 }
             }
-            logBuffer.append("│\"" + "body:" + httpResult.body());
+            String body = httpResult.body();
+            logBuffer.append("│\"" + "body:" + JsonParser.format(body));
             logBuffer.append("\n");
             logBuffer.append("└──────────────────────────────────────");
             Log.i("AkHttp", logBuffer.toString());

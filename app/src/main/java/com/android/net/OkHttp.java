@@ -11,6 +11,10 @@ import com.android.utils.Log;
 import com.android.utils.Null;
 import com.android.utils.Number;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.security.KeyManagementException;
@@ -44,7 +48,7 @@ import okhttp3.RequestBody;
  */
 public class OkHttp {
 
-    public static String TAG = "Cache";
+    public static String TAG = "OkHttp";
 
     /**
      * 是否缓存数据
@@ -262,11 +266,36 @@ public class OkHttp {
         MediaType mediaType = params.getOptionParams().get(RequestParams.REQUEST_CONTENT_TYPE).equals(RequestParams.REQUEST_CONTENT_JSON) ? MediaType.parse("application/json; charset=utf-8") : MediaType.parse("application/octet-stream; charset=utf-8");
         String stringParams;
         String jsonContent = params.getStringBody();
+        boolean escape = params.getOptionParams().get(RequestParams.REQUEST_CONTENT_ESCAPE) != null && params.getOptionParams().get(RequestParams.REQUEST_CONTENT_ESCAPE).equals(RequestParams.REQUEST_CONTENT_ESCAPE_ENABLE);
         if (Null.isNull(jsonContent)) {
-            stringParams = JsonEscape.escape(JsonParser.parseMap(params.getStringParams()));
+            String json = JsonParser.parseMap(params.getStringParams());
+            stringParams = json;
+            if (escape) {
+                stringParams = JsonEscape.escape(json);
+            }
         } else {
-            stringParams = JsonEscape.escape(jsonContent);
+            stringParams = jsonContent;
+            if (escape) {
+                stringParams = JsonEscape.escape(jsonContent);
+            }
         }
+        if (stringParams.startsWith("[") && stringParams.endsWith("]")) {
+            try {
+                JSONArray jsonArray = new JSONArray(stringParams);
+                stringParams = jsonArray.toString(2);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        if (stringParams.startsWith("{") && stringParams.endsWith("}")) {
+            try {
+                JSONObject jsonObject = new JSONObject(stringParams);
+                stringParams = jsonObject.toString(2);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        Log.i(TAG, "->postOther stringParams = " + stringParams);
         RequestBody body = RequestBody.create(mediaType, stringParams);
         Request.Builder requestBuilder = new Request.Builder();
         //添加Header
