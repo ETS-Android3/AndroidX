@@ -1,7 +1,5 @@
 package com.android.utils;
 
-import android.util.Base64;
-
 import java.io.ByteArrayOutputStream;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -20,19 +18,20 @@ import javax.crypto.Cipher;
 public class RSA {
 
     // 签名算法
-    private static final String SIGNATURE_ALGORITHM = "SHA1withRSA"; 
+    private static String SIGNATURE_ALGORITHM = "SHA1withRSA";
     // 加密算法
-    private static final String ENCRYPT_ALGORITHM = "RSA";
+    private static String ENCRYPT_ALGORITHM = "RSA/ECB/PKCS1Padding";
     // 解密算法
-    private static final String DECRYPT_ALGORITHM = "RSA"; 
-    private static final String CHARSET = "UTF-8";
+    private static String DECRYPT_ALGORITHM = "RSA";
+    private static String CHARSET = "UTF-8";
     // 2048位rsa单次最大加密长度
-    private static final int MAX_ENCRYPT_BLOCK = 234;
+    private static int MAX_ENCRYPT_BLOCK = 234;
     // 2048位rsa单次最大解密长度
-    private static final int MAX_DECRYPT_BLOCK = 256;
+    private static int MAX_DECRYPT_BLOCK = 256;
 
     private static PublicKey publicKey = null;
     private static PrivateKey privateKey = null;
+
 
     static {
         // 对方base64后公钥字符串,用于验签和加密
@@ -42,14 +41,15 @@ public class RSA {
         try {
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             // 用于验签和加密
-            publicKey = keyFactory.generatePublic(new X509EncodedKeySpec(Base64.decode(pubKeyStr.getBytes(),Base64.DEFAULT)));
+            publicKey = keyFactory.generatePublic(new X509EncodedKeySpec(Base64Utils.decodeFromString(pubKeyStr)));
             // 用于签名和解密
-            privateKey = keyFactory.generatePrivate(new PKCS8EncodedKeySpec(Base64.decode(priKeyStr.getBytes(),Base64.DEFAULT)));
+            privateKey = keyFactory.generatePrivate(new PKCS8EncodedKeySpec(Base64Utils.decodeFromString(priKeyStr)));
         } catch (Exception e) {
             //日志记录
             e.printStackTrace();
         }
     }
+
 
     /**
      * 加签
@@ -60,15 +60,16 @@ public class RSA {
     public static String sign(String param) {
         try {
             if (privateKey == null) {
-                throw new RuntimeException("私钥未初始化");
+                return "";
             }
             Signature signature = Signature.getInstance(SIGNATURE_ALGORITHM);
             signature.initSign(privateKey);
             signature.update(param.getBytes(CHARSET));
-            return new String(Base64.encode(signature.sign(),Base64.DEFAULT),"UTF-8");
+            return Base64Utils.encodeToString(signature.sign());
         } catch (Exception e) {
-            throw new RuntimeException("签名异常", e);
+            e.printStackTrace();
         }
+        return "";
     }
 
     /**
@@ -81,15 +82,16 @@ public class RSA {
     public static boolean veriSign(String param, String sign) {
         try {
             if (publicKey == null) {
-                throw new RuntimeException("公钥未初始化");
+                return false;
             }
             Signature signature = Signature.getInstance(SIGNATURE_ALGORITHM);
             signature.initVerify(publicKey);
             signature.update(param.getBytes(CHARSET));
-            return signature.verify(Base64.decode(sign,Base64.DEFAULT));
+            return signature.verify(Base64Utils.decodeFromString(sign));
         } catch (Exception e) {
-            throw new RuntimeException("验签失败", e);
+            e.printStackTrace();
         }
+        return false;
     }
 
     /**
@@ -100,17 +102,16 @@ public class RSA {
      */
     public static String encrypt(String param) {
         if (publicKey == null) {
-            throw new RuntimeException("公钥未初始化");
+            return "";
         }
-        if (param==null||param.length()==0) {
-            throw new IllegalArgumentException("待加密数据为空");
+        if (param == null || param.length() == 0) {
+            return "";
         }
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             Cipher cipher = Cipher.getInstance(ENCRYPT_ALGORITHM);
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             byte[] data = param.getBytes(CHARSET);
             int inputLen = data.length;
-
             int offSet = 0;
             byte[] cache;
             int i = 0;
@@ -125,10 +126,11 @@ public class RSA {
                 i++;
                 offSet = i * MAX_ENCRYPT_BLOCK;
             }
-            return new String(Base64.encode(out.toByteArray(),Base64.DEFAULT),"UTF-8");
+            return Base64Utils.encodeToString(out.toByteArray());
         } catch (Exception e) {
-            throw new RuntimeException("加密异常", e);
+            e.printStackTrace();
         }
+        return "";
     }
 
 
@@ -140,15 +142,15 @@ public class RSA {
      */
     public static String decrypt(String param) {
         if (privateKey == null) {
-            throw new RuntimeException("私钥未初始化");
+            return "";
         }
-        if (param==null||param.length()==0) {
-            throw new IllegalArgumentException("待解密数据为空");
+        if (param == null || param.length() == 0) {
+            return "";
         }
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             Cipher cipher = Cipher.getInstance(DECRYPT_ALGORITHM);
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
-            byte[] data = Base64.decode(param,Base64.DEFAULT);
+            byte[] data = Base64Utils.decodeFromString(param);
             int inputLen = data.length;
             int offSet = 0;
             byte[] cache;
@@ -166,39 +168,9 @@ public class RSA {
             }
             return new String(out.toByteArray(), CHARSET);
         } catch (Exception e) {
-            throw new RuntimeException("解密处理异常", e);
+            e.printStackTrace();
         }
+        return "";
     }
 
-    public static void main(String[] args)  {
-//        KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA");
-//        keyPairGen.initialize(2048);
-//        KeyPair keyPair = keyPairGen.generateKeyPair();
-//        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
-//        RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-//        System.out.println("privateKey: " + Base64Utils.encodeToString(privateKey.getEncoded()));
-//        System.out.println("publicKey:  " + Base64Utils.encodeToString(publicKey.getEncoded()));
-
-        /*
-          加密和签名规则
-
-          1. 双方各自生成2048位的RSA密钥对，把公钥进行base64位加密后，交给对方进行解密和验签
-          2. 请求方把请求的明文JSON内容体转成String字符串后，用对方的公钥进行RSA加密，用本方的私钥进行数字签名，把密文和签字封装成如下格式发送给对方：
-              {“data”:”数据密文”,”sign”:”签名结果”}
-          3. 接收方接收数据密文后，用本方的私钥进行解密，用对方的公钥进行验签。
-          4. 交易接收方的返回结果会用对方的公钥进行加密和用本方的私钥进行签名，返回格式同为：
-              {“data”:”数据密文”,”sign”:”签名结果”}
-         */
-        String param = "{\n" +
-                "  \"accountNumber\" : \"product\",\n" +
-                "  \"password\" : \"xsd123321\"\n" +
-                "}";
-        String sign = sign(param);
-        String enc = encrypt(param);
-
-        String dec = decrypt(enc);
-        boolean f = veriSign(dec, sign);
-        System.out.println("sign = "+sign);
-        System.out.println("enc = "+enc);
-    }
 }

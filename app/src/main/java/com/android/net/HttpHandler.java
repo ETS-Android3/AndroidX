@@ -104,15 +104,25 @@ public class HttpHandler extends Handler {
             logBuffer.append("\n");
             logBuffer.append("├┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄");
             StringBuffer paramsBuffer = new StringBuffer("");
+            StringBuffer headerBuffer = new StringBuffer("");
             if (httpResult.requestParams().getHeaderParams() != null) {
                 for (String key : httpResult.requestParams().getHeaderParams().keySet()) {
-                    paramsBuffer.append("│\"" + key + "\":" + "\"" + httpResult.requestParams().getHeaderParams().get(key) + "\"");
-                    paramsBuffer.append("\n");
+                    headerBuffer.append("│\"" + key + "\":" + "\"" + httpResult.requestParams().getHeaderParams().get(key) + "\"");
+                    headerBuffer.append("\n");
                 }
+            }
+            if (headerBuffer.toString().length() != 0) {
+                logBuffer.append("\n");
+                logBuffer.append(headerBuffer);
+                logBuffer.append("├┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄");
             }
             if (httpResult.requestParams().getStringParams() != null) {
                 for (String key : httpResult.requestParams().getStringParams().keySet()) {
-                    paramsBuffer.append("│\"" + key + "\":" + "\"" + httpResult.requestParams().getStringParams().get(key) + "\"");
+                    String value = httpResult.requestParams().getStringParams().get(key);
+                    if (!value.startsWith("{") && !value.startsWith("[")) {
+                        value = "\"" + value + "\"";
+                    }
+                    paramsBuffer.append("│\"" + key + "\":" + value);
                     paramsBuffer.append("\n");
                 }
             }

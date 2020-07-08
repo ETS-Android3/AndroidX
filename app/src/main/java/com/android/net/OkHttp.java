@@ -163,7 +163,7 @@ public class OkHttp {
             public void run() {
                 if (params.getOptionParams().get(RequestParams.REQUEST_CONTENT_TYPE).equals(RequestParams.REQUEST_CONTENT_JSON)
                         || params.getOptionParams().get(RequestParams.REQUEST_CONTENT_TYPE).equals(RequestParams.REQUEST_CONTENT_STRING)) {
-                    postOther(url, params, listener);
+                    postJson(url, params, listener);
                 } else {
                     //创建okHttpClient对象
                     okhttp3.OkHttpClient okHttpClient = buildOkHttpClient(params);
@@ -257,7 +257,7 @@ public class OkHttp {
      * @param params
      * @param listener
      */
-    private static void postOther(String url, RequestParams params, OnHttpListener listener) {
+    private static void postJson(String url, RequestParams params, OnHttpListener listener) {
         if (BaseApplication.app.isDetermineNetwork() && !NetworkUtils.isAvailable(BaseApplication.app)) {
             sendNoNetworkMessage(url, params, listener);
             return;
@@ -266,36 +266,13 @@ public class OkHttp {
         MediaType mediaType = params.getOptionParams().get(RequestParams.REQUEST_CONTENT_TYPE).equals(RequestParams.REQUEST_CONTENT_JSON) ? MediaType.parse("application/json; charset=utf-8") : MediaType.parse("application/octet-stream; charset=utf-8");
         String stringParams;
         String jsonContent = params.getStringBody();
-        boolean escape = params.getOptionParams().get(RequestParams.REQUEST_CONTENT_ESCAPE) != null && params.getOptionParams().get(RequestParams.REQUEST_CONTENT_ESCAPE).equals(RequestParams.REQUEST_CONTENT_ESCAPE_ENABLE);
         if (Null.isNull(jsonContent)) {
-            String json = JsonParser.parseMap(params.getStringParams());
-            stringParams = json;
-            if (escape) {
-                stringParams = JsonEscape.escape(json);
-            }
+            stringParams = JsonParser.parseMap(params.getStringParams());
         } else {
             stringParams = jsonContent;
-            if (escape) {
-                stringParams = JsonEscape.escape(jsonContent);
-            }
         }
-        if (stringParams.startsWith("[") && stringParams.endsWith("]")) {
-            try {
-                JSONArray jsonArray = new JSONArray(stringParams);
-                stringParams = jsonArray.toString(2);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        if (stringParams.startsWith("{") && stringParams.endsWith("}")) {
-            try {
-                JSONObject jsonObject = new JSONObject(stringParams);
-                stringParams = jsonObject.toString(2);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        Log.i(TAG, "->postOther stringParams = " + stringParams);
+        stringParams = JsonEscape.escape(stringParams);
+        Log.i(TAG, "->postJson stringParams = " + stringParams);
         RequestBody body = RequestBody.create(mediaType, stringParams);
         Request.Builder requestBuilder = new Request.Builder();
         //添加Header

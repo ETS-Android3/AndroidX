@@ -435,7 +435,7 @@ public class JsonParser {
             sb.deleteCharAt(sb.lastIndexOf(","));
         }
         sb.append("}");
-        return format(sb.toString());
+        return sb.toString();
     }
 
     /**
@@ -460,7 +460,7 @@ public class JsonParser {
             sb.deleteCharAt(sb.lastIndexOf(","));
         }
         sb.append("]");
-        return format(sb.toString());
+        return sb.toString();
     }
 
     /**
