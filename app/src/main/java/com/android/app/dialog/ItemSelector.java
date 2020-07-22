@@ -79,6 +79,8 @@ public class ItemSelector {
 
     public final String[] items;
 
+    public final boolean loop;
+
 
     public ItemSelector(Builder builder) {
         this.context = builder.context;
@@ -93,6 +95,7 @@ public class ItemSelector {
         this.textSize = builder.textSize;
         this.listener = builder.listener;
         this.items = builder.items;
+        this.loop = builder.loop;
         if (items != null) {
             builder.list = new ArrayList<>();
             for (int i = 0; i < items.length; i++) {
@@ -131,6 +134,8 @@ public class ItemSelector {
         private ArrayList<String> list;
 
         private String[] items;
+
+        private boolean loop = false;
 
         public Builder(Context context) {
             this.context = context;
@@ -248,6 +253,15 @@ public class ItemSelector {
             return this;
         }
 
+        public boolean isLoop() {
+            return loop;
+        }
+
+        public Builder loop(boolean loop) {
+            this.loop = loop;
+            return this;
+        }
+
         public ItemSelector build() {
             return new ItemSelector(this);
         }
@@ -303,7 +317,11 @@ public class ItemSelector {
         lv_loop.setCenterTextColor(selectedColor);
         lv_loop.setOuterTextColor(unselectedColor);
         lv_loop.setTextSize(textSize);
-
+        if (loop) {
+            lv_loop.setLoop();
+        } else {
+            lv_loop.setNotLoop();
+        }
         if (list != null) {
             lv_loop.setItems(list);
         }
