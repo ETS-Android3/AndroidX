@@ -52,9 +52,10 @@ public class HttpHandler extends Handler {
      * @param url           请求地址
      * @param code          请求结果代码
      * @param e             异常
+     * @param body          内容
      * @param listener      网络请求监听
      */
-    public void sendExceptionMsg(RequestParams requestParams, String url, int code, Exception e, OnHttpListener listener) {
+    public void sendExceptionMsg(RequestParams requestParams, String url, int code, Exception e, String body, OnHttpListener listener) {
         Message msg = obtainMessage();
         msg.what = HttpHandler.WHAT_ON_FAILURE;
         HttpResponse response = new HttpResponse();
@@ -62,6 +63,7 @@ public class HttpHandler extends Handler {
         response.url(url);
         response.exception(e);
         response.code(code);
+        response.body(body);
         response.listener(listener);
         msg.obj = response;
         sendMessage(msg);
@@ -153,7 +155,7 @@ public class HttpHandler extends Handler {
                 }
             }
             String body = httpResult.body();
-            logBuffer.append("│\"" + "body:" + JsonParser.format(body));
+            logBuffer.append("│\"" + "body:" + (body != null && body.startsWith("{") ? JsonParser.format(body) : body));
             logBuffer.append("\n");
             logBuffer.append("└──────────────────────────────────────");
             Log.i("AkHttp", logBuffer.toString());

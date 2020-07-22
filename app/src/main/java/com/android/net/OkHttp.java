@@ -242,7 +242,7 @@ public class OkHttp {
                 if (Number.formatInt(cacheBody.getCode()) == 200) {
                     httpHandler.sendSuccessfulMsg(params, url, response.code(), response.body(), listener);
                 } else {
-                    httpHandler.sendExceptionMsg(params, url, response.code(), new IOException(AppConstant.HTTP_MSG_RESPONSE_FAILED + response.code()), listener);
+                    httpHandler.sendExceptionMsg(params, url, response.code(), new IOException(AppConstant.HTTP_MSG_RESPONSE_FAILED + response.code()),response.body(), listener);
                 }
             }
             return true;

@@ -282,11 +282,11 @@ public class HucHttp {
                         }
                         httpHandler.sendSuccessfulMsg(params, url, code, sb.toString(), listener);
                     } else {
-                        httpHandler.sendExceptionMsg(params, url, code, new IOException(HttpHandler.HTTP_NO_RESPONSE), listener);
+                        httpHandler.sendExceptionMsg(params, url, code, new IOException(HttpHandler.HTTP_NO_RESPONSE),HttpHandler.HTTP_NO_RESPONSE,listener);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                    httpHandler.sendExceptionMsg(params, url, code, e, listener);
+                    httpHandler.sendExceptionMsg(params, url, code, e,HttpHandler.HTTP_NO_RESPONSE, listener);
                 } finally {
                     conn.disconnect();
                     conn = null;

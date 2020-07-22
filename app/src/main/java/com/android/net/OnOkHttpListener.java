@@ -29,28 +29,28 @@ public class OnOkHttpListener implements Callback {
 
     @Override
     public void onFailure(Call call, IOException e) {
-        httpHandler.sendExceptionMsg(params, url, -1, e, listener);
+        httpHandler.sendExceptionMsg(params, url, -1, e, e.toString(), listener);
     }
 
     @Override
     public void onResponse(Call call, Response response) {
         try {
-            String bod = response.body().string();
+            String body = response.body().string();
             //添加缓存
             if (OkHttp.isCache()) {
                 HttpCacheBody cacheBody = new HttpCacheBody();
                 cacheBody.setUrl(url);
-                cacheBody.setCode(response.code()+"");
-                cacheBody.setBody(bod);
+                cacheBody.setCode(response.code() + "");
+                cacheBody.setBody(body);
                 cacheBody.setException(!response.isSuccessful() ? new IOException(AppConstant.HTTP_MSG_RESPONSE_FAILED + response.code()).toString() : "");
                 cacheBody.setParams(params == null || params.getStringParams() == null ? "" : params.getStringParams().toString());
                 OkHttp.insertCache(cacheBody);
             }
             if (!response.isSuccessful()) {
-                httpHandler.sendExceptionMsg(params, url, response.code(), new IOException(AppConstant.HTTP_MSG_RESPONSE_FAILED + response.code()), listener);
+                httpHandler.sendExceptionMsg(params, url, response.code(), new IOException(AppConstant.HTTP_MSG_RESPONSE_FAILED + response.code()), body, listener);
                 return;
             }
-            httpHandler.sendSuccessfulMsg(params, url, response.code(), bod, listener);
+            httpHandler.sendSuccessfulMsg(params, url, response.code(), body, listener);
         } catch (IOException e) {
             e.printStackTrace();
         }

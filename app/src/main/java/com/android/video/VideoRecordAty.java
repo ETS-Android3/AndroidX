@@ -180,7 +180,7 @@ public class VideoRecordAty extends BaseActivity implements SurfaceHolder.Callba
         super.onDestroy();
         releaseCamera();
         releaseMediaRecorder();
-        if (handler!=null){
+        if (handler != null) {
             handler.removeMessages(0);
             handler.removeCallbacksAndMessages(null);
             handler = null;
@@ -349,11 +349,11 @@ public class VideoRecordAty extends BaseActivity implements SurfaceHolder.Callba
         //设置文件的输出格式
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         //设置audio的编码格式
-        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         //设置video的编码格式
-        mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+        mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
         //设置录制的视频编码比特率
-        mediaRecorder.setVideoEncodingBitRate(2 * 1024 * 1024);
+        mediaRecorder.setVideoEncodingBitRate(5 * 1024 * 1024);
         //设置要捕获的视频的宽度和高度
 //        mediaRecorder.setVideoSize(width, height);//有些设备支持设置
         //设置记录会话的最大持续时间（毫秒）
@@ -413,9 +413,10 @@ public class VideoRecordAty extends BaseActivity implements SurfaceHolder.Callba
     }
 
     private boolean isOpenFlash;
+
     private void switchFlash(boolean open) {
         Camera.Parameters parameters = camera.getParameters();//获取camera的parameter实例
-        if(open) {
+        if (open) {
             //打开闪光灯
             iv_flash.setImageResource(R.drawable.android_ic_video_flash_uncheck);
             parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);//开启
@@ -451,31 +452,31 @@ public class VideoRecordAty extends BaseActivity implements SurfaceHolder.Callba
         tvShow.setText(timeText);
     }
 
-    private void stopHand(){
-        if (handler!=null){
+    private void stopHand() {
+        if (handler != null) {
             handler.removeMessages(0);
         }
     }
 
-    private void startHandler(){
+    private void startHandler() {
         videoTime = System.currentTimeMillis();
-        if (handler!=null){
+        if (handler != null) {
             handler.sendEmptyMessage(0);
         }
     }
 
     private long videoTime = 0;
     private boolean isOpenIndicator;
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
 
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
             isOpenIndicator = !isOpenIndicator;
-            tv_time.setCompoundDrawablesWithIntrinsicBounds(isOpenIndicator? R.drawable.android_video_red_dot: R.drawable.android_video_white_dot,0,0,0);
+            tv_time.setCompoundDrawablesWithIntrinsicBounds(isOpenIndicator ? R.drawable.android_video_red_dot : R.drawable.android_video_white_dot, 0, 0, 0);
             long pass = System.currentTimeMillis() - videoTime;
-            showVideoTime(pass,tv_time);
-            handler.sendEmptyMessageDelayed(0,100);
+            showVideoTime(pass, tv_time);
+            handler.sendEmptyMessageDelayed(0, 100);
         }
 
     };
