@@ -591,9 +591,9 @@ public abstract class BaseFragment extends Fragment implements ActivityCompat.On
      * @param textSize 文字大小
      */
     public void setNavigationMenuText(String menu, int color, int textSize) {
-        navigationTitle.setText(menu);
-        navigationTitle.setTextColor(color);
-        navigationTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
+        navigationMenuText.setText(menu);
+        navigationMenuText.setTextColor(color);
+        navigationMenuText.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
     }
 
     /**
