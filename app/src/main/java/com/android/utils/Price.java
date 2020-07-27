@@ -5,6 +5,7 @@ import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
+import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,7 +44,34 @@ public class Price {
      * @param editText     输入控件
      * @param charSequence 字符
      * @param decimalPoint 小数点
+     * @param maxLength    最大长度
      */
+    public static void setFilter(EditText editText, CharSequence charSequence, int decimalPoint, int maxLength) {
+        String regex = "^\\d+.$";
+        Pattern r = Pattern.compile(regex);
+        Matcher matcher = r.matcher(charSequence);
+        int max = 255;
+        for (InputFilter filter : editText.getFilters()) {
+            Class<?> c = filter.getClass();
+            if (c.getName().equals("android.text.InputFilter$LengthFilter")) {
+                Field[] f = c.getDeclaredFields();
+                for (Field field : f) {
+                    if (field.getName().equals("mMax")) {
+                        field.setAccessible(true);
+                        try {
+                            max = (Integer) field.get(filter);
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+        if (matcher.matches()) {
+            editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter((maxLength == -1 ? max : maxLength) + decimalPoint)});
+        }
+    }
+
     public static void setFilter(EditText editText, CharSequence charSequence, int decimalPoint) {
         String regex = "^\\d+.$";
         Pattern r = Pattern.compile(regex);
@@ -59,8 +87,12 @@ public class Price {
      * @param editText
      * @param decimalPoint
      */
+    public static void format(EditText editText, int decimalPoint, int maxLength) {
+        format(editText, decimalPoint, maxLength, null);
+    }
+
     public static void format(EditText editText, int decimalPoint) {
-        format(editText, decimalPoint, null);
+        format(editText, decimalPoint, -1, null);
     }
 
     /**
@@ -69,7 +101,7 @@ public class Price {
      * @param editText
      * @param decimalPoint
      */
-    public static void format(final EditText editText, final int decimalPoint, final addTextChangedListener listener) {
+    public static void format(final EditText editText, final int decimalPoint, final int maxLength, final addTextChangedListener listener) {
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -78,7 +110,7 @@ public class Price {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                setFilter(editText, charSequence, decimalPoint);
+                setFilter(editText, charSequence, decimalPoint, maxLength);
                 if (listener != null) {
                     listener.onTextChanged(charSequence, start, before, count);
                 }
