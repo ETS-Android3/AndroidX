@@ -122,7 +122,15 @@ public class Decimal {
             if (matches("^\\d+.[0-9]{0,}", charSequence) && charSequence.toString().contains(".")) {
                 editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(beforeLength + decimalSize)});
             } else {
-                editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
+                if (charSequence.length() <= maxLength && !charSequence.toString().contains(".")) {
+                    editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength + decimalSize)});
+                } else {
+                    editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
+                    editText.setText(charSequence.subSequence(0, maxLength));
+                    if (charSequence.length() > 0) {
+                        editText.setSelection(charSequence.length() - 1);
+                    }
+                }
             }
         }
     }

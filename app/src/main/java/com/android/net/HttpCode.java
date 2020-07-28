@@ -98,7 +98,7 @@ public class HttpCode {
                 return codeMap.get(key);
             }
         }
-        return "结果代码[" + code + "]";
+        return "服务端代码[" + code + "]";
     }
 
 }
