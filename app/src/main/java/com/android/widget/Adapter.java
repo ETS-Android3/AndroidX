@@ -290,7 +290,6 @@ public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdap
         } else {
             holder = (VH) convertView.getTag();
         }
-        this.position = position;
         onBindView(holder, position);
         return convertView;
     }
@@ -378,7 +377,7 @@ public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdap
      * @param v
      * @return
      */
-    public void addItemClick(final View v) {
+    public void addItemClick(final View v,final int position) {
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -429,7 +428,7 @@ public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdap
      * @param v
      * @return
      */
-    public void addItemFocus(final View v) {
+    public void addItemFocus(final View v,final int position) {
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -463,6 +462,20 @@ public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdap
             getFragment().startActivity(cls, options);
         }
     }
+
+    /**
+     * 显示提示
+     * @param msg
+     */
+    public void showToast(String msg) {
+        if (getActivity() != null) {
+            getActivity().showToast(msg);
+        }
+        if (getFragment() != null) {
+            getFragment().showToast(msg);
+        }
+    }
+
 
     /**
      * 选择图片

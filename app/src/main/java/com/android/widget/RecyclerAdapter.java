@@ -48,11 +48,6 @@ public abstract class RecyclerAdapter<T, VH extends RecyclerAdapter.ViewHolder> 
     private View emptyView;
 
     /**
-     * 位置
-     */
-    private int position;
-
-    /**
      * Activity属性构造函数
      *
      * @param activity 页面
@@ -297,7 +292,6 @@ public abstract class RecyclerAdapter<T, VH extends RecyclerAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        this.position = position;
         VH vh = (VH) holder;
         onBindView(vh, position);
     }
@@ -383,7 +377,7 @@ public abstract class RecyclerAdapter<T, VH extends RecyclerAdapter.ViewHolder> 
      * @param v
      * @return
      */
-    public RecyclerAdapter<T, VH> addItemClick(final View v) {
+    public RecyclerAdapter<T, VH> addItemClick(final View v, final int position) {
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -436,7 +430,7 @@ public abstract class RecyclerAdapter<T, VH extends RecyclerAdapter.ViewHolder> 
      * @param v
      * @return
      */
-    public RecyclerAdapter<T, VH> addItemFocus(final View v) {
+    public RecyclerAdapter<T, VH> addItemFocus(final View v, final int position) {
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -502,6 +496,18 @@ public abstract class RecyclerAdapter<T, VH extends RecyclerAdapter.ViewHolder> 
         return builder;
     }
 
+    /**
+     * 显示提示
+     * @param msg
+     */
+    public void showToast(String msg) {
+        if (getActivity() != null) {
+           getActivity().showToast(msg);
+        }
+        if (getFragment() != null) {
+            getFragment().showToast(msg);
+        }
+    }
 
     /**
      * 跳转页面获取结果
