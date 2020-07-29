@@ -113,6 +113,7 @@ public class Decimal {
     public static void setFilter(EditText editText, CharSequence charSequence, int decimalSize, int maxLength) {
         if (charSequence.toString().startsWith(".")) {
             editText.setText("");
+            return;
         }
         if (matches("^\\d+.$", charSequence) && charSequence.toString().contains(".")) {
             beforeLength = charSequence.length();

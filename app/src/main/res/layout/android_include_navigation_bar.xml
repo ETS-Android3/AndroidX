@@ -15,9 +15,9 @@
     <ImageView
         android:id="@+id/android_iv_nav_back"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_gravity="center_vertical" />
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="10dp" />
 
     <TextView
         android:id="@+id/android_tv_nav_left"
@@ -30,7 +30,7 @@
     <ImageView
         android:id="@+id/android_iv_nav_menu"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center_vertical|right" />
 
     <TextView

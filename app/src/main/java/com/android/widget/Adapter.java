@@ -282,7 +282,6 @@ public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdap
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        this.position = position;
         if (convertView == null) {
             holder = onCreateHolder(convertView, parent, getViewType(position));
             convertView = holder.itemView;
@@ -291,6 +290,7 @@ public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdap
         } else {
             holder = (VH) convertView.getTag();
         }
+        this.position = position;
         onBindView(holder, position);
         return convertView;
     }

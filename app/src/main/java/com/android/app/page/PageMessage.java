@@ -34,6 +34,7 @@ public class PageMessage extends Handler {
         super.handleMessage(msg);
         String message = msg.getData().getString(AppConstant.MSG_KEY);
         String code = msg.getData().getString(AppConstant.MSG_CODE);
+        String content = msg.getData().getString(AppConstant.MSG_CONTENT);
         if (code == null || code.equals("null") || code.length() == 0) {
             code = "0";
         }
@@ -52,7 +53,7 @@ public class PageMessage extends Handler {
                 }
                 break;
             case AppConstant.WHAT_MSG_RESPONSE_FAILED:
-                Log.e(this.getClass().getSimpleName(), AppConstant.HTTP_MSG_RESPONSE_FAILED + code);
+                Log.e(this.getClass().getSimpleName(), AppConstant.HTTP_MSG_RESPONSE_FAILED + code+" , content = "+content);
                 if (object instanceof BaseActivity) {
                     BaseActivity activity = (BaseActivity) object;
                     activity.dismissLoadingDialog();

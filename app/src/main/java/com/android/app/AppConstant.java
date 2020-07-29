@@ -30,6 +30,10 @@ public class AppConstant {
      * Handler-消息Code
      */
     public static final String MSG_CODE = "0x2";
+    /**
+     * Handler-消息
+     */
+    public static final String MSG_CONTENT = "0x3";
 
     /**
      * 无网络的提示

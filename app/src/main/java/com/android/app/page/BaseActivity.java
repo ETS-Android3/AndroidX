@@ -432,6 +432,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpLi
             message.what = AppConstant.WHAT_MSG_RESPONSE_FAILED;
             Bundle bundle = new Bundle();
             bundle.putInt(AppConstant.MSG_CODE, response.code());
+            bundle.putString(AppConstant.MSG_CONTENT, response.body());
             bundle.putString(AppConstant.MSG_KEY, AppConstant.EXCEPTION_MSG_RESPONSE_FAILED);
             message.setData(bundle);
         }
