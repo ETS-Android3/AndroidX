@@ -100,7 +100,7 @@ public class Decimal {
         if (!value.contains(".")) {
             value += "." + buildZero(decimalSize);
         }
-        return new BigDecimal(Double.parseDouble(value)).setScale(decimalSize, roundingMode).toString();
+        return new BigDecimal(value).setScale(decimalSize, roundingMode).toString();
     }
 
     /**
