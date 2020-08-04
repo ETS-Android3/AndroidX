@@ -35,7 +35,7 @@ public class Decimal {
      * @return
      */
     public static String format(double value, int decimalSize) {
-        return format(value + "", decimalSize, ROUND_UP);
+        return format(value + "", decimalSize, ROUND_DOWN);
     }
 
     /**
@@ -46,7 +46,7 @@ public class Decimal {
      * @return
      */
     public static String format(float value, int decimalSize) {
-        return format(value + "", decimalSize, ROUND_UP);
+        return format(value + "", decimalSize, ROUND_DOWN);
     }
 
     /**
@@ -57,7 +57,7 @@ public class Decimal {
      * @return
      */
     public static String format(String value, int decimalSize) {
-        return format(value + "", decimalSize, ROUND_UP);
+        return format(value + "", decimalSize, ROUND_DOWN);
     }
 
 
@@ -82,7 +82,7 @@ public class Decimal {
      * @return
      */
     public static String format(String value) {
-        return format(value, 2, ROUND_UP);
+        return format(value, 2, ROUND_DOWN);
     }
 
     /**
@@ -148,11 +148,11 @@ public class Decimal {
                     editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength + decimalSize)});
                 } else {
                     editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
-                    if (charSequence.length() > 0 && maxLength >= charSequence.length()) {
+                    if (charSequence.length() > 0 && maxLength <= charSequence.length()) {
                         editText.setText(charSequence.subSequence(0, maxLength));
                     }
-                    if (charSequence.length() > 0) {
-                        editText.setSelection(charSequence.length() - 1);
+                    if (editText.getText().length() > 0) {
+                        editText.setSelection(editText.length());
                     }
                 }
             }
