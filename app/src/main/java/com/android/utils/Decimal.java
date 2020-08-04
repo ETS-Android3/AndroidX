@@ -7,11 +7,20 @@ import android.util.Log;
 import android.widget.EditText;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Decimal {
+
+    public static final int ROUND_UP = BigDecimal.ROUND_UP;
+    public static final int ROUND_DOWN = BigDecimal.ROUND_DOWN;
+    public static final int ROUND_HALF_DOWN = BigDecimal.ROUND_HALF_DOWN;
+    public static final int ROUND_HALF_UP = BigDecimal.ROUND_HALF_UP;
+    public static final int ROUND_HALF_EVEN = BigDecimal.ROUND_HALF_EVEN;
+    public static final int ROUND_CEILING = BigDecimal.ROUND_CEILING;
+    public static final int ROUND_UNNECESSARY = BigDecimal.ROUND_UNNECESSARY;
 
     /**
      * 小数点之前的长度
@@ -26,7 +35,7 @@ public class Decimal {
      * @return
      */
     public static String format(double value, int decimalSize) {
-        return format(value + "", decimalSize);
+        return format(value + "", decimalSize, ROUND_UP);
     }
 
     /**
@@ -37,8 +46,20 @@ public class Decimal {
      * @return
      */
     public static String format(float value, int decimalSize) {
-        return format(value + "", decimalSize);
+        return format(value + "", decimalSize, ROUND_UP);
     }
+
+    /**
+     * 格式化数据
+     *
+     * @param value       数据
+     * @param decimalSize 小数位数
+     * @return
+     */
+    public static String format(String value, int decimalSize) {
+        return format(value + "", decimalSize, ROUND_UP);
+    }
+
 
     /**
      * 构建零的个数
@@ -61,25 +82,25 @@ public class Decimal {
      * @return
      */
     public static String format(String value) {
-        return format(value, 2);
+        return format(value, 2, ROUND_UP);
     }
 
     /**
      * 格式价格字符串
      *
-     * @param value       值
-     * @param decimalSize 小数个数
+     * @param value        值
+     * @param decimalSize  小数个数
+     * @param roundingMode 模式
      * @return
      */
-    public static String format(String value, int decimalSize) {
+    public static String format(String value, int decimalSize, int roundingMode) {
         if (value == null || value.length() == 0 || value.equals("null") || value.equals("0")) {
             return "0." + buildZero(decimalSize);
         }
         if (!value.contains(".")) {
             value += "." + buildZero(decimalSize);
         }
-        DecimalFormat format = new DecimalFormat("0." + buildZero(decimalSize));
-        return format.format(Double.parseDouble(value)) + "";
+        return new BigDecimal(Double.parseDouble(value)).setScale(decimalSize, roundingMode).toString();
     }
 
     /**
@@ -127,7 +148,9 @@ public class Decimal {
                     editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength + decimalSize)});
                 } else {
                     editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
-                    editText.setText(charSequence.subSequence(0, maxLength));
+                    if (charSequence.length() > 0 && maxLength >= charSequence.length()) {
+                        editText.setText(charSequence.subSequence(0, maxLength));
+                    }
                     if (charSequence.length() > 0) {
                         editText.setSelection(charSequence.length() - 1);
                     }
