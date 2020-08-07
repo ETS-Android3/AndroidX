@@ -79,7 +79,7 @@ public class FlowListView extends ViewGroup {
             int childHeight = childView.getMeasuredHeight();
             //因为子View可能设置margin，这里要加上margin的距离
             MarginLayoutParams mlp = (MarginLayoutParams) childView.getLayoutParams();
-            int realChildWidth = childWidth + mlp.leftMargin + mlp.rightMargin+horizontalSpacing;
+            int realChildWidth = childWidth + mlp.leftMargin + mlp.rightMargin+horizontalSpacing ;
             int realChildHeight = childHeight + mlp.topMargin + mlp.bottomMargin+verticalSpacing;
             //如果当前一行的宽度加上要加入的子view的宽度大于父容器给的宽度，就换行
             if ((lineWidth + realChildWidth) > sizeWidth) {
@@ -151,7 +151,7 @@ public class FlowListView extends ViewGroup {
         removeAllViews();
         for (int i = 0; i < baseAdapter.getCount(); i++) {
             final View childView = baseAdapter.getView(i, null, this);
-            addView(childView, new MarginLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+            addView(childView, childView.getLayoutParams());
             if (onItemClickListener != null) {//Item点击事件
                 final int position = i;
                 childView.setOnClickListener(new OnClickListener() {
@@ -197,6 +197,7 @@ public class FlowListView extends ViewGroup {
             adapterDataSerObserver = new AdapterDataSetObserver();
             baseAdapter.registerDataSetObserver(adapterDataSerObserver);
         }
+        notifyDataRefresh();
     }
 
 
