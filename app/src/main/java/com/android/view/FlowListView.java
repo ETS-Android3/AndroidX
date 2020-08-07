@@ -3,6 +3,7 @@ package com.android.view;
 /**
  * Created by Ice on 2016/11/29.
  */
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.database.DataSetObserver;
@@ -79,8 +80,8 @@ public class FlowListView extends ViewGroup {
             int childHeight = childView.getMeasuredHeight();
             //因为子View可能设置margin，这里要加上margin的距离
             MarginLayoutParams mlp = (MarginLayoutParams) childView.getLayoutParams();
-            int realChildWidth = childWidth + mlp.leftMargin + mlp.rightMargin+horizontalSpacing ;
-            int realChildHeight = childHeight + mlp.topMargin + mlp.bottomMargin+verticalSpacing;
+            int realChildWidth = childWidth + mlp.leftMargin + mlp.rightMargin + horizontalSpacing;
+            int realChildHeight = childHeight + mlp.topMargin + mlp.bottomMargin + verticalSpacing;
             //如果当前一行的宽度加上要加入的子view的宽度大于父容器给的宽度，就换行
             if ((lineWidth + realChildWidth) > sizeWidth) {
                 //换行
@@ -101,8 +102,7 @@ public class FlowListView extends ViewGroup {
                 resultHeight += lineHeight;
             }
         }
-        setMeasuredDimension(modeWidth == MeasureSpec.EXACTLY ? sizeWidth : resultWidth, modeHeight ==
-                MeasureSpec.EXACTLY ? sizeHeight : resultHeight);
+        setMeasuredDimension(modeWidth == MeasureSpec.EXACTLY ? sizeWidth : resultWidth, modeHeight == MeasureSpec.EXACTLY ? sizeHeight : resultHeight);
     }
 
     @Override
@@ -187,17 +187,15 @@ public class FlowListView extends ViewGroup {
      * @param adapter
      */
     public void setAdapter(BaseAdapter adapter) {
+        this.baseAdapter = adapter;
+        notifyDataRefresh();
         if (baseAdapter != null && adapterDataSerObserver != null) {
             baseAdapter.unregisterDataSetObserver(adapterDataSerObserver);
         }
-        //清除现有的数据
-        removeAllViews();
-        baseAdapter = adapter;
         if (baseAdapter != null) {
             adapterDataSerObserver = new AdapterDataSetObserver();
             baseAdapter.registerDataSetObserver(adapterDataSerObserver);
         }
-        notifyDataRefresh();
     }
 
 
