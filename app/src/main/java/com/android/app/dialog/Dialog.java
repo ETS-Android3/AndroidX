@@ -20,22 +20,26 @@ public class Dialog {
      * 半透明主题
      */
     public static final int THEME_TRANSLUCENT = R.style.Android_Theme_Dialog_Translucent_Background;
-
     /**
      * 全透明主题
      */
     public static final int THEME_TRANSPARENT = R.style.Android_Theme_Dialog_Transparent_Background;
-
     /**
      * 底部动画
      */
     public static final int ANIM_BOTTOM = R.style.android_anim_bottom;
-
+    /**
+     * 左边进入动画
+     */
+    public static final int ANIM_LEFT = R.style.android_anim_left;
+    /***
+     * 右边进入动画
+     */
+    public static final int ANIM_RIGHT = R.style.android_anim_right;
     /**
      * 缩放动画
      */
     public static final int ANIM_ZOOM = R.style.android_anim_zoom;
-
     /**
      * 上下文
      */

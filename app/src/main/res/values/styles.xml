@@ -81,4 +81,14 @@
         <item name="android:windowEnterAnimation">@anim/android_anim_bottom_in</item>
         <item name="android:windowExitAnimation">@anim/android_anim_bottom_exit</item>
     </style>
+    <!--Dialog右进入动画-->
+    <style name="android_anim_right" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/android_anim_right_in</item>
+        <item name="android:windowExitAnimation">@anim/android_anim_right_exit</item>
+    </style>
+    <!--Dialog左进入动画-->
+    <style name="android_anim_left" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/android_anim_left_in</item>
+        <item name="android:windowExitAnimation">@anim/android_anim_left_exit</item>
+    </style>
 </resources>
