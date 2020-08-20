@@ -57,7 +57,7 @@ public class SQLiteHelper implements OnSQLiteOpenHelperListener {
     private final int DATABASE_VERSION = 1;
     private final String DATABASE_NAME = "AndroidSQLite.db";
     protected final String CREATE_TABLE_HEAD = "CREATE TABLE IF NOT EXISTS ";
-    protected final String CREATE_PRIMARY_KEY = "SYS_ID INTEGER PRIMARY KEY AUTOINCREMENT,";
+    protected final String CREATE_PRIMARY_KEY = "TABLE_ID INTEGER PRIMARY KEY AUTOINCREMENT,";
 
     private int version;
     private Context context;
@@ -494,14 +494,33 @@ public class SQLiteHelper implements OnSQLiteOpenHelperListener {
             if (field != null) {
                 field.setAccessible(true);
                 String name = field.getName();
-                String value = "";
                 try {
-                    value = String.valueOf(field.get(obj));
+                    Class<?> type = field.getType();
+                    if (!name.equals("$change") && !name.equals("serialVersionUID")) {
+                        if (type == String.class || type == Character.class) {
+                            contentValues.put(name, (String) field.get(obj));
+                        }
+                        if (type == int.class) {
+                            contentValues.put(name, (int) field.get(obj));
+                        }
+                        if (type == long.class) {
+                            contentValues.put(name, (long)field.get(obj));
+                        }
+                        if (type == double.class) {
+                            contentValues.put(name, (double)field.get(obj));
+                        }
+                        if (type == float.class) {
+                            contentValues.put(name, (float)field.get(obj));
+                        }
+                        if (type == boolean.class) {
+                            contentValues.put(name, (boolean)field.get(obj));
+                        }
+                        if (type == short.class) {
+                            contentValues.put(name, (short)field.get(obj));
+                        }
+                    }
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
-                }
-                if (!name.equals("$change") && !name.equals("serialVersionUID")) {
-                    contentValues.put(name, value);
                 }
             }
         }
