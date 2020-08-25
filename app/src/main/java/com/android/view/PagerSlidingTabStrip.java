@@ -23,6 +23,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Parcel;
@@ -84,6 +85,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
     private int scrollOffset = 52;
     private int indicatorHeight = 5;
+    private int indicatorRadius = 0;
     private int underlineHeight = 2;
     private int dividerPadding = 12;
     private int tabPadding = 24;
@@ -146,6 +148,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
         a = context.obtainStyledAttributes(attrs, R.styleable.PagerSlidingTabStrip);
 
         indicatorColor = a.getColor(R.styleable.PagerSlidingTabStrip_pstsIndicatorColor, indicatorColor);
+        indicatorRadius = a.getDimensionPixelSize(R.styleable.PagerSlidingTabStrip_pstsIndicatorRadius, indicatorRadius);
         underlineColor = a.getColor(R.styleable.PagerSlidingTabStrip_pstsUnderlineColor, underlineColor);
         tabCurrentTextColor = a.getColor(R.styleable.PagerSlidingTabStrip_pstsTabTextCheckColor, tabCurrentTextColor);
         tabTextColor = a.getColor(R.styleable.PagerSlidingTabStrip_pstsTabTextUnCheckColor, tabTextColor);
@@ -331,15 +334,17 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
             lineRight = (currentPositionOffset * nextTabRight + (1f - currentPositionOffset) * lineRight);
         }
         float distance = lineRight - lineLeft;
-        canvas.drawRect(lineLeft + (distance * pstsIndicatorLinePercent), height - indicatorHeight, lineRight - (distance * pstsIndicatorLinePercent), height, rectPaint);
+        RectF rectF = new RectF(lineLeft + (distance * pstsIndicatorLinePercent), height - indicatorHeight, lineRight - (distance * pstsIndicatorLinePercent), height);
+        canvas.drawRoundRect(rectF, indicatorRadius,indicatorRadius,rectPaint);
         // draw underline
         rectPaint.setColor(underlineColor);
-        canvas.drawRect(0, height - underlineHeight, tabsContainer.getWidth(), height, rectPaint);
+        RectF rectF1= new RectF(0, height + underlineHeight, tabsContainer.getWidth(), height);
+        canvas.drawRoundRect(rectF1, indicatorRadius,indicatorRadius,rectPaint);
         // draw divider
         dividerPaint.setColor(dividerColor);
         for (int i = 0; i < tabCount - 1; i++) {
             View tab = tabsContainer.getChildAt(i);
-            canvas.drawLine(tab.getRight(), dividerPadding, tab.getRight(), height - dividerPadding, dividerPaint);
+            canvas.drawLine(tab.getRight(), dividerPadding+ underlineHeight, tab.getRight(), height - dividerPadding, dividerPaint);
         }
     }
 
@@ -503,6 +508,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
     public void setTabBackground(int resId) {
         this.tabBackgroundResId = resId;
+        updateTabStyles();
     }
 
     public int getTabBackground() {
@@ -513,6 +519,12 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
         this.tabPadding = paddingPx;
         updateTabStyles();
     }
+
+    public void setIndicatorRadius(int indicatorRadius) {
+        this.indicatorRadius = indicatorRadius;
+        updateTabStyles();
+    }
+
 
     public int getTabPaddingLeftRight() {
         return tabPadding;
