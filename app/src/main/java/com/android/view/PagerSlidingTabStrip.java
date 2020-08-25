@@ -92,6 +92,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
     private int tabTextSize = 14;
     private int tabTextColor = Color.parseColor("#333333");
     private int tabCurrentTextColor = Color.parseColor("#3BB0F8");
+    private int tabTextCheckSize = 14;
     private Typeface tabTypeface = null;
     private int tabTypefaceStyle = Typeface.NORMAL;
 
@@ -157,6 +158,8 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
         shouldExpand = a.getBoolean(R.styleable.PagerSlidingTabStrip_pstsShouldExpand, shouldExpand);
         scrollOffset = a.getDimensionPixelSize(R.styleable.PagerSlidingTabStrip_pstsScrollOffset, scrollOffset);
         textAllCaps = a.getBoolean(R.styleable.PagerSlidingTabStrip_pstsTextAllCaps, textAllCaps);
+        tabTextSize = a.getDimensionPixelSize(R.styleable.PagerSlidingTabStrip_pstsTabTextUnCheckSize, tabTextSize);
+        tabTextCheckSize = a.getDimensionPixelSize(R.styleable.PagerSlidingTabStrip_pstsTabTextCheckSize, tabTextCheckSize);
         pstsIndicatorLinePercent = a.getFloat(R.styleable.PagerSlidingTabStrip_pstsIndicatorLinePercent, pstsIndicatorLinePercent);
 
 
@@ -277,6 +280,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
                 tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, tabTextSize);
                 tab.setTypeface(tabTypeface, tabTypefaceStyle);
                 tab.setTextColor(currentPosition == i ? tabCurrentTextColor : tabTextColor);
+                tab.setTextSize(currentPosition == i ? tabTextCheckSize : tabTextSize);
                 // setAllCaps() is only available from API 14, so the upper case is made manually if we are on a
                 // pre-ICS-build
                 if (textAllCaps) {
