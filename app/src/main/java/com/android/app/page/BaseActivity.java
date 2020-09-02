@@ -711,6 +711,15 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpLi
     }
 
     /**
+     * 消失图片选择器
+     */
+    public void dismissImageSelector(){
+        if (imageSelector!=null){
+            imageSelector.dismiss();
+        }
+    }
+
+    /**
      * 跳转到相册
      *
      * @param builder 参数

@@ -725,6 +725,15 @@ public abstract class BaseFragment extends Fragment implements ActivityCompat.On
         imageSelector.show();
     }
 
+    /**
+     * 消失图片选择器
+     */
+    public void dismissImageSelector(){
+        if (imageSelector!=null){
+            imageSelector.dismiss();
+        }
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
