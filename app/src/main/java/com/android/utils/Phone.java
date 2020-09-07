@@ -10,6 +10,9 @@ public class Phone {
      */
     public static String secure(String phone) {
         int length = phone.length();
+        if (length < 4) {
+            return phone;
+        }
         String start = phone.substring(0, 3);
         String end = phone.substring(phone.length() - 4, phone.length());
         StringBuffer sb = new StringBuffer();
