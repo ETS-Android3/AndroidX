@@ -609,8 +609,9 @@ public class DateSelector {
                                     + minuteList.get(lv_minute.getSelectedItem()).replace("分", ""));
                             break;
                         case TYPE_DATE_YY_MM_DD_AM:
-                            listener.onDateSelected(hourList.get(lv_hour.getSelectedItem()).replace("时", ":")
-                                    + minuteList.get(lv_minute.getSelectedItem()).replace("分", "") +" "+ amList.get(lv_hour.getSelectedItem()));
+                            listener.onDateSelected(yearList.get(lv_year.getSelectedItem()).replace("年", "-")
+                                    + monthList.get(lv_month.getSelectedItem()).replace("月", "-")
+                                    + dayList.get(lv_day.getSelectedItem()).replace("日", "") + " "+" "+ amList.get(lv_hour.getSelectedItem()));
                             break;
                     }
 
