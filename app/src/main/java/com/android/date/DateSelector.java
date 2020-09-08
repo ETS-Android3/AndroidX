@@ -49,6 +49,18 @@ public class DateSelector {
     public static final int TYPE_DATE_YY_MM_DD_HH_MM = 0x006;
 
     /**
+     * 选择日期年月日上午/下午
+     */
+    public static final int TYPE_DATE_YY_MM_DD_AM = 0x007;
+    /**
+     * 上午
+     */
+    public static final int AM_MORNING = 0;
+    /**
+     * 下午
+     */
+    public static final int AM_AFTERNOON = 1;
+    /**
      * 选中位置
      */
     private static int todayPosition = 0;
@@ -137,6 +149,10 @@ public class DateSelector {
      * 天数
      */
     public final int day;
+    /**
+     * 上午下午
+     */
+    public final int am;
 
     /**
      * 小时
@@ -177,6 +193,7 @@ public class DateSelector {
         this.yearBehind = builder.yearBehind;
         this.month = builder.month;
         this.day = builder.day;
+        this.am = builder.am;
         this.hour = builder.hour;
         this.minute = builder.minute;
         this.second = builder.second;
@@ -217,6 +234,8 @@ public class DateSelector {
         private int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
 
         private int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+
+        private int am = AM_MORNING;
 
         private int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
 
@@ -356,8 +375,17 @@ public class DateSelector {
             return day;
         }
 
+        public int am() {
+            return am;
+        }
+
         public Builder day(int day) {
             this.day = day;
+            return this;
+        }
+
+        public Builder am(int am) {
+            this.am = am;
             return this;
         }
 
@@ -489,6 +517,7 @@ public class DateSelector {
         final ArrayList<String> hourList = new ArrayList<>();
         final ArrayList<String> minuteList = new ArrayList<>();
         final ArrayList<String> secondList = new ArrayList<>();
+        final ArrayList<String> amList = new ArrayList<>();
         switch (type) {
             case TYPE_DATE_TIME:
                 createYearMonthDay(yearList, monthList, dayList, lv_year, lv_month, lv_day);
@@ -524,6 +553,12 @@ public class DateSelector {
                 lv_day.setVisibility(View.GONE);
                 lv_second.setVisibility(View.GONE);
                 createHourMinuteSecond(calendar, hourList, minuteList, secondList, lv_hour, lv_minute, lv_second);
+                break;
+            case TYPE_DATE_YY_MM_DD_AM:
+                lv_minute.setVisibility(View.GONE);
+                lv_second.setVisibility(View.GONE);
+                createYearMonthDay(yearList, monthList, dayList, lv_year, lv_month, lv_day);
+                createAM(amList, lv_hour);
                 break;
         }
         tv_cancel.setOnClickListener(new View.OnClickListener() {
@@ -572,6 +607,10 @@ public class DateSelector {
                         case TYPE_TIME_HH_MM:
                             listener.onDateSelected(hourList.get(lv_hour.getSelectedItem()).replace("时", ":")
                                     + minuteList.get(lv_minute.getSelectedItem()).replace("分", ""));
+                            break;
+                        case TYPE_DATE_YY_MM_DD_AM:
+                            listener.onDateSelected(hourList.get(lv_hour.getSelectedItem()).replace("时", ":")
+                                    + minuteList.get(lv_minute.getSelectedItem()).replace("分", "") +" "+ amList.get(lv_hour.getSelectedItem()));
                             break;
                     }
 
@@ -686,6 +725,27 @@ public class DateSelector {
         });
         lv_day.setItems(dayList);
         lv_day.setCurrentPosition(todayPosition - 1);
+    }
+
+
+    /**
+     * 创建年-月-日数据
+     *
+     * @param amList 年份数据
+     * @param lv_am  年份控件
+     */
+    private void createAM(final ArrayList<String> amList, final LoopView lv_am) {
+        //年份
+        int position = 0;
+        String names[] = new String[]{"上午", "下午"};
+        for (int i = 0; i < names.length; i++) {
+            if (i == am) {
+                position = i;
+            }
+            amList.add(names[i]);
+        }
+        lv_am.setItems(amList);
+        lv_am.setCurrentPosition(position);
     }
 
 }
