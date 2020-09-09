@@ -557,6 +557,7 @@ public class DateSelector {
             case TYPE_DATE_YY_MM_DD_AM:
                 lv_minute.setVisibility(View.GONE);
                 lv_second.setVisibility(View.GONE);
+                lv_hour.setNotLoop();
                 createYearMonthDay(yearList, monthList, dayList, lv_year, lv_month, lv_day);
                 createAM(amList, lv_hour);
                 break;
