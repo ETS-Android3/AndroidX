@@ -152,6 +152,7 @@ public abstract class RecyclerAdapter<T, VH extends RecyclerAdapter.ViewHolder> 
         if (getItemCount() > 0) {
             data.remove(position);
             notifyItemRemoved(position);
+            notifyItemRangeChanged(position, getItemCount() - position);
         }
     }
 
