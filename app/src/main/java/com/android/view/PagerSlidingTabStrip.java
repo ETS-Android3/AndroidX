@@ -178,6 +178,26 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
         }
     }
 
+    /**
+     * 判断是显示圆点
+     *
+     * @param position
+     * @return
+     */
+    public boolean isShowDot(int position) {
+        if (ListUtils.getSize(dotVisibleList) == 0) {
+            return false;
+        }
+        if (position >= ListUtils.getSize(dotVisibleList)) {
+            return false;
+        }
+        return dotVisibleList.get(position);
+    }
+
+    /**
+     * 设置ViewPager
+     * @param pager
+     */
     public void setViewPager(ViewPager pager) {
         this.pager = pager;
         if (pager.getAdapter() == null) {
@@ -187,6 +207,10 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
         notifyDataSetChanged();
     }
 
+    /**
+     * 设置页面监听
+     * @param listener
+     */
     public void setOnPageChangeListener(OnPageChangeListener listener) {
         this.delegatePageListener = listener;
     }
@@ -262,8 +286,8 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
         tab.setGravity(Gravity.CENTER);
         tab.setSingleLine();
         tab.setPadding(tabPadding, 0, tabPadding, 0);
-        tab.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-        itemLayout.addView(tab,new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT));
+        tab.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        itemLayout.addView(tab, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
         if (dotVisible) {
             TextView dot = new TextView(getContext());
             dot.setGravity(Gravity.CENTER);
