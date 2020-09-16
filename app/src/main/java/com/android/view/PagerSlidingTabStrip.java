@@ -261,7 +261,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
         tab.setText(title);
         tab.setGravity(Gravity.CENTER);
         tab.setSingleLine();
-        itemLayout.addView(tab);
+        itemLayout.addView(tab,new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT));
         if (dotVisible) {
             TextView dot = new TextView(getContext());
             dot.setGravity(Gravity.CENTER);
@@ -323,6 +323,12 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
                     }
                     if (dotStringList != null) {
                         dot.setText(dotStringList.get(i));
+                        dot.setTextSize(TypedValue.COMPLEX_UNIT_SP, dotTextSize);
+                        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(dotWidth, dotHeight);
+                        params.gravity = Gravity.RIGHT;
+                        params.topMargin = dotTopMargin;
+                        params.rightMargin = dotRightMargin;
+                        dot.setLayoutParams(params);
                     }
                 }
             }
