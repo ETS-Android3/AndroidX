@@ -125,8 +125,8 @@ public abstract class RecyclerAdapter<T, VH extends RecyclerAdapter.ViewHolder> 
     public void addItems(List<T> data) {
         int size = getItemCount();
         int positionStart = size == 0 ? 0 : size;
-        if (data != null) {
-            data.addAll(data);
+        if (this.data != null) {
+            this.data.addAll(data);
         }
         notifyItemRangeInserted(positionStart, getItemCount());
     }
