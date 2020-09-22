@@ -242,7 +242,7 @@ public class OkHttp {
                 if (Number.formatInt(cacheBody.getCode()) == 200) {
                     httpHandler.sendSuccessfulMsg(params, url, response.code(), response.body(), listener);
                 } else {
-                    httpHandler.sendExceptionMsg(params, url, response.code(), new IOException(AppConstant.HTTP_MSG_RESPONSE_FAILED + response.code()),response.body(), listener);
+                    httpHandler.sendExceptionMsg(params, url, response.code(), new IOException(AppConstant.HTTP_MSG_RESPONSE_FAILED + response.code()), response.body(), listener);
                 }
             }
             return true;
@@ -272,7 +272,7 @@ public class OkHttp {
             stringParams = jsonContent;
         }
         stringParams = JsonEscape.escape(stringParams);
-        Log.i(TAG, "->postJson stringParams = " + stringParams);
+        Log.i(TAG, "->String Params = " + stringParams);
         RequestBody body = RequestBody.create(mediaType, stringParams);
         Request.Builder requestBuilder = new Request.Builder();
         //添加Header
@@ -291,6 +291,32 @@ public class OkHttp {
     }
 
 
+    private static okhttp3.Interceptor interceptor;
+
+    /**
+     * 添加拦截器
+     *
+     * @param interceptor
+     * @return
+     */
+    public OkHttp addInterceptor(okhttp3.Interceptor interceptor) {
+        this.interceptor = interceptor;
+        return this;
+    }
+
+    private static okhttp3.Interceptor networkInterceptor;
+
+    /**
+     * 添加网络拦截器
+     *
+     * @param networkInterceptor
+     * @return
+     */
+    public OkHttp addNetworkInterceptor(okhttp3.Interceptor networkInterceptor) {
+        this.networkInterceptor = networkInterceptor;
+        return this;
+    }
+
     /**
      * 创建Http客户端对象
      *
@@ -299,6 +325,12 @@ public class OkHttp {
     private static okhttp3.OkHttpClient buildOkHttpClient(RequestParams params) {
         OkHttpClient.Builder okBuilder = new OkHttpClient.Builder();
         okBuilder.protocols(Collections.singletonList(Protocol.HTTP_1_1));
+        if (interceptor != null) {
+            okBuilder.addInterceptor(interceptor);
+        }
+        if (networkInterceptor != null) {
+            okBuilder.addNetworkInterceptor(networkInterceptor);
+        }
         okBuilder.connectTimeout(RequestParams.DEFAULT_TIME_OUT, TimeUnit.SECONDS);
         okBuilder.readTimeout(RequestParams.DEFAULT_TIME_OUT, TimeUnit.SECONDS);
         okBuilder.writeTimeout(RequestParams.DEFAULT_TIME_OUT, TimeUnit.SECONDS);

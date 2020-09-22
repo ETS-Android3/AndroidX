@@ -87,6 +87,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
     private boolean shouldExpand = false;
     private boolean textAllCaps = true;
     private boolean dotVisible = true;
+    private boolean tabCheckTextBold = false;
     private int dotTextSize = 8;
     private int dotWidth = 20;
     private int dotHeight = 20;
@@ -161,6 +162,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
         shouldExpand = a.getBoolean(R.styleable.PagerSlidingTabStrip_pstsShouldExpand, shouldExpand);
         scrollOffset = a.getDimensionPixelSize(R.styleable.PagerSlidingTabStrip_pstsScrollOffset, scrollOffset);
         textAllCaps = a.getBoolean(R.styleable.PagerSlidingTabStrip_pstsTextAllCaps, textAllCaps);
+        tabCheckTextBold = a.getBoolean(R.styleable.PagerSlidingTabStrip_pstsTabCheckTextBold, tabCheckTextBold);
         tabTextSize = a.getDimensionPixelSize(R.styleable.PagerSlidingTabStrip_pstsTabTextUnCheckSize, tabTextSize);
         tabTextCheckSize = a.getDimensionPixelSize(R.styleable.PagerSlidingTabStrip_pstsTabTextCheckSize, tabTextCheckSize);
         pstsIndicatorLinePercent = a.getFloat(R.styleable.PagerSlidingTabStrip_pstsIndicatorLinePercent, pstsIndicatorLinePercent);
@@ -196,6 +198,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
     /**
      * 设置ViewPager
+     *
      * @param pager
      */
     public void setViewPager(ViewPager pager) {
@@ -209,6 +212,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
     /**
      * 设置页面监听
+     *
      * @param listener
      */
     public void setOnPageChangeListener(OnPageChangeListener listener) {
@@ -331,6 +335,8 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
                     tab.setTypeface(tabTypeface, tabTypefaceStyle);
                     tab.setTextColor(currentPosition == i ? tabCurrentTextColor : tabTextColor);
                     tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, currentPosition == i ? tabTextCheckSize : tabTextSize);
+                    tab.setTypeface(Typeface.defaultFromStyle(currentPosition == i ? Typeface.BOLD : Typeface.NORMAL));//加粗
+                    tab.getPaint().setFakeBoldText(currentPosition == i ? tabCheckTextBold : false);//加粗
                     // setAllCaps() is only available from API 14, so the upper case is made manually if we are on a
                     // pre-ICS-build
                     if (textAllCaps) {

@@ -174,6 +174,7 @@
         <attr name="pstsTabTextCheckColor" format="color" />
         <attr name="pstsTabTextUnCheckSize" format="dimension" />
         <attr name="pstsTabTextCheckSize" format="dimension" />
+        <attr name="pstsTabCheckTextBold" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="LetterView">
