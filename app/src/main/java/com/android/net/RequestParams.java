@@ -178,10 +178,10 @@ public class RequestParams {
         }
         Log.e(this.getClass().getSimpleName(), "addParams value:" + path);
         if (path.contains(".JPG") || path.contains(".JPEG")) {
-            value = IOUtils.compress(value, Bitmap.CompressFormat.JPEG, 200);
+            value = IOUtils.compress(value, Bitmap.CompressFormat.JPEG, 500);
         }
         if (path.contains(".PNG")) {
-            value = IOUtils.compress(value, Bitmap.CompressFormat.PNG, 200);
+            value = IOUtils.compress(value, Bitmap.CompressFormat.PNG, 500);
         }
         fileParams.put(key, value);
     }
@@ -194,7 +194,7 @@ public class RequestParams {
      * @param value
      */
     public void add(String key, File value) {
-        add(key, value, 200);
+        add(key, value, 500);
     }
 
     /**
