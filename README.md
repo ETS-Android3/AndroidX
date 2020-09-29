@@ -2,7 +2,7 @@
 Android开发框架（Android development integration tools）
 
 ## 方法一  ARR依赖
-[AndroidX.arr](https://github.com/RelinRan/Android/blob/master/AndroidX.aar)
+[AndroidX.arr](https://github.com/RelinRan/AndroidX/blob/master/AndroidX.aar)
 ```
 android {
     ....
@@ -32,7 +32,7 @@ allprojects {
 ### B.项目/app/build.grade
 ```
 dependencies {
-	implementation 'com.github.RelinRan:AndroidX:1.0.0'
+	implementation 'com.github.RelinRan:AndroidX:1.0.1'
 }
 ```
 
