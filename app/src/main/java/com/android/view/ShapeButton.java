@@ -35,6 +35,7 @@ public class ShapeButton extends AppCompatTextView {
     private int solid = getResources().getColor(R.color.colorPrimary);
     private int strokeWidth = 0;
     private int strokeColor = getResources().getColor(R.color.colorPrimary);
+    private int type = 1;
     private int shape = 0;
     private float radius = 0;
     private float topLeftRadius = 0;
@@ -69,6 +70,9 @@ public class ShapeButton extends AppCompatTextView {
             if (typedArray.getString(R.styleable.ShapeButton_shape) != null) {
                 shape = Integer.parseInt(typedArray.getString(R.styleable.ShapeButton_shape));
             }
+            if (typedArray.getString(R.styleable.ShapeButton_type) != null) {
+                type = Integer.parseInt(typedArray.getString(R.styleable.ShapeButton_type));
+            }
             radius = typedArray.getDimension(R.styleable.ShapeButton_radius, 0);
             topLeftRadius = typedArray.getDimension(R.styleable.ShapeButton_topLeftRadius, 0);
             topRightRadius = typedArray.getDimension(R.styleable.ShapeButton_topRightRadius, 0);
@@ -77,7 +81,9 @@ public class ShapeButton extends AppCompatTextView {
             saturation = typedArray.getFloat(R.styleable.ShapeButton_saturation, 0.90f);
             typedArray.recycle();
         }
-        drawDrawable();
+        if (type==1){
+            drawDrawable();
+        }
         final TypedArray a = context.obtainStyledAttributes(ATTRS);
         setGravity(a.getInt(0, Gravity.CENTER));
     }
@@ -85,7 +91,6 @@ public class ShapeButton extends AppCompatTextView {
     protected void drawDrawable() {
         normalDrawable = createShape(shape, strokeWidth, strokeColor, solid, radius, topLeftRadius, topRightRadius, bottomLeftRadius, bottomRightRadius);
         pressedDrawable = createShape(shape, strokeWidth, createPressedColor(strokeColor), createPressedColor(solid), radius, topLeftRadius, topRightRadius, bottomLeftRadius, bottomRightRadius);
-
         int[][] states = new int[2][];
         states[0] = new int[]{android.R.attr.state_pressed};
         states[1] = new int[]{};

@@ -27,7 +27,10 @@
         <enum name="line" value="2"></enum>
         <enum name="ring" value="2"></enum>
     </attr>
-
+    <attr name="type" format="enum">
+        <enum name="text" value="0"></enum>
+        <enum name="button" value="1"></enum>
+    </attr>
     <declare-styleable name="CircleProgressButton">
         <attr name="radius" />
         <attr name="circleColor" />
@@ -40,6 +43,7 @@
     </declare-styleable>
 
     <declare-styleable name="ShapeButton">
+        <attr name="type"/>
         <attr name="solid" />
         <attr name="strokeColor" />
         <attr name="strokeWidth" />
