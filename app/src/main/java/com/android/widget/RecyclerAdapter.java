@@ -184,7 +184,6 @@ public abstract class RecyclerAdapter<T, VH extends RecyclerAdapter.ViewHolder> 
         notifyItemRangeChanged(Math.min(fromPosition, toPosition), Math.abs(fromPosition - toPosition) + 1);
     }
 
-
     /**
      * 获取数据
      *
@@ -193,7 +192,6 @@ public abstract class RecyclerAdapter<T, VH extends RecyclerAdapter.ViewHolder> 
     public List<T> getItems() {
         return data;
     }
-
 
     /**
      * 获取Item
