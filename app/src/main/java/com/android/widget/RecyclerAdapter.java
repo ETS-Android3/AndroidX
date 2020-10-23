@@ -149,10 +149,10 @@ public abstract class RecyclerAdapter<T, VH extends RecyclerAdapter.ViewHolder> 
      * @param position
      */
     public void removeItem(int position) {
-        if (getItemCount() > 0) {
+        if (getItemCount() > 0 && position < getItemCount()) {
             data.remove(position);
             notifyItemRemoved(position);
-            notifyItemRangeChanged(position, getItemCount() - position);
+            notifyItemRangeChanged(position, getItemCount());
         }
     }
 
@@ -499,11 +499,12 @@ public abstract class RecyclerAdapter<T, VH extends RecyclerAdapter.ViewHolder> 
 
     /**
      * 显示提示
+     *
      * @param msg
      */
     public void showToast(String msg) {
         if (getActivity() != null) {
-           getActivity().showToast(msg);
+            getActivity().showToast(msg);
         }
         if (getFragment() != null) {
             getFragment().showToast(msg);
