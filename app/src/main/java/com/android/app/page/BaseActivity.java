@@ -367,12 +367,12 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpLi
     }
 
     /**
-     * 是否判断网络
+     * 检查网络
      *
      * @return
      */
-    protected boolean isDetermineNetwork() {
-        return BaseApplication.app.isDetermineNetwork();
+    protected boolean isCheckNetwork() {
+        return true;
     }
 
     /**
@@ -388,7 +388,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpLi
      * 请求接口数据
      **/
     public void onHttpRequest() {
-        if (isDetermineNetwork() && !NetworkUtils.isAvailable(this)) {
+        if (isCheckNetwork() && !NetworkUtils.isAvailable(this)) {
             showLoadingDialog(LoadingMode.DIALOG);
             Message message = pageMessage.obtainMessage();
             message.what = AppConstant.WHAT_MSG_NET_OFFLINE;
@@ -423,11 +423,13 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpLi
         //检查网络是否可用
         Message message = pageMessage.obtainMessage();
         if (!NetworkUtils.isAvailable(this)) {
-            message.what = AppConstant.WHAT_MSG_NET_OFFLINE;
-            Bundle bundle = new Bundle();
-            bundle.putString(AppConstant.MSG_KEY, AppConstant.EXCEPTION_MSG_NET_OFFLINE);
-            bundle.putInt(AppConstant.MSG_CODE, response.code());
-            message.setData(bundle);
+            if (isCheckNetwork()){
+                message.what = AppConstant.WHAT_MSG_NET_OFFLINE;
+                Bundle bundle = new Bundle();
+                bundle.putString(AppConstant.MSG_KEY, AppConstant.EXCEPTION_MSG_NET_OFFLINE);
+                bundle.putInt(AppConstant.MSG_CODE, response.code());
+                message.setData(bundle);
+            }
         } else {//显示其他错误信息
             message.what = AppConstant.WHAT_MSG_RESPONSE_FAILED;
             Bundle bundle = new Bundle();
@@ -713,8 +715,8 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpLi
     /**
      * 消失图片选择器
      */
-    public void dismissImageSelector(){
-        if (imageSelector!=null){
+    public void dismissImageSelector() {
+        if (imageSelector != null) {
             imageSelector.dismiss();
         }
     }

@@ -38,7 +38,7 @@ public class AppConstant {
     /**
      * 无网络的提示
      */
-    public static final String EXCEPTION_MSG_NET_OFFLINE = "连网失败";
+    public static final String EXCEPTION_MSG_NET_OFFLINE = "联网失败";
 
     /**
      * 请求失败的提示

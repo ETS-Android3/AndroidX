@@ -368,9 +368,10 @@ public class OkHttp {
         HttpResponse response = new HttpResponse();
         response.url(url);
         response.code(-11);
+        response.body("{\"code\":\"-11\",\"msg\":\"联网失败\"}");
         response.requestParams(params);
         response.exception(new Exception("No network connection, unable to request data interface."));
-        listener.onHttpFailure(response);
+        httpHandler.sendExceptionMsg(params, url, response.code(), new IOException(AppConstant.HTTP_MSG_RESPONSE_FAILED + response.code()), response.body(), listener);
     }
 
     /**

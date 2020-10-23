@@ -68,10 +68,6 @@ public class BaseApplication extends Application {
         OkHttp.destroy();
     }
 
-    public boolean isDetermineNetwork() {
-        return true;
-    }
-
     /**
      * 检查严格模式
      */

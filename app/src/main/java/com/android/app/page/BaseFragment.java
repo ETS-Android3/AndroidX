@@ -329,19 +329,19 @@ public abstract class BaseFragment extends Fragment implements ActivityCompat.On
     }
 
     /**
-     * 是否判断网络
+     * 是否检查网络
      *
      * @return
      */
-    protected boolean isDetermineNetwork() {
-        return BaseApplication.app.isDetermineNetwork();
+    protected boolean isCheckNetwork() {
+        return true;
     }
 
     /**
      * 请求接口数据
      **/
     public void onHttpRequest() {
-        if (isDetermineNetwork() && !NetworkUtils.isAvailable(getActivity())) {
+        if (isCheckNetwork() && !NetworkUtils.isAvailable(getActivity())) {
             Log.i(this.getClass().getSimpleName(), AppConstant.HTTP_MSG_NET_OFFLINE);
             Message message = pageMessage.obtainMessage();
             message.what = AppConstant.WHAT_MSG_NET_OFFLINE;
@@ -376,12 +376,14 @@ public abstract class BaseFragment extends Fragment implements ActivityCompat.On
         //检查网络是否可用
         Message message = pageMessage.obtainMessage();
         if (!NetworkUtils.isAvailable(getContext())) {
-            Log.i(this.getClass().getSimpleName(), AppConstant.HTTP_MSG_NET_OFFLINE);
-            message.what = AppConstant.WHAT_MSG_NET_OFFLINE;
-            Bundle bundle = new Bundle();
-            bundle.putInt(AppConstant.MSG_CODE, response.code());
-            bundle.putString(AppConstant.MSG_KEY, AppConstant.EXCEPTION_MSG_NET_OFFLINE);
-            message.setData(bundle);
+            if (isCheckNetwork()) {
+                Log.i(this.getClass().getSimpleName(), AppConstant.HTTP_MSG_NET_OFFLINE);
+                message.what = AppConstant.WHAT_MSG_NET_OFFLINE;
+                Bundle bundle = new Bundle();
+                bundle.putInt(AppConstant.MSG_CODE, response.code());
+                bundle.putString(AppConstant.MSG_KEY, AppConstant.EXCEPTION_MSG_NET_OFFLINE);
+                message.setData(bundle);
+            }
         } else {//显示其他错误信息
             message.what = AppConstant.WHAT_MSG_RESPONSE_FAILED;
             Bundle bundle = new Bundle();
@@ -728,8 +730,8 @@ public abstract class BaseFragment extends Fragment implements ActivityCompat.On
     /**
      * 消失图片选择器
      */
-    public void dismissImageSelector(){
-        if (imageSelector!=null){
+    public void dismissImageSelector() {
+        if (imageSelector != null) {
             imageSelector.dismiss();
         }
     }
