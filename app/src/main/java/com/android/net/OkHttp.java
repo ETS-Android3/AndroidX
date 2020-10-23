@@ -258,7 +258,7 @@ public class OkHttp {
      * @param listener
      */
     private static void postJson(String url, RequestParams params, OnHttpListener listener) {
-        if (BaseApplication.app.isDetermineNetwork() && !NetworkUtils.isAvailable(BaseApplication.app)) {
+        if (!OkHttp.cache && !NetworkUtils.isAvailable(BaseApplication.app)) {
             sendNoNetworkMessage(url, params, listener);
             return;
         }
