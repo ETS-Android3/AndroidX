@@ -293,6 +293,7 @@ public abstract class RecyclerAdapter<T, VH extends RecyclerAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         VH vh = (VH) holder;
         onBindView(vh, position);
+        onBindView(vh, getItem(position), position);
     }
 
     @NonNull
@@ -304,10 +305,20 @@ public abstract class RecyclerAdapter<T, VH extends RecyclerAdapter.ViewHolder> 
     /**
      * 绑定数据
      *
+     * @param holder   控件Holder
+     * @param position 位置
+     */
+    public void onBindView(@NonNull VH holder, int position) {
+
+    }
+
+    /**
+     *
      * @param holder
+     * @param item
      * @param position
      */
-    public abstract void onBindView(@NonNull VH holder, int position);
+    public abstract void onBindView(@NonNull VH holder, T item, int position);
 
     /**
      * 创建数据视图

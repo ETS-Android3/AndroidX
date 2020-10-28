@@ -46,7 +46,6 @@ public class CaughtException implements Thread.UncaughtExceptionHandler {
      * 捕捉异常对象类
      */
     private Thread.UncaughtExceptionHandler exceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
-
     /**
      * 上下文对象
      */
@@ -73,6 +72,7 @@ public class CaughtException implements Thread.UncaughtExceptionHandler {
         this.fileName = builder.fileName;
         this.listener = builder.listener;
         IOUtils.createFolder(folderName);
+        Thread.setDefaultUncaughtExceptionHandler(this);
         start();
     }
 
@@ -209,13 +209,13 @@ public class CaughtException implements Thread.UncaughtExceptionHandler {
         PackageManager packageManager = context.getPackageManager();
         ApplicationInfo ai = context.getApplicationInfo();
         //项目名字
-        sb.append("Application Name : ").append(packageManager.getApplicationLabel(ai)).append('\n');
+        sb.append("Application: ").append(packageManager.getApplicationLabel(ai)).append('\n');
         try {
             PackageInfo pi = packageManager.getPackageInfo(ai.packageName, 0);
             //项目版本号
-            sb.append("Application Version Code: ").append(pi.versionCode).append('\n');
+            sb.append("Version Code: ").append(pi.versionCode).append('\n');
             //项目版本名
-            sb.append("Application Version Name: ").append(pi.versionName).append('\n');
+            sb.append("Version Name: ").append(pi.versionName).append('\n');
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -224,7 +224,7 @@ public class CaughtException implements Thread.UncaughtExceptionHandler {
         //手机品牌
         sb.append("Brand: ").append(Build.BRAND).append('\n');
         //设备名
-        sb.append("Device: ").append(Build.DEVICE).append('\n');
+        sb.append("Device Name: ").append(Build.DEVICE).append('\n');
         //手机版本
         sb.append("Version Code: ").append(Build.DISPLAY).append('\n');
         //指纹
