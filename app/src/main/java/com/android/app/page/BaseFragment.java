@@ -1,10 +1,14 @@
 package com.android.app.page;
 
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -47,6 +51,7 @@ import com.android.net.OnHttpListener;
 import com.android.utils.DataStorage;
 import com.android.utils.StatusBar;
 
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -998,5 +1003,44 @@ public abstract class BaseFragment extends Fragment implements ActivityCompat.On
     public Toast showToast(ToastMode mode, String msg) {
         return toastView.showToast(getContext(), inflater, mode, msg);
     }
+
+    /**
+     * 转换语言
+     *
+     * @param language Locale.US or Locale.SIMPLIFIED_CHINESE
+     */
+    public void switchLanguage(Locale language) {
+        // 获得res资源对象
+        Resources resources = getResources();
+        // 获得设置对象
+        Configuration config = resources.getConfiguration();
+        // 获得屏幕参数：主要是分辨率，像素等。
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            config.setLocale(language);
+        } else {
+            config.locale = language;
+        }
+        resources.updateConfiguration(config, dm);
+        DataStorage.with(BaseApplication.app).put("app_language", language.getLanguage());
+        DataStorage.with(BaseApplication.app).put("app_country", language.getCountry());
+        Intent intent = new Intent(getContext(), this.getClass());
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
+    /**
+     * 获取当前语言
+     *
+     * @return
+     */
+    public Locale getLanguage() {
+        // 获得res资源对象
+        Resources resources = getResources();
+        // 获得设置对象
+        Configuration config = resources.getConfiguration();
+        return config.locale;
+    }
+
 
 }

@@ -25,31 +25,26 @@ public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdap
      * 数据
      */
     private List<T> data;
-
     /**
      * 空视图
      */
     private View emptyView;
-
     /**
      * 上下文对象
      */
     private Context context;
-
     /**
      * Activity页面
      */
     private BaseActivity activity;
-
     /**
      * Fragment页面
      */
     private BaseFragment fragment;
-
-    private int position;
-
+    /**
+     * 控件容器
+     */
     private VH holder;
-    
     /**
      * Activity属性构造函数
      *
@@ -59,7 +54,6 @@ public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdap
         this.activity = activity;
         this.context = activity;
     }
-
     /**
      * Fragment属性构造函数
      *
@@ -69,7 +63,6 @@ public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdap
         this.fragment = fragment;
         this.context = fragment.getContext();
     }
-
     /**
      * 获取空试图
      *
@@ -78,7 +71,6 @@ public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdap
     public View getEmptyView() {
         return emptyView;
     }
-
     /**
      * 设置空试图
      *
@@ -87,7 +79,6 @@ public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdap
     public void setEmptyView(View emptyView) {
         this.emptyView = emptyView;
     }
-
     /**
      * 获取Activity
      *
@@ -96,7 +87,6 @@ public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdap
     public BaseActivity getActivity() {
         return activity;
     }
-
     /**
      * 设置Activity
      *
@@ -106,7 +96,6 @@ public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdap
         this.activity = activity;
         this.context = activity;
     }
-
     /**
      * 获取Fragment对象
      *
@@ -115,7 +104,6 @@ public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdap
     public BaseFragment getFragment() {
         return fragment;
     }
-
     /**
      * 设置Fragment对象
      *
@@ -125,7 +113,6 @@ public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdap
         this.fragment = fragment;
         this.context = fragment.getContext();
     }
-
     /**
      * 获取数据
      *
@@ -134,8 +121,6 @@ public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdap
     public List<T> getItems() {
         return data;
     }
-
-
     /**
      * 设置数据源
      *
@@ -144,7 +129,6 @@ public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdap
     public void setItems(List<T> data) {
         setItems(data, true);
     }
-
     /**
      * 设置数据
      *
@@ -262,13 +246,15 @@ public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdap
      */
     public abstract VH onCreateHolder(View itemView, ViewGroup parent, int viewType);
 
+
     /**
      * 绑定Item视图
      *
      * @param holder   视图容器
+     * @param item     实体
      * @param position 位置
      */
-    public abstract void onBindView(VH holder, int position);
+    public abstract void onBindView(VH holder, T item, int position);
 
     /**
      * 获取视图类型
@@ -290,7 +276,7 @@ public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdap
         } else {
             holder = (VH) convertView.getTag();
         }
-        onBindView(holder, position);
+        onBindView(holder, getItem(position), position);
         return convertView;
     }
 
@@ -377,7 +363,7 @@ public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdap
      * @param v
      * @return
      */
-    public void addItemClick(final View v,final int position) {
+    public void addItemClick(final View v, final int position) {
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -428,7 +414,7 @@ public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdap
      * @param v
      * @return
      */
-    public void addItemFocus(final View v,final int position) {
+    public void addItemFocus(final View v, final int position) {
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -465,6 +451,7 @@ public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdap
 
     /**
      * 显示提示
+     *
      * @param msg
      */
     public void showToast(String msg) {
