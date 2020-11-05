@@ -32,7 +32,7 @@ allprojects {
 ### B.项目/app/build.grade
 ```
 dependencies {
-	implementation 'com.github.RelinRan:AndroidX:1.0.4'
+	implementation 'com.github.RelinRan:AndroidX:1.0.5'
 }
 ```
 
