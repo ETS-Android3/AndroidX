@@ -292,8 +292,8 @@ public abstract class RecyclerAdapter<T, VH extends RecyclerAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         VH vh = (VH) holder;
-        onBindViewHolder(vh, position);
-        onBindViewHolder(vh, getItem(position), position);
+        onBindView(vh, position);
+        onBindView(vh, getItem(position), position);
     }
 
     @NonNull
@@ -303,11 +303,11 @@ public abstract class RecyclerAdapter<T, VH extends RecyclerAdapter.ViewHolder> 
     }
 
     @Deprecated
-    public  void onBindViewHolder(@NonNull VH holder,int position){
+    public  void onBindView(@NonNull VH holder,int position){
 
     }
 
-    public  void onBindViewHolder(@NonNull VH holder, T item, int position){
+    public  void onBindView(@NonNull VH holder, T item, int position){
 
     }
 
