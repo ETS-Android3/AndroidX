@@ -1,5 +1,6 @@
 package com.android.app.page;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -8,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -428,7 +430,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpLi
         //检查网络是否可用
         Message message = pageMessage.obtainMessage();
         if (!NetworkUtils.isAvailable(this)) {
-            if (isCheckNetwork()){
+            if (isCheckNetwork()) {
                 message.what = AppConstant.WHAT_MSG_NET_OFFLINE;
                 Bundle bundle = new Bundle();
                 bundle.putString(AppConstant.MSG_KEY, AppConstant.EXCEPTION_MSG_NET_OFFLINE);
@@ -1135,5 +1137,39 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpLi
         return config.locale;
     }
 
+    /**
+     * 语言是否改变
+     * @return
+     */
+    public boolean isLanguageChanged() {
+        Locale locale = Locale.getDefault();
+        if (locale == null) {
+            return false;
+        }
+        String app_language = DataStorage.with(getApplicationContext()).getString("app_language", "");
+        String app_country = DataStorage.with(getApplicationContext()).getString("app_country", "");
+        if (TextUtils.isEmpty(app_country)) {
+            return false;
+        }
+        if (locale.equals(new Locale(app_language, app_country))) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * 重启主页
+     * @param activity
+     * @param mainPage
+     */
+    public void restartMainPage(Activity activity, Class<?> mainPage) {
+        Intent intent = new Intent(activity, mainPage);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        activity.startActivity(intent);
+        // 杀掉进程
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(0);
+    }
 
 }
