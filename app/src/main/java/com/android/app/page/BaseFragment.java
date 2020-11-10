@@ -51,6 +51,7 @@ import com.android.net.HttpResponse;
 import com.android.net.NetworkUtils;
 import com.android.net.OnHttpListener;
 import com.android.utils.DataStorage;
+import com.android.utils.Language;
 import com.android.utils.StatusBar;
 
 import java.util.Locale;
@@ -1012,23 +1013,16 @@ public abstract class BaseFragment extends Fragment implements ActivityCompat.On
      * @param language Locale.US or Locale.SIMPLIFIED_CHINESE
      */
     public void switchLanguage(Locale language) {
-        // 获得res资源对象
-        Resources resources = getResources();
-        // 获得设置对象
-        Configuration config = resources.getConfiguration();
-        // 获得屏幕参数：主要是分辨率，像素等。
-        DisplayMetrics dm = resources.getDisplayMetrics();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            config.setLocale(language);
-        } else {
-            config.locale = language;
-        }
-        resources.updateConfiguration(config, dm);
-        DataStorage.with(BaseApplication.app).put("app_language", language.getLanguage());
-        DataStorage.with(BaseApplication.app).put("app_country", language.getCountry());
-        Intent intent = new Intent(getContext(), this.getClass());
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+        Language.update(getContext(),language);
+    }
+
+    /**
+     * 转换语言
+     * @param main
+     * @param language
+     */
+    public void switchLanguage(Class main,Locale language) {
+        Language.update(getContext(),main,language);
     }
 
     /**
@@ -1037,47 +1031,7 @@ public abstract class BaseFragment extends Fragment implements ActivityCompat.On
      * @return
      */
     public Locale getLanguage() {
-        // 获得res资源对象
-        Resources resources = getResources();
-        // 获得设置对象
-        Configuration config = resources.getConfiguration();
-        return config.locale;
+        return Language.getApplication(getContext());
     }
-
-    /**
-     * 语言是否改变
-     * @return
-     */
-    public boolean isLanguageChanged() {
-        Locale locale = Locale.getDefault();
-        if (locale == null) {
-            return false;
-        }
-        String app_language = DataStorage.with(getContext()).getString("app_language", "");
-        String app_country = DataStorage.with(getContext()).getString("app_country", "");
-        if (TextUtils.isEmpty(app_country)) {
-            return false;
-        }
-        if (locale.equals(new Locale(app_language, app_country))) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * 重启主页
-     * @param activity
-     * @param mainPage
-     */
-    public void restartMainPage(Activity activity, Class<?> mainPage) {
-        Intent intent = new Intent(activity, mainPage);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        activity.startActivity(intent);
-        // 杀掉进程
-        android.os.Process.killProcess(android.os.Process.myPid());
-        System.exit(0);
-    }
-
 
 }
