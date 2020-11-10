@@ -257,13 +257,18 @@ public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdap
      */
     public abstract VH onCreateHolder(View itemView, ViewGroup parent, int viewType);
 
+    /**
+     * v1.0.4版本及以后不再维护此方法
+     * @param holder
+     * @param position
+     */
     @Deprecated
     public void onBindView(VH holder, int position) {
 
     }
 
     /**
-     * 绑定Item视图
+     * 绑定Item视图，v1.0.4版本开始的新方法，替代onBindView(VH holder, int position)
      *
      * @param holder   视图容器
      * @param item     实体

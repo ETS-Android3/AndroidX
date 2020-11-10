@@ -302,11 +302,32 @@ public abstract class RecyclerAdapter<T, VH extends RecyclerAdapter.ViewHolder> 
         return onCreateHolder(parent, viewType);
     }
 
+    /**
+     * 此方法在v1.0.4开始过时，不在维护此方法
+     * @param holder
+     * @param position
+     */
     @Deprecated
     public  void onBindView(@NonNull VH holder,int position){
 
     }
 
+    /**
+     * 此方法在v1.0.4开始过时，不在维护此方法
+     * @param holder
+     * @param position
+     */
+    @Deprecated
+    public  void onBindViewHolder(@NonNull VH holder,int position){
+
+    }
+
+    /**
+     * v1.0.4版本后替代onBindViewHolder()和旧版本onBindView()
+     * @param holder
+     * @param item
+     * @param position
+     */
     public  void onBindView(@NonNull VH holder, T item, int position){
 
     }
