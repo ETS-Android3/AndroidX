@@ -293,6 +293,7 @@ public abstract class RecyclerAdapter<T, VH extends RecyclerAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         VH vh = (VH) holder;
         onBindView(vh, position);
+        onBindViewHolder(vh, position);
         onBindView(vh, getItem(position), position);
     }
 
