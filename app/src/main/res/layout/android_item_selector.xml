@@ -25,10 +25,17 @@
             android:textColor="@color/colorItemSelectorCancel"
             android:textSize="14sp" />
 
-        <View
+        <TextView
+            android:id="@+id/tv_title"
             android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:gravity="center"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text=""
+            android:textColor="@color/colorItemSelectorCancel"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tv_complete"

@@ -35,6 +35,10 @@ public class ItemSelector {
      * 标题字体颜色
      */
     public final int titleBarCancelTextColor;
+    /**
+     * 标题字体颜色
+     */
+    public final int titleBarTitleTextColor;
 
     /**
      * 标题字体颜色
@@ -42,9 +46,17 @@ public class ItemSelector {
     public final int titleBarConfirmTextColor;
 
     /**
-     * 标题栏字体大小
+     * 取消字体大小
      */
-    public final int titleBarTextSize;
+    public final int titleBarCancelTextSize;
+    /**
+     * 标题字体大小
+     */
+    public final int titleBarTitleTextSize;
+    /**
+     * 确认字体大小
+     */
+    public final int titleBarConfirmTextSize;
 
     /**
      * 分割线颜色
@@ -75,6 +87,12 @@ public class ItemSelector {
      */
     public final OnItemSelectListener listener;
 
+    public final String cancelText;
+
+    public final String confirmText;
+
+    public final String titleText;
+
     public final ArrayList<String> list;
 
     public final String[] items;
@@ -87,8 +105,14 @@ public class ItemSelector {
         this.translucent = builder.translucent;
         this.titleBarBackgroundColor = builder.titleBarBackgroundColor;
         this.titleBarCancelTextColor = builder.titleBarCancelTextColor;
+        this.titleBarTitleTextColor = builder.titleBarTitleTextColor;
         this.titleBarConfirmTextColor = builder.titleBarConfirmTextColor;
-        this.titleBarTextSize = builder.titleBarTextSize;
+        this.cancelText = builder.cancelText;
+        this.confirmText = builder.confirmText;
+        this.titleText = builder.titleText;
+        this.titleBarCancelTextSize = builder.titleBarCancelTextSize;
+        this.titleBarTitleTextSize = builder.titleBarTitleTextSize;
+        this.titleBarConfirmTextSize = builder.titleBarConfirmTextSize;
         this.dividerColor = builder.dividerColor;
         this.selectedColor = builder.selectedColor;
         this.unselectedColor = builder.unselectedColor;
@@ -117,9 +141,15 @@ public class ItemSelector {
 
         private int titleBarCancelTextColor = Color.parseColor("#454545");
 
+        private int titleBarTitleTextColor = Color.parseColor("#454545");
+
         private int titleBarConfirmTextColor = Color.parseColor("#0EB692");
 
-        private int titleBarTextSize = 16;
+        private int titleBarCancelTextSize = 16;
+
+        private int titleBarTitleTextSize = 16;
+
+        private int titleBarConfirmTextSize = 16;
 
         private int dividerColor = Color.parseColor("#CDCDCD");
 
@@ -136,6 +166,12 @@ public class ItemSelector {
         private String[] items;
 
         private boolean loop = false;
+
+        private String cancelText;
+
+        private String confirmText;
+
+        private String titleText;
 
         public Builder(Context context) {
             this.context = context;
@@ -172,6 +208,15 @@ public class ItemSelector {
             return this;
         }
 
+        public Builder titleBarTitleTextColor(int titleBarTitleTextColor) {
+            this.titleBarTitleTextColor = titleBarTitleTextColor;
+            return this;
+        }
+
+        public int titleBarTitleTextColor() {
+            return titleBarTitleTextColor;
+        }
+
         public int titleBarConfirmTextColor() {
             return titleBarConfirmTextColor;
         }
@@ -181,12 +226,30 @@ public class ItemSelector {
             return this;
         }
 
-        public int titleBarTextSize() {
-            return titleBarTextSize;
+        public int titleBarCancelTextSize() {
+            return titleBarCancelTextSize;
         }
 
-        public Builder titleBarTextSize(int titleBarTextSize) {
-            this.titleBarTextSize = titleBarTextSize;
+        public Builder titleBarCancelTextSize(int titleBarCancelTextSize) {
+            this.titleBarCancelTextSize = titleBarCancelTextSize;
+            return this;
+        }
+
+        public int titleBarTitleTextSize() {
+            return titleBarTitleTextSize;
+        }
+
+        public Builder titleBarTitleTextSize(int titleBarTitleTextSize) {
+            this.titleBarTitleTextSize = titleBarTitleTextSize;
+            return this;
+        }
+
+        public int titleBarConfirmTextSize() {
+            return titleBarConfirmTextSize;
+        }
+
+        public Builder titleBarConfirmTextSize(int titleBarConfirmTextSize) {
+            this.titleBarConfirmTextSize = titleBarConfirmTextSize;
             return this;
         }
 
@@ -262,6 +325,33 @@ public class ItemSelector {
             return this;
         }
 
+        public String cancelText() {
+            return cancelText;
+        }
+
+        public Builder cancelText(String cancelText) {
+            this.cancelText = cancelText;
+            return this;
+        }
+
+        public String confirmText() {
+            return confirmText;
+        }
+
+        public Builder confirmText(String confirmText) {
+            this.confirmText = confirmText;
+            return this;
+        }
+
+        public String titleText() {
+            return titleText;
+        }
+
+        public Builder titleText(String titleText) {
+            this.titleText = titleText;
+            return this;
+        }
+
         public ItemSelector build() {
             return new ItemSelector(this);
         }
@@ -304,14 +394,16 @@ public class ItemSelector {
                 .build();
         LinearLayout ll_bar = dialog.contentView.findViewById(R.id.ll_bar);
         TextView tv_cancel = dialog.contentView.findViewById(R.id.tv_cancel);
+        TextView tv_title = dialog.contentView.findViewById(R.id.tv_title);
         TextView tv_complete = dialog.contentView.findViewById(R.id.tv_complete);
         final LoopView lv_loop = dialog.contentView.findViewById(R.id.lv_loop);
 
         ll_bar.setBackgroundColor(titleBarBackgroundColor);
         tv_cancel.setTextColor(titleBarCancelTextColor);
         tv_complete.setTextColor(titleBarConfirmTextColor);
-        tv_cancel.setTextSize(titleBarTextSize);
-        tv_complete.setTextSize(titleBarTextSize);
+        tv_cancel.setTextSize(titleBarCancelTextSize);
+        tv_title.setTextSize(titleBarTitleTextSize);
+        tv_complete.setTextSize(titleBarConfirmTextSize);
 
         lv_loop.setDividerColor(dividerColor);
         lv_loop.setCenterTextColor(selectedColor);
