@@ -58,6 +58,7 @@
     <color name="colorItemSelectorDivider">#CDCDCD</color>
     <color name="colorItemSelectorConfirm">#0EB692</color>
     <color name="colorItemSelectorCancel">#454545</color>
+    <color name="colorItemSelectorTitle">#454545</color>
 
     <color name="colorTabPressedBackground">#F2F2F2</color>
 

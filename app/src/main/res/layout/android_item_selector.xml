@@ -34,7 +34,7 @@
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:text=""
-            android:textColor="@color/colorItemSelectorCancel"
+            android:textColor="@color/colorItemSelectorTitle"
             android:textSize="14sp" />
 
         <TextView
