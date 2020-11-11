@@ -167,11 +167,11 @@ public class ItemSelector {
 
         private boolean loop = false;
 
-        private String cancelText;
+        private String cancelText = "取消";
 
-        private String confirmText;
+        private String confirmText = "确定";
 
-        private String titleText;
+        private String titleText = "";
 
         public Builder(Context context) {
             this.context = context;
@@ -404,6 +404,10 @@ public class ItemSelector {
         tv_cancel.setTextSize(titleBarCancelTextSize);
         tv_title.setTextSize(titleBarTitleTextSize);
         tv_complete.setTextSize(titleBarConfirmTextSize);
+
+        tv_title.setText(titleText);
+        tv_cancel.setText(cancelText);
+        tv_complete.setText(confirmText);
 
         lv_loop.setDividerColor(dividerColor);
         lv_loop.setCenterTextColor(selectedColor);
