@@ -103,7 +103,7 @@ public class OkHttp {
             @Override
             public void run() {
                 okhttp3.OkHttpClient okHttpClient = buildOkHttpClient(params);
-                String getUrl = "";
+                String getUrl = url;
                 StringBuffer requestUrl = new StringBuffer();
                 requestUrl.append(url);
                 requestUrl.append("?");
