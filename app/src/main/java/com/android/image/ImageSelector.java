@@ -500,7 +500,7 @@ public class ImageSelector {
         TextView tv_cancel = dialog.contentView.findViewById(R.id.tv_cancel);
         //数据填充
         List<String> list = new ArrayList<>();
-        String names[] = {"拍照", "相册"};
+        String names[] = {getContext().getResources().getString(R.string.image_selector_take_photo), getContext().getResources().getString(R.string.image_selector_photo_album)};
         for (int i = 0; i < names.length; i++) {
             list.add(names[i]);
         }
