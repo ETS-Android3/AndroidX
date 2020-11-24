@@ -23,6 +23,11 @@ public class AlertDialog {
     private final Context context;
 
     /**
+     * 标题
+     */
+    private final String title;
+
+    /**
      * 提示内容
      */
     private final String msg;
@@ -79,6 +84,7 @@ public class AlertDialog {
      */
     public AlertDialog(Builder builder) {
         this.context = builder.context;
+        this.title = builder.title;
         this.msg = builder.msg;
         this.confirm = builder.confirm;
         this.cancel = builder.cancel;
@@ -115,6 +121,11 @@ public class AlertDialog {
          * 上下文对象
          */
         private Context context;
+
+        /**
+         * 标题
+         */
+        private String title;
 
         /**
          * 提示内容
@@ -168,6 +179,26 @@ public class AlertDialog {
          */
         public Builder(Context context) {
             this.context = context;
+        }
+
+        /**
+         * 标题
+         *
+         * @return
+         */
+        public String title() {
+            return title;
+        }
+
+        /**
+         * 设置标题
+         *
+         * @param title
+         * @return
+         */
+        public Builder title(String title) {
+            this.title = title;
+            return this;
         }
 
         /**
@@ -312,8 +343,15 @@ public class AlertDialog {
      * @param dialog 对话框
      */
     private void doDialog(final Dialog dialog) {
+        TextView tv_title = dialog.contentView.findViewById(R.id.dialog_title);
         TextView tv_content = dialog.contentView.findViewById(R.id.dialog_content);
         TextView dialog_ok = dialog.contentView.findViewById(R.id.dialog_ok);
+        tv_title.setText(title);
+        if (title == null || title.length() == 0) {
+            tv_title.setVisibility(View.GONE);
+        } else {
+            tv_title.setVisibility(View.VISIBLE);
+        }
         tv_content.setText(msg);
         if (msgColor != 0) {
             tv_content.setTextColor(msgColor);
