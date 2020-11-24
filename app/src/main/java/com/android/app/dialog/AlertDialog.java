@@ -36,12 +36,14 @@ public class AlertDialog {
      * 取消按钮文字
      */
     private final String cancel;
-
     /**
      * 确认按钮文字
      */
     private final String confirm;
-
+    /**
+     * 标题颜色
+     */
+    private final int titleColor;
     /**
      * 内容文字颜色
      */
@@ -91,6 +93,7 @@ public class AlertDialog {
         this.msgColor = builder.msgColor;
         this.cancelColor = builder.cancelColor;
         this.confirmColor = builder.confirmColor;
+        this.titleColor = builder.titleColor;
         this.width = builder.width;
         this.translucent = builder.translucent;
         this.listener = builder.listener;
@@ -142,6 +145,10 @@ public class AlertDialog {
          */
         private String cancel;
 
+        /**
+         * 标题文字颜色
+         */
+        private int titleColor = 0;
         /**
          * 内容文字颜色
          */
@@ -279,6 +286,26 @@ public class AlertDialog {
         }
 
         /**
+         * 设置取消按钮颜色
+         *
+         * @param titleColor 取消按钮颜色（16进制）
+         * @return Builder
+         */
+        public Builder titleColor(int titleColor) {
+            this.titleColor = titleColor;
+            return this;
+        }
+
+        /**
+         * 标题颜色
+         *
+         * @return Builder
+         */
+        public int titleColor() {
+            return titleColor;
+        }
+
+        /**
          * 设置提示框监听
          *
          * @param listener 提示框监听
@@ -355,6 +382,9 @@ public class AlertDialog {
         tv_content.setText(msg);
         if (msgColor != 0) {
             tv_content.setTextColor(msgColor);
+        }
+        if (titleColor != 0) {
+            tv_title.setTextColor(titleColor);
         }
         if (confirmColor != 0) {
             dialog_ok.setTextColor(confirmColor);
