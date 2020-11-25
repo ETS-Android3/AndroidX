@@ -68,8 +68,8 @@ public class Language {
      * @param language  语言
      */
     public static void update(Context context, Class mainClass, Locale language) {
-        setCache(context, language);
-        Resources resources = context.getResources();
+        setCache(context.getApplicationContext(), language);
+        Resources resources = context.getApplicationContext().getResources();
         Configuration config = resources.getConfiguration();
         Locale contextLocale = config.locale;
         if (contextLocale.equals(language)) {
