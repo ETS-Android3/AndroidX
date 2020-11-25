@@ -22,7 +22,7 @@
         android:layout_marginTop="5dp"
         android:background="@drawable/android_image_selector"
         android:gravity="center"
-        android:text="取消"
+        android:text="@string/image_selector_photo_cancel"
         android:textColor="#5D5D5D"
         android:textSize="14sp" />
 
