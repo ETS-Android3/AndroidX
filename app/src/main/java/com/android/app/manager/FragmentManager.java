@@ -91,7 +91,11 @@ public class FragmentManager {
                     fragment = (BaseFragment) cls.newInstance();
                 }
                 if (data instanceof Bundle) {
-                    fragment.setArguments((Bundle) data);
+                    if (!fragment.isAdded()) {
+                        fragment.setArguments((Bundle) data);
+                    } else {
+                        fragment.onActivityArguments(data);
+                    }
                 } else {
                     fragment.onActivityArguments(data);
                 }
