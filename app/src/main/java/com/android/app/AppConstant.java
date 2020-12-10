@@ -6,6 +6,8 @@ package com.android.app;
  */
 public class AppConstant {
 
+
+
     /**
      * 无网络-What
      */
