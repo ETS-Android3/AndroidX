@@ -3,6 +3,7 @@ package com.android.widget;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +16,11 @@ import com.android.annotation.ViewUtils;
 import com.android.app.page.BaseActivity;
 import com.android.app.page.BaseFragment;
 import com.android.image.ImageSelector;
+import com.android.utils.Language;
 import com.android.utils.ListUtils;
 
 import java.util.List;
+import java.util.Locale;
 
 public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdapter {
 
@@ -573,6 +576,49 @@ public abstract class Adapter<T, VH extends Adapter.ViewHolder> extends BaseAdap
         if (getActivity() != null) {
             getActivity().finish();
         }
+    }
+
+    /**
+     * 获取当前语言
+     *
+     * @return
+     */
+    public Locale getLanguage() {
+        return Language.getApplication(getContext());
+    }
+
+    /**
+     * 判断语言是否相等
+     *
+     * @param source
+     * @param target
+     * @return
+     */
+    public boolean compareLanguage(Locale source, Locale target) {
+        if (getActivity() != null) {
+            getActivity().compareLanguage(source,target);
+        }
+        if (getFragment() != null) {
+            getFragment().compareLanguage(source,target);
+        }
+        return false;
+    }
+
+    /**
+     * 是否是中文
+     *
+     * @return
+     */
+    public boolean isChinese() {
+        return compareLanguage(getLanguage(), Locale.SIMPLIFIED_CHINESE);
+    }
+
+    /**
+     * 是否是英语
+     * @return
+     */
+    public boolean isEnglish() {
+        return compareLanguage(getLanguage(), Locale.US);
     }
 
 }

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.android.R;
+import com.android.utils.Log;
 import com.android.utils.Screen;
 
 
@@ -26,6 +27,8 @@ public class FlowListView extends ViewGroup {
     private int horizontalSpacing = (int) Screen.dpToPx(10);
     //数据监察者
     private AdapterDataSetObserver adapterDataSerObserver;
+    private int requiredWidth = 0;
+    private int requiredHeight = 0;
 
     public FlowListView(Context context) {
         super(context);
@@ -49,60 +52,65 @@ public class FlowListView extends ViewGroup {
      */
     private void initAttributeSet(Context context, AttributeSet attrs) {
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.FlowListView);
-        horizontalSpacing = array.getDimensionPixelSize(R.styleable.FlowListView_horizontalSpacing,
-                horizontalSpacing);
+        horizontalSpacing = array.getDimensionPixelSize(R.styleable.FlowListView_horizontalSpacing, horizontalSpacing);
         verticalSpacing = array.getDimensionPixelSize(R.styleable.FlowListView_verticalSpacing, verticalSpacing);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        //获取Padding
-        // 获得它的父容器为它设置的测量模式和大小
-        int sizeWidth = MeasureSpec.getSize(widthMeasureSpec);
-        int sizeHeight = MeasureSpec.getSize(heightMeasureSpec);
-        int modeWidth = MeasureSpec.getMode(widthMeasureSpec);
-        int modeHeight = MeasureSpec.getMode(heightMeasureSpec);
-        //FlowLayout最终的宽度和高度值
-        int resultWidth = 0;
-        int resultHeight = 0;
-        //测量时每一行的宽度
-        int lineWidth = 0;
-        //测量时每一行的高度，加起来就是FlowLayout的高度
-        int lineHeight = 0;
-        //遍历每个子元素
+        int requiredWidthHeight[] = measureRequiredWidthHeight(widthMeasureSpec, heightMeasureSpec);
+        int wh[] = measureRequiredWidthHeight(widthMeasureSpec,heightMeasureSpec,requiredWidthHeight[0],requiredWidthHeight[1]);
+        setMeasuredDimension(wh[0], wh[1]);
+    }
+
+    private int[] measureRequiredWidthHeight(int widthMeasureSpec, int heightMeasureSpec, int requiredWidth, int requiredHeight) {
+        int measureSpecWidth = MeasureSpec.getSize(widthMeasureSpec);
+        int widthSpecMode = MeasureSpec.getMode(widthMeasureSpec);
+        int measureSpecHeight = MeasureSpec.getSize(heightMeasureSpec);
+        int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
+        int measureWidth = measureSpecWidth;
+        int measureHeight = measureSpecHeight;
+        if (widthSpecMode == MeasureSpec.AT_MOST && heightSpecMode == MeasureSpec.AT_MOST) {
+            measureWidth = requiredWidth;
+            measureHeight = requiredHeight;
+        } else if (widthSpecMode == MeasureSpec.AT_MOST) {
+            measureWidth = requiredWidth;
+            measureHeight = measureSpecHeight;
+        } else if (heightSpecMode == MeasureSpec.AT_MOST) {
+            measureWidth = measureSpecWidth;
+            measureHeight = requiredHeight;
+        }
+        return new int[]{measureWidth, measureHeight};
+    }
+
+    /**
+     * 测试需要的宽高
+     *
+     * @param widthMeasureSpec
+     * @param heightMeasureSpec
+     * @return
+     */
+    private int[] measureRequiredWidthHeight(int widthMeasureSpec, int heightMeasureSpec) {
+        int requiredHeight = 0;
+        int rowWidth = 0;
+        int rowPosition = 0;
+        int measureWidth = MeasureSpec.getSize(widthMeasureSpec);
         for (int i = 0, childCount = getChildCount(); i < childCount; i++) {
             View childView = getChildAt(i);
-            //测量每一个子view的宽和高
+            MarginLayoutParams mlp = (MarginLayoutParams) childView.getLayoutParams();
             measureChild(childView, widthMeasureSpec, heightMeasureSpec);
-            //获取到测量的宽和高
             int childWidth = childView.getMeasuredWidth();
             int childHeight = childView.getMeasuredHeight();
-            //因为子View可能设置margin，这里要加上margin的距离
-            MarginLayoutParams mlp = (MarginLayoutParams) childView.getLayoutParams();
-            int realChildWidth = childWidth + mlp.leftMargin + mlp.rightMargin + horizontalSpacing;
-            int realChildHeight = childHeight + mlp.topMargin + mlp.bottomMargin + verticalSpacing;
-            //如果当前一行的宽度加上要加入的子view的宽度大于父容器给的宽度，就换行
-            if ((lineWidth + realChildWidth) > sizeWidth) {
-                //换行
-                resultWidth = Math.max(lineWidth, realChildWidth);
-                resultHeight += realChildHeight;
-                //换行了，lineWidth和lineHeight重新算
-                lineWidth = realChildWidth;
-                lineHeight = realChildHeight;
-            } else {
-                //不换行，直接相加
-                lineWidth += realChildWidth;
-                //每一行的高度取二者最大值
-                lineHeight = Math.max(lineHeight, realChildHeight);
+            int itemWidth = childWidth + mlp.leftMargin + mlp.rightMargin + horizontalSpacing;
+            int itemHeight = childHeight + mlp.topMargin + mlp.bottomMargin + verticalSpacing;
+            rowWidth += itemWidth;
+            if (rowWidth > measureWidth) {
+                rowPosition++;
+                rowWidth = 0;
             }
-            //遍历到最后一个的时候，肯定走的是不换行
-            if (i == childCount - 1) {
-                resultWidth = Math.max(lineWidth, resultWidth);
-                resultHeight += lineHeight;
-            }
+            requiredHeight = itemHeight * (1 + rowPosition);
         }
-        setMeasuredDimension(modeWidth == MeasureSpec.EXACTLY ? sizeWidth : resultWidth, modeHeight == MeasureSpec.EXACTLY ? sizeHeight : resultHeight);
+        return new int[]{measureWidth, requiredHeight};
     }
 
     @Override
@@ -162,6 +170,7 @@ public class FlowListView extends ViewGroup {
                 });
             }
         }
+        requestLayout();
     }
 
     /**
@@ -180,6 +189,7 @@ public class FlowListView extends ViewGroup {
         }
     }
 
+    private boolean isRegisterDataSetObserver;
 
     /**
      * 像ListView、GridView一样使用FlowLayout
@@ -187,15 +197,12 @@ public class FlowListView extends ViewGroup {
      * @param adapter
      */
     public void setAdapter(BaseAdapter adapter) {
-        this.baseAdapter = adapter;
-        notifyDataRefresh();
-        if (baseAdapter != null && adapterDataSerObserver != null) {
-            baseAdapter.unregisterDataSetObserver(adapterDataSerObserver);
-        }
-        if (baseAdapter != null) {
+        if (!isRegisterDataSetObserver && adapter != null) {
             adapterDataSerObserver = new AdapterDataSetObserver();
-            baseAdapter.registerDataSetObserver(adapterDataSerObserver);
+            adapter.registerDataSetObserver(adapterDataSerObserver);
+            isRegisterDataSetObserver = true;
         }
+        this.baseAdapter = adapter;
     }
 
 

@@ -1,6 +1,7 @@
 package com.android.widget;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,9 +9,12 @@ import android.widget.ImageView;
 
 import androidx.viewpager.widget.PagerAdapter;
 
+import com.android.app.page.BaseActivity;
+import com.android.utils.Language;
 import com.android.view.BannerPager;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Relin
@@ -272,5 +276,51 @@ public abstract class BannerAdapter<T> extends PagerAdapter {
      * @param position 位置
      */
     public abstract void onBindViewHolder(ViewHolder holder, int position);
+
+    /**
+     * 获取当前语言
+     *
+     * @return
+     */
+    public Locale getLanguage() {
+        return Language.getApplication(getContext());
+    }
+
+    /**
+     * 判断语言是否相等
+     *
+     * @param source
+     * @param target
+     * @return
+     */
+    public boolean compareLanguage(Locale source, Locale target) {
+        String sourceLanguage = source.getLanguage();
+        String sourceCountry = source.getCountry();
+        String targetLanguage = target.getLanguage();
+        String targetCountry = target.getCountry();
+        Log.i(BaseActivity.class.getSimpleName(), "sourceLanguage=" + sourceLanguage + ",sourceCountry=" + sourceCountry);
+        Log.i(BaseActivity.class.getSimpleName(), "targetLanguage=" + targetLanguage + ",targetCountry=" + targetCountry);
+        if (sourceLanguage.equals(targetLanguage) && sourceCountry.equals(targetCountry)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 是否是中文
+     *
+     * @return
+     */
+    public boolean isChinese() {
+        return compareLanguage(getLanguage(), Locale.SIMPLIFIED_CHINESE);
+    }
+
+    /**
+     * 是否是英语
+     * @return
+     */
+    public boolean isEnglish() {
+        return compareLanguage(getLanguage(), Locale.US);
+    }
 
 }

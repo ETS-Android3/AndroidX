@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -1124,6 +1125,43 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpLi
      */
     public Locale getLanguage() {
         return Language.getApplication(this);
+    }
+
+    /**
+     * 判断语言是否相等
+     *
+     * @param source
+     * @param target
+     * @return
+     */
+    public boolean compareLanguage(Locale source, Locale target) {
+        String sourceLanguage = source.getLanguage();
+        String sourceCountry = source.getCountry();
+        String targetLanguage = target.getLanguage();
+        String targetCountry = target.getCountry();
+        Log.i(BaseActivity.class.getSimpleName(), "sourceLanguage=" + sourceLanguage + ",sourceCountry=" + sourceCountry);
+        Log.i(BaseActivity.class.getSimpleName(), "targetLanguage=" + targetLanguage + ",targetCountry=" + targetCountry);
+        if (sourceLanguage.equals(targetLanguage) && sourceCountry.equals(targetCountry)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 是否是中文
+     *
+     * @return
+     */
+    public boolean isChinese() {
+        return compareLanguage(getLanguage(), Locale.SIMPLIFIED_CHINESE);
+    }
+
+    /**
+     * 是否是英语
+     * @return
+     */
+    public boolean isEnglish() {
+        return compareLanguage(getLanguage(), Locale.US);
     }
 
 }
