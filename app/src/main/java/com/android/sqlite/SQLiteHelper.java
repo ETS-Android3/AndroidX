@@ -602,31 +602,33 @@ public class SQLiteHelper implements OnSQLiteOpenHelperListener {
             }
             for (int i = 0; i < columnNames.length; i++) {
                 Field field = null;
-                try {
-                    field = cls.getDeclaredField(columnNames[i]);
-                } catch (NoSuchFieldException e) {
-                    e.printStackTrace();
-                }
-                if (field != null) {
-                    field.setAccessible(true);
+                if (isDeclaredField(cls,columnNames[i])){
                     try {
-                        if (field.getType() == String.class) {
-                            field.set(bean, cursor.getString(cursor.getColumnIndex(columnNames[i])));
-                        }
-                        if (field.getType() == long.class) {
-                            field.set(bean, cursor.getLong(cursor.getColumnIndex(columnNames[i])));
-                        }
-                        if (field.getType() == int.class) {
-                            field.set(bean, cursor.getInt(cursor.getColumnIndex(columnNames[i])));
-                        }
-                        if (field.getType() == float.class) {
-                            field.set(bean, cursor.getFloat(cursor.getColumnIndex(columnNames[i])));
-                        }
-                        if (field.getType() == double.class) {
-                            field.set(bean, cursor.getDouble(cursor.getColumnIndex(columnNames[i])));
-                        }
-                    } catch (IllegalAccessException e) {
+                        field = cls.getDeclaredField(columnNames[i]);
+                    } catch (NoSuchFieldException e) {
                         e.printStackTrace();
+                    }
+                    if (field != null) {
+                        field.setAccessible(true);
+                        try {
+                            if (field.getType() == String.class) {
+                                field.set(bean, cursor.getString(cursor.getColumnIndex(columnNames[i])));
+                            }
+                            if (field.getType() == long.class) {
+                                field.set(bean, cursor.getLong(cursor.getColumnIndex(columnNames[i])));
+                            }
+                            if (field.getType() == int.class) {
+                                field.set(bean, cursor.getInt(cursor.getColumnIndex(columnNames[i])));
+                            }
+                            if (field.getType() == float.class) {
+                                field.set(bean, cursor.getFloat(cursor.getColumnIndex(columnNames[i])));
+                            }
+                            if (field.getType() == double.class) {
+                                field.set(bean, cursor.getDouble(cursor.getColumnIndex(columnNames[i])));
+                            }
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -635,6 +637,34 @@ public class SQLiteHelper implements OnSQLiteOpenHelperListener {
         cursor.close();
         return queryList;
     }
+
+    /**
+     * 是否是声明的字段
+     *
+     * @param cls
+     * @param fieldName
+     * @return
+     */
+    private boolean isDeclaredField(Class cls, String fieldName) {
+        if (cls == null) {
+            return false;
+        }
+        if (fieldName == null || fieldName.length() == 0) {
+            return false;
+        }
+        Field[] fields = cls.getDeclaredFields();
+        for (int i = 0; i < fields.length; i++) {
+            String name = fields[i].getName();
+            if (name == null) {
+                return false;
+            }
+            if (fieldName.equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     /**
      * 执行SQL语句
