@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">AndroidX</string>
+    <string name="swipe_layout_load_more">Load more ...</string>
+    <string name="image_selector_take_photo">Taking pictures</string>
+    <string name="image_selector_photo_album">Photo album</string>
+    <string name="image_selector_photo_cancel">Cancel</string>
+    <string name="content_error_message">Network data is abnormal\nplease try again later</string>
+    <string name="content_error_reload">Reload</string>
+    <string name="debug_mode">R&amp;D model</string>
+    <string name="debug_button">R&amp;D model</string>
+    <string name="debug_log">Interface log</string>
+    <string name="debug_page">Page</string>
+    <string name="debug_time">Time</string>
+    <string name="debug_url">URL</string>
+    <string name="debug_header">Header</string>
+    <string name="debug_params">Params</string>
+    <string name="debug_result">Result</string>
+</resources>

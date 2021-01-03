@@ -1,7 +1,18 @@
 <resources>
-    <string name="frame_name">AndroidX</string>
-    <string name="package_name">081E222B201T82W083Z224I244Q221N222E204C244</string>
+    <string name="app_name">AndroidX</string>
+    <string name="swipe_layout_load_more">加载更多...</string>
     <string name="image_selector_take_photo">拍照</string>
     <string name="image_selector_photo_album">相册</string>
     <string name="image_selector_photo_cancel">取消</string>
+    <string name="content_error_message">网络数据异常，请稍后再试</string>
+    <string name="content_error_reload">重新加载</string>
+    <string name="debug_mode">研发模式</string>
+    <string name="debug_button">研发模式</string>
+    <string name="debug_log">日志</string>
+    <string name="debug_page">页面</string>
+    <string name="debug_time">时间</string>
+    <string name="debug_url">接口</string>
+    <string name="debug_header">标头</string>
+    <string name="debug_params">参数</string>
+    <string name="debug_result">结果</string>
 </resources>

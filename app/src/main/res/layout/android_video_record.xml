@@ -36,7 +36,7 @@
             android:drawablePadding="8dp"
             android:gravity="center_horizontal"
             android:text="00:00"
-            android:textColor="@color/color_white"
+            android:textColor="@color/colorWhite"
             android:textSize="14sp"></TextView>
 
         <Space
@@ -89,7 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"></Space>
 
-        <com.android.view.CircleProgressButton
+        <com.androidx.view.CircleProgressButton
             android:id="@+id/android_btn_start"
             android:layout_width="60dp"
             android:layout_height="60dp" />

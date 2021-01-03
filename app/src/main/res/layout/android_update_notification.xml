@@ -32,7 +32,7 @@
 
         <ProgressBar
             android:id="@+id/elvenProgressbar"
-            style="@style/android_progressbar_horizontal"
+            style="@style/Android_ProgressBar_Horizontal"
             android:layout_width="match_parent"
             android:layout_height="3dp"
             android:background="@android:color/white"

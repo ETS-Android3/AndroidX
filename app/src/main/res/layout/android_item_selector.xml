@@ -25,17 +25,10 @@
             android:textColor="@color/colorItemSelectorCancel"
             android:textSize="14sp" />
 
-        <TextView
-            android:id="@+id/tv_title"
+        <View
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:text=""
-            android:textColor="@color/colorItemSelectorTitle"
-            android:textSize="14sp" />
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tv_complete"
@@ -50,7 +43,7 @@
 
     </LinearLayout>
 
-    <com.android.view.LoopView
+    <com.androidx.view.LoopView
         android:id="@+id/lv_loop"
         android:layout_width="match_parent"
         android:layout_height="160dp"

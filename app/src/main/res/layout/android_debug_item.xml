@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorDebugBackground"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorDebugDivider"></View>
+
+    <LinearLayout
+        android:id="@+id/debug_row_page"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="30dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/debug_row_page_label"
+            android:layout_width="65dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="@string/debug_page"
+            android:textColor="@color/colorDebugLabel"
+            android:textSize="@dimen/debug_text_size"></TextView>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorDebugDivider"></View>
+
+        <TextView
+            android:id="@+id/debug_row_page_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:text="Activity"
+            android:textColor="@color/colorDebugPage"
+            android:textIsSelectable="true"
+            android:textSize="@dimen/debug_text_size"></TextView>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorDebugDivider"></View>
+
+    <LinearLayout
+        android:id="@+id/debug_row_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="30dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/debug_row_time_label"
+            android:layout_width="65dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="@string/debug_time"
+            android:textColor="@color/colorDebugLabel"
+            android:textSize="@dimen/debug_text_size"></TextView>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorDebugDivider"></View>
+
+        <TextView
+            android:id="@+id/debug_row_time_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:text="2020-12-30 12:00:00"
+            android:textColor="@color/colorDebugTime"
+            android:textIsSelectable="true"
+            android:textSize="@dimen/debug_text_size"></TextView>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorDebugDivider"></View>
+
+    <LinearLayout
+        android:id="@+id/debug_row_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="30dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/debug_row_url_label"
+            android:layout_width="65dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="@string/debug_url"
+            android:textColor="@color/colorDebugLabel"
+            android:textSize="@dimen/debug_text_size"></TextView>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorDebugDivider"></View>
+
+        <TextView
+            android:id="@+id/debug_row_url_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:text="http://www.baidu.com"
+            android:textColor="@color/colorDebugUrl"
+            android:textIsSelectable="true"
+            android:textSize="@dimen/debug_text_size"></TextView>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorDebugDivider"></View>
+
+    <LinearLayout
+        android:id="@+id/debug_row_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="30dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/debug_row_header_label"
+            android:layout_width="65dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="@string/debug_header"
+            android:textColor="@color/colorDebugLabel"
+            android:textSize="@dimen/debug_text_size"></TextView>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorDebugDivider"></View>
+
+        <TextView
+            android:id="@+id/debug_row_header_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:text="{token:xxxxx}"
+            android:textColor="@color/colorDebugHeader"
+            android:textIsSelectable="true"
+            android:textSize="@dimen/debug_text_size"></TextView>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorDebugDivider"></View>
+
+    <LinearLayout
+        android:id="@+id/debug_row_params"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="30dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/debug_row_params_label"
+            android:layout_width="65dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="@string/debug_params"
+            android:textColor="@color/colorDebugLabel"
+            android:textSize="@dimen/debug_text_size"></TextView>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorDebugDivider"></View>
+
+        <TextView
+            android:id="@id/debug_row_params_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:text="{name:xxxx}"
+            android:textColor="@color/colorDebugValue"
+            android:textIsSelectable="true"
+            android:textSize="@dimen/debug_text_size"></TextView>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorDebugDivider"></View>
+
+    <LinearLayout
+        android:id="@+id/debug_row_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="30dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/debug_row_result_label"
+            android:layout_width="65dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="@string/debug_result"
+            android:textColor="@color/colorDebugLabel"
+            android:textSize="@dimen/debug_text_size"></TextView>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorDebugDivider"></View>
+
+        <TextView
+            android:id="@+id/debug_row_result_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:text="{data:xxxxx}"
+            android:textColor="@color/colorDebugValue"
+            android:textIsSelectable="true"
+            android:textSize="@dimen/debug_text_size"></TextView>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorDebugDivider"></View>
+
+</LinearLayout>

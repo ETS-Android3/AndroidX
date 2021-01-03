@@ -1,8 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="fake_status_bar_view" type="id" />
-    <item name="translucent_view" type="id" />
-    <item name="nav_back" type="id" />
-    <item name="nav_title" type="id" />
-    <item name="nav_menu" type="id" />
+    <item name="banner_image" type="id" />
+    <item name="status_bar" type="id" />
+    <!--页面-->
+    <item name="root" type="id" />
+    <item name="title" type="id" />
+    <item name="content" type="id" />
+    <item name="container" type="id" />
+    <!--导航栏-->
+    <item name="navigation_bar_back_icon" type="id" />
+    <item name="navigation_bar_back_text" type="id" />
+    <item name="navigation_bar_title" type="id" />
+    <item name="navigation_bar_menu_icon" type="id" />
+    <item name="navigation_bar_menu_text" type="id" />
+    <!--调试-->
+    <item name="debug_divider_top" type="id" />
+    <item name="debug_close" type="id" />
+    <item name="debug_title" type="id" />
+    <item name="debug_title_divider" type="id" />
+    <item name="debug_divider_left" type="id" />
+    <item name="debug_divider_right" type="id" />
+    <item name="debug_button" type="id" />
+    <item name="debug_list" type="id" />
+    <item name="debug_row_page" type="id" />
+    <item name="debug_row_page_label" type="id" />
+    <item name="debug_row_page_value" type="id" />
+    <item name="debug_row_time" type="id" />
+    <item name="debug_row_time_label" type="id" />
+    <item name="debug_row_time_value" type="id" />
+    <item name="debug_row_url" type="id" />
+    <item name="debug_row_url_label" type="id" />
+    <item name="debug_row_url_value" type="id" />
+    <item name="debug_row_header" type="id" />
+    <item name="debug_row_header_label" type="id" />
+    <item name="debug_row_header_value" type="id" />
+    <item name="debug_row_params" type="id" />
+    <item name="debug_row_params_label" type="id" />
+    <item name="debug_row_params_value" type="id" />
+    <item name="debug_row_result" type="id" />
+    <item name="debug_row_result_label" type="id" />
+    <item name="debug_row_result_value" type="id" />
 </resources>

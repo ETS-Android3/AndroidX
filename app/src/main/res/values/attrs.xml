@@ -1,36 +1,292 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!--填充颜色-->
     <attr name="solid" format="color" />
+    <!--顶部左边圆角-->
     <attr name="topLeftRadius" format="dimension" />
+    <!--顶部右边圆角-->
     <attr name="topRightRadius" format="dimension" />
+    <!--底部左边圆角-->
     <attr name="bottomLeftRadius" format="dimension" />
+    <!--底部右边圆角-->
     <attr name="bottomRightRadius" format="dimension" />
+    <!--线颜色-->
     <attr name="strokeColor" format="color" />
+    <!--圆颜色-->
     <attr name="circleColor" format="color" />
+    <!--线条宽度-->
     <attr name="strokeWidth" format="dimension" />
+    <!--半径-->
     <attr name="radius" format="dimension" />
+    <!--四角半径-->
     <attr name="cornerRadius" format="dimension" />
-    <attr name="action_radius" format="dimension" />
+    <!--边缘宽-->
     <attr name="borderWidth" format="dimension" />
+    <!--边缘颜色-->
     <attr name="borderColor" format="color" />
+    <!--垂直间距-->
     <attr name="verticalSpacing" format="dimension" />
+    <!--水平间距-->
     <attr name="horizontalSpacing" format="dimension" />
+    <!--头部高度-->
     <attr name="headerHeight" format="dimension" />
+    <!--脚部高度-->
     <attr name="footerHeight" format="dimension" />
+    <!--刷新是否可用-->
     <attr name="refreshable" format="boolean" />
+    <!--加载是否可用-->
     <attr name="loadable" format="boolean" />
+    <!--持续时间-->
     <attr name="duration" format="integer" />
+    <!--阴影颜色-->
     <attr name="shadowColor" format="color" />
-    <attr name="shape" format="enum">
+
+    <!--文字是否可见-->
+    <attr name="textVisibility">
+        <!--可见-->
+        <enum name="visible" value="0" />
+        <!--隐藏-->
+        <enum name="invisible" value="4" />
+        <!--消失-->
+        <enum name="gone" value="8" />
+    </attr>
+
+    <!--图形-->
+    <attr name="shape">
+        <!--矩形-->
         <enum name="rectangle" value="0"></enum>
+        <!--椭圆-->
         <enum name="oval" value="1"></enum>
+        <!--线条-->
         <enum name="line" value="2"></enum>
+        <!--圆圈-->
         <enum name="ring" value="2"></enum>
     </attr>
-    <attr name="type" format="enum">
-        <enum name="text" value="0"></enum>
-        <enum name="button" value="1"></enum>
-    </attr>
+
+    <!--加载控件-->
+    <declare-styleable name="LoadingView">
+        <!--半径-->
+        <attr name="android:radius" />
+        <!--方向-->
+        <attr name="android:orientation" />
+        <!--文字大小-->
+        <attr name="android:textSize" />
+        <!--文字-->
+        <attr name="android:text" />
+        <!--文字颜色-->
+        <attr name="android:textColor" />
+        <!--文字可见性-->
+        <attr name="textVisibility" />
+        <!--线条颜色-->
+        <attr name="streakColor" format="color" />
+        <!--开始透明度-->
+        <attr name="startAlpha" format="integer" />
+        <!--结束透明度-->
+        <attr name="endAlpha" format="integer" />
+        <!--动画持续时间-->
+        <attr name="duration" />
+        <!--单位角度-->
+        <attr name="unitAngle" format="float" />
+        <!--线条宽度-->
+        <attr name="streakWidth" format="dimension" />
+        <!--线条间距-->
+        <attr name="streakSpace" format="dimension" />
+    </declare-styleable>
+
+    <!--状态-->
+    <declare-styleable name="StatusView">
+        <!--类型-->
+        <attr name="status" format="integer">
+            <!--网络-->
+            <enum name="wireless" value="0"></enum>
+            <!--成功-->
+            <enum name="success" value="1"></enum>
+            <!--失败-->
+            <enum name="warning" value="-1"></enum>
+        </attr>
+        <!--半径-->
+        <attr name="radius" />
+        <!--是否使用动画-->
+        <attr name="isAnimator" format="boolean" />
+        <!--颜色-->
+        <attr name="android:color" format="color" />
+        <!--圆线条宽度-->
+        <attr name="circleStrokeWidth" format="dimension" />
+        <!--警告上方半径-->
+        <attr name="warningTopRadius" format="dimension" />
+        <!--警告下方半径-->
+        <attr name="warningBottomRadius" format="dimension" />
+        <!--警告圆点半径-->
+        <attr name="warningDotRadius" format="dimension" />
+        <!--网络线条宽度-->
+        <attr name="wirelessStrokeWidth" format="dimension" />
+        <!--网络层数-->
+        <attr name="wirelessCount" format="integer" />
+        <!--网络开始半径-->
+        <attr name="wirelessStartRadius" format="dimension" />
+        <!--网络内间距-->
+        <attr name="wirelessPadding" format="dimension" />
+        <!--网络开始角度-->
+        <attr name="wirelessStartAngle" format="float" />
+    </declare-styleable>
+
+    <!--刷新基础布局-->
+    <declare-styleable name="SwipeLayout">
+        <!--头部高度-->
+        <attr name="headerHeight" />
+        <!--脚部高度-->
+        <attr name="footerHeight" />
+        <!--是否可刷新-->
+        <attr name="refreshable" />
+        <!--是否可加载-->
+        <attr name="loadable" />
+        <!--缩放持续时间，单位毫秒-->
+        <attr name="scaleDuration" format="integer" />
+        <!--动画延迟开始时间，单位毫秒-->
+        <attr name="delayDuration" format="integer" />
+        <!--移动持续时间，单位毫秒-->
+        <attr name="translateDuration" format="integer" />
+    </declare-styleable>
+
+    <!--刷新请求布局-->
+    <declare-styleable name="SwipeRequestLayout">
+        <!--头部加载宽度-->
+        <attr name="headerLoadingWidth" format="dimension" />
+        <!--头部加载高度-->
+        <attr name="headerLoadingHeight" format="dimension" />
+        <!--脚部加载宽度-->
+        <attr name="footerLoadingWidth" format="dimension" />
+        <!--脚部加载高度-->
+        <attr name="footerLoadingHeight" format="dimension" />、
+        <!--脚部加载文字-->
+        <attr name="footerLoadingText" format="string" />
+        <!--脚部加载文字大小-->
+        <attr name="footerLoadingTextSize" format="dimension" />
+    </declare-styleable>
+
+    <!--颜色圆圈-->
+    <declare-styleable name="ColorCircleView">
+        <!--圆圈半径-->
+        <attr name="circleRadius" format="dimension" />
+        <!--圆圈颜色-->
+        <attr name="circleColor" />
+        <!--阴影半径-->
+        <attr name="shadowRadius" format="dimension" />
+        <!--阴影颜色-->
+        <attr name="shadowColor" />
+        <!--颜色集合，逗号分隔-->
+        <attr name="arcSchemeColors" format="string" />
+        <!--扇形半径-->
+        <attr name="arcRadius" format="dimension" />
+        <!--扇形线条宽度-->
+        <attr name="arcStrokeWidth" format="dimension" />
+        <!--扇形间距角度-->
+        <attr name="arcGapAngle" format="float" />
+        <!--动画持续时间-->
+        <attr name="duration" />
+    </declare-styleable>
+
+    <!--图形按钮-->
+    <declare-styleable name="ShapeButton">
+        <!--颜色-->
+        <attr name="android:gravity" />
+        <attr name="solid" />
+        <!--线条颜色-->
+        <attr name="strokeColor" />
+        <!--线条宽度-->
+        <attr name="strokeWidth" />
+        <!--半径-->
+        <attr name="radius" />
+        <!--上部左边半径-->
+        <attr name="topLeftRadius" />
+        <!--上部右边半径-->
+        <attr name="topRightRadius" />
+        <!--底部左边半径-->
+        <attr name="bottomLeftRadius" />
+        <!--底部右边半径-->
+        <attr name="bottomRightRadius" />
+        <!--图形-->
+        <attr name="shape" />
+        <!--状态类型-->
+        <attr name="state" format="integer">
+            <!--文本-->
+            <enum name="text" value="1"></enum>
+            <!--按钮-->
+            <enum name="button" value="0"></enum>
+        </attr>
+        <!--饱和度-->
+        <attr name="saturation" format="float" />
+    </declare-styleable>
+
+    <!--字母表-->
+    <declare-styleable name="AlphabetView">
+        <!--文字大小-->
+        <attr name="android:textSize" />
+        <!--文字颜色-->
+        <attr name="android:textColor" />
+        <!--选中颜色-->
+        <attr name="checkColor" format="color" />
+    </declare-styleable>
+
+    <!--广告页-->
+    <declare-styleable name="BannerPager">
+        <!--选中的指示器-->
+        <attr name="indicatorSelected" format="reference" />
+        <!--未选中的指示器-->
+        <attr name="indicatorUnSelected" format="reference" />
+        <!--是否自动播放-->
+        <attr name="isAutoPlay" format="boolean" />
+        <!--是否循环-->
+        <attr name="isLoop" format="boolean" />
+        <!--持续时间-->
+        <attr name="duration" />
+        <!--指示器对齐方式-->
+        <attr name="indicatorGravity">
+            <!--左边-->
+            <flag name="left" value="3" />
+            <!--上边-->
+            <flag name="top" value="48" />
+            <!--右边-->
+            <flag name="right" value="5" />
+            <!--底部-->
+            <flag name="bottom" value="80" />
+            <!--中间-->
+            <flag name="center" value="17" />
+            <!--水平居中-->
+            <flag name="center_horizontal" value="1" />
+            <!--垂直居中-->
+            <flag name="center_vertical" value="16" />
+        </attr>
+        <!--指示器布局边距-->
+        <attr name="indicatorLayoutMargin" format="dimension" />
+        <!--指示器布局左边距-->
+        <attr name="indicatorLayoutMarginLeft" format="dimension" />
+        <!--指示器布局上边距-->
+        <attr name="indicatorLayoutMarginTop" format="dimension" />
+        <!--指示器布局右边距-->
+        <attr name="indicatorLayoutMarginRight" format="dimension" />
+        <!--指示器布局底边距-->
+        <attr name="indicatorLayoutMarginBottom" format="dimension" />
+        <!--指示器间距-->
+        <attr name="indicatorMargin" format="dimension" />
+        <!--指示器左边距-->
+        <attr name="indicatorMarginLeft" format="dimension" />
+        <!--指示器上边距-->
+        <attr name="indicatorMarginTop" format="dimension" />
+        <!--指示器右边距-->
+        <attr name="indicatorMarginRight" format="dimension" />
+        <!--指示器底边距-->
+        <attr name="indicatorMarginBottom" format="dimension" />
+    </declare-styleable>
+
+    <!--流式列表-->
+    <declare-styleable name="FlowListView">
+        <attr name="android:verticalSpacing" />
+        <attr name="android:horizontalSpacing" />
+    </declare-styleable>
+
+
     <declare-styleable name="CircleProgressButton">
         <attr name="radius" />
         <attr name="circleColor" />
@@ -42,19 +298,6 @@
         <attr name="duration" />
     </declare-styleable>
 
-    <declare-styleable name="ShapeButton">
-        <attr name="type"/>
-        <attr name="solid" />
-        <attr name="strokeColor" />
-        <attr name="strokeWidth" />
-        <attr name="radius" />
-        <attr name="topLeftRadius" />
-        <attr name="topRightRadius" />
-        <attr name="bottomLeftRadius" />
-        <attr name="bottomRightRadius" />
-        <attr name="shape" />
-        <attr name="saturation" format="float" />
-    </declare-styleable>
 
     <declare-styleable name="LoopView">
         <attr name="lv_textSize" format="dimension" />
@@ -71,97 +314,8 @@
         <attr name="lv_scaleX" format="float" />
     </declare-styleable>
 
-    <declare-styleable name="FlowListView">
-        <attr name="verticalSpacing" />
-        <attr name="horizontalSpacing" />
-    </declare-styleable>
-
-    <declare-styleable name="LinearListView">
-        <attr name="android:entries" />
-        <attr name="dividerThickness" format="dimension" />
-    </declare-styleable>
-
-    <declare-styleable name="ActionView">
-        <attr name="action_type" format="integer">
-            <enum name="tick" value="0x1a1"></enum>
-            <enum name="exclamation" value="0x1a2"></enum>
-            <enum name="wireless" value="0x1a3"></enum>
-        </attr>
-        <attr name="action_radius" />
-        <attr name="action_color" format="color" />
-        <attr name="action_circle_stroke_width" format="dimension" />
-        <attr name="action_exclamation_up_circle_radius" format="dimension" />
-        <attr name="action_exclamation_bottom_circle_radius" format="dimension" />
-        <attr name="action_exclamation_dot_radius" format="dimension" />
-        <attr name="action_wireless_count" format="integer" />
-        <attr name="action_wireless_stroke_width" format="dimension" />
-        <attr name="action_wireless_initial_radius" format="dimension" />
-        <attr name="action_wireless_padding" format="dimension" />
-        <attr name="action_wireless_start_angle" format="float" />
-    </declare-styleable>
-
-    <declare-styleable name="SwipeRequestView">
-        <attr name="circleRadius" format="dimension" />
-        <attr name="circleColor" />
-        <attr name="shadowRadius" format="dimension" />
-        <attr name="shadowColor" />
-        <attr name="arcSchemeColors" format="string" />
-        <attr name="arcRadius" format="dimension" />
-        <attr name="arcStrokeWidth" format="dimension" />
-        <attr name="arcGapAngle" format="float" />
-        <attr name="duration" />
-    </declare-styleable>
-
-    <declare-styleable name="SwipeRequestLayout">
-        <attr name="headerHeight" />
-        <attr name="footerHeight" />
-        <attr name="refreshable" />
-        <attr name="loadable" />
-        <attr name="scaleDuration" format="integer" />
-        <attr name="delayDuration" format="integer" />
-        <attr name="shadowColor" />
-        <attr name="arcSchemeColors" />
-    </declare-styleable>
-
-    <declare-styleable name="BrushRequestLayout">
-        <attr name="headerHeight" />
-        <attr name="footerHeight" />
-        <attr name="headerBackgroundColor" format="color" />
-        <attr name="footerBackgroundColor" format="color" />
-        <attr name="refreshable" />
-        <attr name="loadable" />
-        <attr name="duration" />
-    </declare-styleable>
-
-    <declare-styleable name="BannerPager">
-        <attr name="indicatorSelected" format="reference" />
-        <attr name="indicatorUnSelected" format="reference" />
-        <attr name="isAutoPlay" format="boolean" />
-        <attr name="isLoop" format="boolean" />
-        <attr name="duration" />
-        <attr name="indicatorGravity">
-            <flag name="left" value="3" />
-            <flag name="top" value="48" />
-            <flag name="right" value="5" />
-            <flag name="bottom" value="80" />
-            <flag name="center" value="17" />
-            <flag name="center_horizontal" value="1" />
-            <flag name="center_vertical" value="16" />
-        </attr>
-        <attr name="indicatorLayoutMargin" format="dimension" />
-        <attr name="indicatorLayoutMarginLeft" format="dimension" />
-        <attr name="indicatorLayoutMarginTop" format="dimension" />
-        <attr name="indicatorLayoutMarginRight" format="dimension" />
-        <attr name="indicatorLayoutMarginBottom" format="dimension" />
-        <attr name="indicatorMargin" format="dimension" />
-        <attr name="indicatorMarginLeft" format="dimension" />
-        <attr name="indicatorMarginTop" format="dimension" />
-        <attr name="indicatorMarginRight" format="dimension" />
-        <attr name="indicatorMarginBottom" format="dimension" />
-    </declare-styleable>
 
     <declare-styleable name="PagerSlidingTabStrip">
-        <attr name="pstsIndicatorRadius" format="dimension" />
         <attr name="pstsIndicatorColor" format="color" />
         <attr name="pstsIndicatorLinePercent" format="float" />
         <attr name="pstsUnderlineColor" format="color" />
@@ -176,16 +330,8 @@
         <attr name="pstsTextAllCaps" format="boolean" />
         <attr name="pstsTabTextUnCheckColor" format="color" />
         <attr name="pstsTabTextCheckColor" format="color" />
-        <attr name="pstsTabTextUnCheckSize" format="dimension" />
-        <attr name="pstsTabTextCheckSize" format="dimension" />
-        <attr name="pstsTabCheckTextBold" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="LetterView">
-        <attr name="uncheckColor" format="color" />
-        <attr name="checkColor" format="color" />
-        <attr name="textSize" format="dimension" />
-    </declare-styleable>
 
     <declare-styleable name="TextGroupView">
         <!--背景颜色-->
@@ -468,13 +614,6 @@
         <attr name="progressStrokeWidth" format="dimension" />
         <!--圆圈半径-->
         <attr name="progressRadius" format="dimension" />
-    </declare-styleable>
-
-    <!--导航栏-->
-    <declare-styleable name="NavigationBarView">
-        <attr name="navSrc" format="reference" />
-        <attr name="navText" format="reference"></attr>
-        <attr name="background"></attr>
     </declare-styleable>
 
 </resources>

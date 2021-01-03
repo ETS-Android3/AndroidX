@@ -1,7 +1,0 @@
-<resources>
-    <string name="frame_name">AndroidX</string>
-    <string name="package_name">081E222B201T82W083Z224I244Q221N222E204C244</string>
-    <string name="image_selector_take_photo">Taking pictures</string>
-    <string name="image_selector_photo_album">Photo album</string>
-    <string name="image_selector_photo_cancel">Cancel</string>
-</resources>

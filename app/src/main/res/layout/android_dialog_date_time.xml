@@ -50,7 +50,7 @@
         android:paddingTop="15dp"
         android:paddingBottom="15dp">
 
-        <com.android.view.LoopView
+        <com.androidx.view.LoopView
             android:id="@+id/lv_year"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -61,7 +61,7 @@
             su:lv_outerTextColor="@color/colorDateTimeSelectorOutside"
             su:lv_textSize="16sp" />
 
-        <com.android.view.LoopView
+        <com.androidx.view.LoopView
             android:id="@+id/lv_month"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -72,7 +72,7 @@
             su:lv_outerTextColor="@color/colorDateTimeSelectorOutside"
             su:lv_textSize="16sp" />
 
-        <com.android.view.LoopView
+        <com.androidx.view.LoopView
             android:id="@+id/lv_day"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -83,7 +83,7 @@
             su:lv_outerTextColor="@color/colorDateTimeSelectorOutside"
             su:lv_textSize="16sp" />
 
-        <com.android.view.LoopView
+        <com.androidx.view.LoopView
             android:id="@+id/lv_hour"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -94,7 +94,7 @@
             su:lv_outerTextColor="@color/colorDateTimeSelectorOutside"
             su:lv_textSize="16sp" />
 
-        <com.android.view.LoopView
+        <com.androidx.view.LoopView
             android:id="@+id/lv_minute"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -105,7 +105,7 @@
             su:lv_outerTextColor="@color/colorDateTimeSelectorOutside"
             su:lv_textSize="16sp" />
 
-        <com.android.view.LoopView
+        <com.androidx.view.LoopView
             android:id="@+id/lv_second"
             android:layout_width="0dp"
             android:layout_height="match_parent"

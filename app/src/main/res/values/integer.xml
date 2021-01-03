@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Loading消失延迟时间-->
+    <integer name="loading_delay_millis_duration">500</integer>
+</resources>

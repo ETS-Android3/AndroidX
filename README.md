@@ -1,26 +1,8 @@
 # AndroidX
 Android开发框架（Android development integration tools）
-
-## 方法一  ARR依赖
-[AndroidX.arr](https://github.com/RelinRan/AndroidX/blob/master/AndroidX.aar)
-```
-android {
-    ....
-    repositories {
-        flatDir {
-            dirs 'libs'
-        }
-    }
-}
-
-dependencies {
-    implementation(name: 'AndroidX', ext: 'aar')
-}
-
-```
-
-## 方法二   JitPack依赖
-### A.项目/build.grade
+注意：2021-01-01开始的是2.0版本不向下兼容1.0-2.0之间的版本，旧版本请使用2.0以下版本，2.0以下版本是兼容1.0-2.0之间的版本,2.0以上版本进行了代码重构，在2.0以后版本完全兼容2.0以上版本。
+## 配置
+1.build.grade
 ```
 allprojects {
     repositories {
@@ -29,420 +11,920 @@ allprojects {
 	}
 }
 ```
-### B.项目/app/build.grade
+2./app/build.grade
 ```
 dependencies {
-	implementation 'com.github.RelinRan:AndroidX:1.0.11'
+	implementation 'com.github.RelinRan:AndroidX:2.0.0'
 }
 ```
 
-## Application - 继承BaseApplication
-### AndroidManifest.xml application标签配置
+## Application
+CoreApplication为AndroidX核心Application,开发者需要继承CoreApplication,然后初始化Http工具.
 ```
-android:name=".XXXApplication"
-```
-### 调试模式，LOG日志可以查看请求接口
-```
-setDebugMode(true);
-```
-### 调试模式，LOG查看日志 + 以日志对话框的形式显示
-```
-setDebugMode(true，true);
+public class App extends CoreApplication {
+
+    @Override
+    public void onCreate() {
+         super.onCreate();
+         //初始化Http,设置调试模式为true;
+         initHttp(true);
+     }
+
+}
 ```
 
-## style.xml
-工具类拥有常见的一些主题。
+## AndroidManifest.xml
+
+1.常用权限配置，根据项目而定。
 ```
-<style name="AppTheme" parent="Android.Theme.Transparent.NoActionBar"></style>
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.CAMERA"></uses-permission>
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
+<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
 ```
-### 没有TitleBar白色背景
+
+2.Provider配置，主要用于文件处理，图片选择。采取了Android10沙盒分区处理。
+```
+<provider
+    android:name="androidx.core.content.FileProvider"
+    android:authorities="${applicationId}.fileprovider"
+    android:grantUriPermissions="true"
+    android:exported="false">
+    <meta-data
+        android:name="android.support.FILE_PROVIDER_PATHS"
+        android:resource="@xml/filepaths" />
+</provider>
+```
+
+## Style.xml
+
+1.没有ActionBar+背景白色的主题
 ```
 Android.Theme.Light.NoActionBar
 ```
-### 没有覆盖背景的Dialog
+
+2.没有ActionBar+背景透明的主题
+```
+Android.Theme.Transparent.NoActionBar
+```
+
+3.没有ActionBar+状态栏半透明的主题
+```
+Android.Theme.Light.NoActionBa.StatusBar.Translucent
+```
+
+4.没有覆盖背景的Dialog
 ```
 Android.Theme.Dialog.Transparent.Background
 ```
-### 有覆盖背景的Dialog
+
+5.有覆盖背景的Dialog
 ```
 Android.Theme.Dialog.Translucent.Background
 ```
-### 横向ProgressBar
+
+6.横向ProgressBar
 ```
-android_progressbar_horizontal
-```
-### Dialog放大缩小动画
-```
-android_anim_zoom
-```
-### Dialog底部进入动画
-```
-android_anim_bottom
+Android_ProgressBar_Horizontal
 ```
 
-## Activity使用 - 继承BaseActivity
-
-### findViewById找控件（注解方式）
+7.Dialog缩放动画
 ```
-@ViewInject(R.id.rg_menu)
-private RadioGroup rg_menu;
+Android_Window_Animation_Scale
 ```
 
-### 设置导航栏Layout(注意：导航栏设置只能用其中一个)
+8.Dialog底部动画
 ```
-@Override
-protected int setNavigationBarLayoutById() {
-   return R.layout.layout_navgation;
+Android_Window_Animation_Bottom
+```
+
+## View findViewById
+1.注解
+```
+@ViewInject(R.id.et_user)
+private EditText et_user;
+```
+2.类型强转
+```
+findViewById(EditText.class,R.id.et_user).setText("user");
+```
+
+## Toast
+以下方法直接在Activity extends CoreActivity和Fragment extends CoreFragment可直接调用
+1.页面底部显示
+```
+showToast("加载成功");
+```
+2.页面中间带状态图标显示
+```
+showStatus(Toast.Status.SUCCESS, "支付成功");
+showStatus(Toast.Status.WARNING, "支付失败");
+showStatus(Toast.Status.WIRELESS, "联网失败");
+```
+## RSA
+RSA加密解密工具
+
+1.公钥配置
+```
+RSA.PUBLIC_KEY = "xxx";
+```
+
+2.密钥配置
+```
+RSA.PRIVATE_KEY = "xxx";
+```
+
+3.加密
+```
+String encode = RSA.encrypt("xxx");
+```
+
+4.解密
+```
+String encode = RSA.decrypt("xxx");
+```
+
+## Http
+在使用Http之前一定需要在Application里面初始化，如果继承了CoreApplication
+只需要调用CoreApplication 里面的initHttp方法即可初始化Http工具。
+AndroidX中Activity和Fragment已经实现了OnHttpListener接口，只需要重写
+public void onHttpRequest()；页面进入会进入自动调用。
+public void onHttpFailure(ResponseBody responseBody)；数据请求失败。
+public void onHttpSucceed(ResponseBody responseBody)；数据请求请求成功。
+
+1.初始化,如果继承了CoreApplication可忽略此操作，与CoreApplication里面方法initHttp(true)作用等同。
+默认采用的Json数据传输格式，如需修改对应传递方式，支持全局修改：options.contentType(Header.CONTENT_JSON);
+如果单个接口请求方式修改：params.addHeader(Header.CONTENT_TYPE,Header.CONTENT_FORM);
+```
+RequestOptions options = new RequestOptions(this);
+options.debug(debug);
+options.cache(true);
+options.contentType(Header.CONTENT_JSON);
+options.type(RequestOptions.OK_HTTP);
+Http.init(options);
+```
+
+2.常规使用
+2.1接口类
+```
+import com.androidx.net.Http;
+import com.androidx.net.OnHttpListener;
+import com.androidx.net.RequestParams;
+
+public class MainApi {
+
+    /**
+     * 登录
+     *
+     * @param accountNumber 账号
+     * @param pwd           密码
+     * @param listener
+     */
+    public void accountAndPwdLogin(String accountNumber, String pwd, OnHttpListener listener) {
+        RequestParams params = new RequestParams();
+        params.add("accountNumber", accountNumber);
+        params.add("pwd", pwd);
+        Http.post(Constants.BASE_URL + "/storeApi/login/accountAndPwdLogin", params, listener);
+    }
+
 }
+```
+2.2接口使用(CoreActivity|CoreFragment)
+```
+private MainApi mainApi;
 
 @Override
-protected int setNavigationBarViewById() {
-   return R.id.navigation;
-}
-```
-### 设置内容layout
-```
-@Override
-protected int setContentLayoutById() {
-    return R.layout.aty_main;
-}
-```
-### 显示Fragment
-```
-@Override
-protected int setFragmentContainerViewById() {
-    //Fragment布局占位ID
-    return R.id.fl_content;
+protected void onCreate(Bundle bundle, NavigationBar bar) {
+    mainApi = new MainApi();
 }
 
-//初始化操作
-@Override
-protected void onPrepare() {
-    super.onPrepare();
-    //直接添加Fragment
-    addFragment(IndexFgt.class, null);
-}
-```
-### 点击事件
-```
-@OnClick({R.id.iv_back})
-private void onClick(View v) {
-    switch (v.getId()) {
-        case R.id.iv_back:
-            finish();
-            break;
-        }
-}
-```
-### Toast显示
-```
-showToast("添加IndexFgt");//显示一般Toast
-showToast(ToastMode.SUCCEED，"添加成功");//显示成功Toast
-showToast(ToastMode.FAILURE,"添加失败");//显示失败Toast
-```
-### 网络请求
-```
 @Override
 public void onHttpRequest() {
     super.onHttpRequest();
-	//显示Loading视图
-    showLoadingDialog(LoadingMode.DIALOG);
-	//网络请求操作......
-    RequestParams params = new RequestParams();
-    params.add("limit","20");
-    params.add("page","1");
-    params.add(RequestParams.REQUEST_CONTENT_TYPE, RequestParams.REQUEST_CONTENT_JSON);
-    OkHttp.post(Constants.BASE_URL + "/getlist", params, listener);
+    showLoading();
+    mainApi.accountAndPwdLogin("account","password",this);
 }
-```
-### 网络请求
-```
-@Override
-public void onHttpSucceed(HttpResponse response) {
-    super.onHttpSucceed(response);
-    //JSON解析，主要用到JsonParser
-    Body body = JsonParser.parseJSONObject(Body.class, response.body());
-    if (body.getCode().equals("0")) {
-         if (response.url().contains("getlist")) {
 
+@Override
+public void onHttpSucceed(ResponseBody responseBody) {
+    dismissLoading();
+    //Json解析,Body为公共数据实体类。
+    Body body = Json.parseJSONObject(Body.class, responseBody.body());
+    if (body.getCode().equals("0")) {
+        if (response.url().contains("accountAndPwdLogin")) {
+            Map<String, String> map = Json.parseJSONObject(body.getData());
+            String token = map.get("token");
+            //全局添加token.
+            Http.options().header().add("token", token);
+            showToast(Json.parseObject(body));
          }
     } else {
         showToast(body.getMsg());
     }
 }
-
-@Override
-public void onHttpFailure(HttpResponse response) {
-      super.onHttpFailure(response);
-}
 ```
 
-### 定制化LoadingView、ToastView、屏幕显示方向，重写如下方法：
+## StatusBar
+支持对沉浸状态设置、状态栏颜色、字体颜色修改（深色、浅色）
+
+1.设置状态栏颜色
 ```
-    //加载动画自定义，用户只需要实现LoadingView接口自定义一个类，在return时候不用super.setLoadingView();
+StatusBar.setColor(this, Color.parseColor("#3C3F41"));
+```
+2.设置状态栏文字是否黑色
+```
+StatusBar.setTextColor(this,false);
+```
+3.状态栏高度
+```
+int height = StatusBar.height(this);
+```
+4.显示状态栏
+```
+StatusBar.show(this);
+```
+5.隐藏状态栏
+```
+StatusBar.hide(this);
+```
+
+## NavigationBar
+Activity extends CoreActivity | Fragment extends CoreFragment
+这2个类里面都有自定义的NavigationBar,只需要重写onCreate(Bundle bundle, NavigationBar bar)
+
+1.设置背景颜色
+```
+//方式一
+navigationBar.setBackgroundColor(Color.parseColor("#3C3F41"));
+//方式二
+navigationBar.setBackgroundResource(R.color.colorPrimary);
+//只修改NavigationBar背景颜色，不修改StatusBar颜色。
+navigationBar.setBackgroundColor(Color.parseColor("#3C3F41"),false);
+navigationBar.setBackgroundResource(R.color.colorPrimary,false);
+```
+
+2.设置标题
+```
+navigationBar.setTitle("标题");
+navigationBar.setTitleTextColor(Color.WHITE);
+navigationBar.setTitleTextSize(18, TypedValue.COMPLEX_UNIT_SP);
+```
+
+3.设置返回
+```
+navigationBar.setBackText("返回");
+navigationBar.setBackResource(R.mipmap.xxx);
+```
+
+4.设置菜单
+```
+navigationBar.setMenuText("xxxx");
+navigationBar.setMenuResource(R.mipmap.xxx);
+```
+
+5.设置监听
+```
+navigationBar.setOnNavigationBarClickListener(new NavigationBar.OnNavigationBarClickListener() {
     @Override
-    protected LoadingView setLoadingView() {
-        return super.setLoadingView();
-    }
+    public void onNavigationBarClick(View v, int operate) {
+       if (operate == NavigationBar.BACK_TEXT) {
 
-    //弹框自定义，用户只需要实现LoadingView接口自定义一个类，在return时候不用super.setToastView();
-    @Override
-    protected ToastView setToastView() {
-        return super.setToastView();
-    }
+       }
+       f (operate == NavigationBar.BACK_IMAGE) {
 
-    //设置屏幕显示方向，常量有BaseApplication.REQUEST_ORATION_PORTRAIT(竖屏),BaseApplication.REQUEST_ORATION_LAND（横屏）
-    @Override
-    protected int setRequestedOrientation() {
-        return super.setRequestedOrientation();
-    }
+       }
+       if (operate == NavigationBar.MENU_TEXT) {
 
-```
-## Fragment - 使用方法跟Activity一致只是继承BaseFragment，重写的方法都一致。
+       }
+       if (operate == NavigationBar.MENU_IMAGE) {
 
-## ActivityManager（Activity管理器）
-项目有时候需要在一个页面finish的时候杀死之前的页面，那么此时就需要这个类，
-注意如需要单个使用这个类在自己框架，需要在自己BaseActivity中使用方法ActivityManager.getInstance().addActivity(xxxx);
-```
-//清除所有页面，包含当前页面
-ActivityManager.getInstance().removeAllActivity();
-//清除单个页面
-ActivityManager.getInstance().removeActivity(MainActivity.class);
-//退出程序
-ActivityManager.getInstance().AppExit(context);
-```
-## CaughtException - 异常捕捉 - 注意：使用这个类需要提前申请文件写入、读取权限，在Android 6.0需要动态申请权限。
-```
-CaughtException.Builder caughtBuilder = new CaughtException.Builder(context);
-caughtBuilder.fileType(".txt");
-caughtBuilder.folderName("Exception");
-caughtBuilder.listener(new OnCaughtExceptionListener() {
-    @Override
-    public void onCaughtExceptionSucceed(File file) {
-
-    }
-
-    @Override
-    public void onCaughtExceptionFailure(String error) {
-
+       }
     }
 });
-caughtBuilder.build();
+```
+6.显示
+```
+navigationBar.show();
+```
+7.隐藏
+```
+navigationBar.hide();
 ```
 
-##  ShapeButton - Shape背景按钮
+### Activity
+Activity页面只需要继承CoreActivity,如果是TV研发需要继承TVCoreActivity
 ```
-    <com.android.view.ShapeButton
-        android:id="@+id/btn_login"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/button_height"
-        android:layout_marginLeft="@dimen/x118"
-        android:layout_marginRight="@dimen/x118"
-        android:layout_marginTop="@dimen/y110"
-        android:text="登录"
-        android:textColor="@color/color_white"
-        android:textSize="@dimen/font_normal"
-        app:radius="3dp"
-        app:solid="@color/colorYellow" />
-```
+public class MainActivity extends CoreActivity implements NavigationBar.OnNavigationBarClickListener {
 
-##  BannerPager - 轮播图
-```
-    //布局控件
-    <com.android.view.BannerPager
-        android:id="@+id/banner"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y810"
-        app:isAutoPlay="true"
-        app:duration="3000">
-	</com.android.view.BannerPager>
-	
-    //设置数据源
-    bannerAdapter = new IndexBannerAdapter(getActivity(), bannerList);
-    //设置点击事件
-    banner.setOnBannerPagerClickListener(this);
-    //设置页面改变事件
-    banner.addOnPageChangeListener(this);
-    //设置数据源
-    banner.setAdapter(bannerAdapter);
-	
-    //Adapter
-    public class IndexBannerAdapter extends BannerAdapter<Map<String, String>> {
+    @ViewInject(R.id.et_user)
+    private EditText et_user;
 
-    public IndexBannerAdapter(Context context) {
-        super(context);
+    @Override
+    protected int getContentViewResId() {
+        return R.layout.activity_main;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        ImageLoader.show(getItem(position).get("ad_pic"), holder.target);
+    protected void onCreate(Bundle bundle, NavigationBar bar) {
+        bar.setBackText("✖");
+        bar.setBackgroundColor(Color.parseColor("#3C3F41"));
+        bar.setTitleTextColor(Color.WHITE);
+        bar.setOnNavigationBarClickListener(this);
+        StatusBar.setColor(this, Color.parseColor("#3C3F41"));
     }
 
+    @Override
+    public void onNavigationBarClick(View v, int operate) {
+        if (operate == NavigationBar.BACK_IMAGE) {
+
+        }
+    }
+
+    @Override
+    public void onHttpRequest() {
+        super.onHttpRequest();
+
+    }
+
+    @Override
+    public void onHttpSucceed(ResponseBody responseBody) {
+        super.onHttpSucceed(responseBody);
+    }
+
+    @Override
+    public void onHttpFailure(ResponseBody responseBody) {
+        super.onHttpFailure(responseBody);
+    }
+```
+
+## Fragment
+Fragment页面只需要继承CoreFragment,如果是TV研发需要继承TVCoreFragment
+```
+public class MainFragment extends CoreFragment {
+
+    @Override
+    protected int getContentViewResId() {
+        return R.layout.fragment_content;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState, NavigationBar bar) {
+        bar.setTitle("CoreFragment");
+        bar.setBackgroundResource(R.color.colorAccent,false);
+    }
+
+    @Override
+    public void setArguments(@Nullable Bundle args) {
+        super.setArguments(args);
+    }
+
+    @Override
+    public void setParameters(Object params) {
+        super.setParameters(params);
+    }
+
+    @Override
+    public void onHttpRequest() {
+        super.onHttpRequest();
+    }
+
+    @Override
+    public void onHttpSucceed(ResponseBody responseBody) {
+        super.onHttpSucceed(responseBody);
+    }
+
+    @Override
+    public void onHttpFailure(ResponseBody responseBody) {
+        super.onHttpFailure(responseBody);
+    }
 }
-	
+
+```
+## SwipeRequestLayout
+刷新加载控件，支持上拉加载更多，下拉刷新。
+
+1.xml
+```
+<?xml version="1.0" encoding="utf-8"?>
+<com.androidx.widget.SwipeRequestLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </androidx.recyclerview.widget.RecyclerView>
+
+</com.androidx.widget.SwipeRequestLayout>
 ```
 
-## RecyclerAdapter使用(RecyclerView的Adapter)
+2.设置监听
 ```
-public class FriendsAdapter extends RecyclerAdapter<FriendsBody, FriendsAdapter.ViewHolder> {
-    
-    public FriendsAdapter(BaseFragment fragment) {
-        super(fragment);
-    }
-
+swipeRequestLayout.setOnSwipeRefreshListener(new SwipeLayout.OnSwipeRefreshListener() {
     @Override
-    public void onBindView(@NonNull ViewHolder holder, final int position) {
-        holder.tv_letter.setVisibility(position != 0 ? View.GONE : View.VISIBLE);
-        holder.tv_letter.setText(getItem(position).getLetter());
-        holder.rb_name.setText(getItem(position).getNickname());
-        holder.rb_name.setChecked(getItem(position).isCheck());
-        holder.rb_name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getItem(position).setCheck(!getItem(position).isCheck());
-                notifyItemChanged(position);
-            }
-        });
+    public void onSwipeRefresh() {
+        //1.刷新释放会进入；
+        //2.setRefreshing(true)会触发
     }
-
+});
+swipeRequestLayout.setOnSwipeLoadListener(new SwipeLayout.OnSwipeLoadListener() {
     @Override
-    public ViewHolder onCreateHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        return new ViewHolder(createView(R.layout.item_firends, viewGroup));
+    public void onSwipeLoad() {
+        //1.上拉释放进入
+        //2.setLoading(true)会触发
+    }
+});
+```
+
+3.进入页面开始获取数据,setRefreshing(true),会调用onSwipeRefresh();方法。
+```
+swipeRequestLayout.setRefreshing(true);
+```
+
+4.停止刷新
+```
+swipeRequestLayout.setRefreshing(false);
+```
+
+5.停止加载
+```
+swipeRequestLayout.setLoading(false);
+```
+
+6.设置禁用刷新
+```
+swipeRequestLayout.setRefreshable(false);
+```
+
+7.设置禁用加载
+```
+swipeRequestLayout.setLoadable(false);
+```
+
+## ShapeButton
+支持圆角自定义，可调整状态显示（Button、Text -> androidx:state="button"）
+```
+<com.androidx.view.ShapeButton
+     android:layout_width="match_parent"
+     android:layout_height="45dp"
+     android:layout_marginLeft="10dp"
+     android:layout_marginTop="10dp"
+     android:layout_marginRight="10dp"
+     android:onClick="onItemSelector"
+     androidx:state="button"
+     android:text="ItemSelector"
+     android:textColor="@color/colorWhite"
+     androidx:radius="5dp"
+     androidx:solid="@color/colorBlack41" />
+```
+## TextGroupView
+ImageView + TextView + TextView + TextView + ImageView + EditText组合控件
+多用于横排布局，左边图标，中间文字或者输入框，右边箭头类似的布局。
+详细：https://github.com/RelinRan/TextGroupView
+```
+    <com.android.view.TextGroupView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        app:left_imageMarginLeft="10dp"
+        app:left_imageSrc="@drawable/text_group_view_ic_head"
+        app:left_imageWidth="50dp"
+        app:left_textPaddingLeft="10dp"
+        app:radius="8dp"
+        app:right_imagePaddingRight="10dp"
+        app:right_imageSrc="@drawable/text_group_view_ic_arrow"
+        app:right_text="更换头像"
+        app:right_textColor="#FFFFFF"
+        app:solid="#161538"></com.android.view.TextGroupView>
+```
+##  BannerPager
+轮播图,支持指示器位置自定义，显示自定义。
+1.xml
+```
+<com.androidx.view.BannerPager
+     android:id="@+id/banner"
+     android:visibility="gone"
+     android:layout_marginTop="10dp"
+     android:layout_marginLeft="10dp"
+     androidx:isAutoPlay="true"
+     android:layout_marginRight="10dp"
+     android:layout_width="match_parent"
+     android:layout_height="200dp"></com.androidx.view.BannerPager>
+```
+2.设置数据
+```
+    private BannerPager banner;
+    private BannerListAdapter bannerListAdapter;
+
+    public void initBanner() {
+        if (banner == null) {
+            banner = findViewById(R.id.banner);
+            bannerListAdapter = new BannerListAdapter(this);
+            bannerListAdapter.setOnItemClickListener(new BannerAdapter.OnItemClickListener<Integer>() {
+                @Override
+                public void onItemClick(BannerAdapter<Integer> adapter, View view, Integer item, int position) {
+                    Log.i("RRL", "->onItemClick -1- item=" + item + ",position=" + position);
+                    int realPosition = adapter.getRealPosition(position);
+                }
+            });
+        }
+        int resIds[] = {R.mipmap.ic_banner_0, R.mipmap.ic_banner_1, R.mipmap.ic_banner_2, R.mipmap.ic_banner_3};
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < resIds.length; i++) {
+            list.add(resIds[i]);
+        }
+        banner.setAdapter(bannerListAdapter);
+        bannerListAdapter.setItems(list);
     }
 
-    public class ViewHolder extends RecyclerAdapter.ViewHolder {
+    private class BannerListAdapter extends BannerAdapter<Integer> {
 
-        @ViewInject(R.id.tv_letter)
-        private TextView tv_letter;
-        @ViewInject(R.id.iv_head)
-        private ImageView iv_head;
-        @ViewInject(R.id.rb_name)
-        private RadioButton rb_name;
+        public BannerListAdapter(Context context) {
+            super(context);
+        }
 
-        public ViewHolder(View itemView) {
-            super(itemView);
+        @Override
+        public void onItemBindViewHolder(ViewHolder holder, Integer item, int position) {
+            ImageView imageView = holder.find(R.id.banner_image);
+            holder.find(ImageView.class, R.id.banner_image).setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setImageResource(item);
         }
 
     }
 
-}
 ```
 
-## Adapter使用(ListView、GridView 的Adapter)
+## RecyclerAdapter
+RecyclerView使用的Adapter,可快速绑定View对应数据。
 ```
-public class BankCardAdapter extends Adapter<BankCardBody, BankCardAdapter.ViewHolder> {
+    private class RecyclerListAdapter extends RecyclerAdapter<String> {
 
-    public BankCardAdapter(BaseActivity activity) {
-        super(activity);
-    }
+        public RecyclerListAdapter(Context context) {
+            super(context);
+        }
 
-    @Override
-    public ViewHolder onCreateHolder(View view, ViewGroup viewGroup, int viewType) {
-        return new ViewHolder(createView(R.layout.item_bank_card, viewGroup));
-    }
+        @Override
+        protected int getItemLayoutResId() {
+            return R.layout.item_text;
+        }
 
-    @Override
-    public void onBindView(ViewHolder holder, final int position) {
-        holder.tv_card_no.setText(BankValidator.formatCardNo(getItem(position).getBankCardNumber()));
-        holder.tv_card_name.setText(BankValidator.getname(getItem(position).getBankCardNumber()));
-        holder.rl_item.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("item", getItem(position));
-                getActivity().startActivity(BankCardConfirmAty.class, bundle);
-            }
-        });
-    }
-
-    public class ViewHolder extends Adapter.ViewHolder {
-
-        @ViewInject(R.id.rl_item)
-        private RelativeLayout rl_item;
-        @ViewInject(R.id.iv_ico)
-        private ImageView iv_ico;
-        @ViewInject(R.id.tv_card_name)
-        private TextView tv_card_name;
-        @ViewInject(R.id.tv_card_no)
-        private TextView tv_card_no;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
+        @Override
+        protected void onItemBindViewHolder(ViewHolder holder, String item, int position) {
+            holder.find(TextView.class, R.id.tv_label).setText(item);
+            holder.addItemClick(R.id.tv_label);
         }
     }
+```
 
-}
+## BasisAdapter
+实用于ListView、GridView、FlowListView，在BaseAdapter基础上升级封装，可快速构建列表。
+```
+    private class DebugAdapter extends BasisAdapter<ResponseBody> {
+
+        public DebugAdapter(Context context) {
+            super(context);
+        }
+
+        @Override
+        public int getItemLayoutResId() {
+            return R.layout.android_debug_item;
+        }
+
+        @Override
+        public void onItemBindViewHolder(ViewHolder holder, ResponseBody item, int position) {
+            holder.find(TextView.class, R.id.debug_row_page_value).setText(item.page());
+            holder.find(TextView.class, R.id.debug_row_time_value).setText(item.time());
+            holder.find(TextView.class, R.id.debug_row_url_value).setText(item.url());
+            holder.find(TextView.class, R.id.debug_row_header_value).setText(item.requestParams().header().toString());
+            holder.find(TextView.class, R.id.debug_row_params_value).setText(item.requestParams().params().toString());
+            holder.find(TextView.class, R.id.debug_row_result_value).setText(item.body());
+        }
+
+    }
 ```
 
 ## RecyclerView 分割线/间隔设置
 ```
 recyclerView.addItemDecoration(new DividerItemDecoration(LinearLayoutManager.HORIZONTAL, ContextCompat.getColor(getContext(), R.color.colorDivider), 2));
-		
+
 recyclerView.addItemDecoration(new SpaceItemDecoration(LinearLayoutManager.HORIZONTAL, 2));
-		
 ```
-## TextGroupView 使用（ImageView + TextView + TextView + TextView + ImageView + EditText）
-详细使用说明 https://github.com/RelinRan/TextGroupView
+## DataStorage
+数据缓存，目前支持int string double float long Set Map<String,String> List<Map<String,String>>数据类型
 
+1.存数据
+```
+DataStorage.with(context).put("username","xxxx");
+```
+
+2.取数据
+```
+String username = DataStorage.with(context).getString("username","");
+```
+
+## UseCache
+常用缓存,主要用户登录页面或者主页存储token和文件前缀地址。
+
+1.存token
+```
+UseCache.token("xxx");
+```
+
+2.取token
+```
+String token = UseCache.token();
+```
+
+3.存url
+```
+UseCache.url("xxx");
+```
+4.取url
+```
+String url = UseCache.url();
+```
+
+5.拼接完整url
+```
+String endUrl = "xxx";
+String completeUrl = UseCache.joinUrl(endUrl);
+```
+
+## Time
+时间工具类
+1.现在时间
+```
+String now = Time.now(Time.DATE_FORMAT_YYYY_MM_DD);
+```
+2.时间戳转时间
+```
+String time = Time.parseFromTimestamp(timestamp);
+String time = Time.parseFromTimestamp(timestamp,Time.DATE_FORMAT_YYYY_MM_DD);
+```
+3.时间字符串转时间对象
+```
+Date date = Time.parse("2019-09-10 09:00:10");
+Date date = Time.parse("2019-09-10 09:00:10",Time.DATE_FORMAT_YYYY_MM_DD_BLANK_24H_MM_SS);
+```
+
+## Log
+日志，使用方法跟系统的一致，只是为了打印长字符的时候能够打印完全做了换行打印。
+1.一般格式打印
+```
+Log.i("tag","content");
+```
+2.带标题格式打印
+```
+Log.i("tag","header","content");
+```
+
+## Decimal
+小数位数处理，通常用于价格保留2位小数；四舍五入功能使用
+
+1.保留2位小数
+```
+String value = Decimal.format(2.351F,2);
+```
+
+2.保留2位小数,五入
+```
+String value = Decimal.format("2.351",2,Decimal.ROUND_HALF_UP);
+```
+
+3.保留2位小数,四舍
+```
+String value = Decimal.format("2.351",2,Decimal.ROUND_HALF_DOWN);
+```
+
+3.EditText限制输入2位数,最大输入10位
+```
+EditText etPrice = findViewById(R.id.et_price);
+Decimal.format(etPrice,2,10);
+```
+
+## Null
+为空判断和处理
+
+1.是否为空，包含null,"null","",3中为空情况
+```
+boolean isNull = Null.isNull("xxx");
+```
+
+2.空值处理为""
+```
+String value = Null.value("xxx");
+```
+
+## Number
+兼容性数字转换
+```
+//为空自动转为0
+int intValue = Number.parseInt("null");
+//Float自动加".00"
+float floatValue = Number.parseFloat("2");
+//Double自动加".00"
+double doubleValue = Number.parseDouble("34");
+```
+
+## Language
+语言工具
+
+1.获取系统语言
+```
+Locale systemLanguage = Language.getSystem();
+```
+
+2.获取应用语言
+```
+Locale applicationLanguage = Language.getApplication(context);
+```
+
+3.修改语言
+```
+Language.update(context,Locale.US);
+```
+
+4.判断语言是否相同
+```
+boolean isSame =  Language.compare(source,target);
+```
+
+4.判断是否是中文
+```
+Locale locale = Language.getSystem();
+boolean isChinese =  Language.isChinese(locale);
+```
+
+## WebLoader
+网页加载器
+
+1.加载URL
+```
+WebLoader.Builder builder = new WebLoader.Builder(webView);
+builder.url("https://xxxxxxx");
+builder.build();
+```
+
+2.加载Html数据
+```
+WebLoader.Builder builder = new WebLoader.Builder(webView);
+builder.data("Html data");
+builder.build();
+```
+
+3.加载Html数据,设置图片点击事件
+```
+WebLoader.Builder builder = new WebLoader.Builder(webView);
+builder.data("Html data");
+builder.imageClickListener(new WebLoader.OnWebImageClickListener() {
+@Override
+public void onWebImageClick(String url) {
+
+}
+});
+builder.build();
+```
+
+4.加载Html数据,设置图片适应屏幕宽度
+```
+WebLoader.Builder builder = new WebLoader.Builder(webView);
+builder.data("Html data");
+builder.imageFit(true);
+builder.build();
+```
+
+## ActivityManager
+项目有时候需要在一个页面finish的时候杀死之前的页面，那么此时就需要这个类，
+注意如需要单个使用这个类在自己框架，需要在自己BaseActivity中使用方法ActivityManager.getInstance().add(xxx);
+
+1.添加页面
+```
+ActivityManager.getInstance().add(MainActivity.class);
+```
+2.清除所有页面，包含当前页面
+```
+ActivityManager.getInstance().removeAll();
+```
+3.清除单个页面
+```
+ActivityManager.getInstance().remove(MainActivity.class);
+```
+4.退出程序
+```
+ActivityManager.getInstance().exit(context);
+```
+
+## Bug
+异常捕捉
+注意：使用这个类需要提前申请文件写入、读取权限，在Android 6.0需要动态申请权限。
+```
+Bug.Builder builder = new Bug.Builder(this);
+builder.name(Time.now()+".txt");
+builder.listener(new OnBugListener() {
+    @Override
+    public void onBug(File file, String bug) {
+
+    }
+});
+builder.build();
+```
+## Badge
+APP桌面角标-红色圆点
+主要是显示红色圆点，但是不支持所有手机类型，目前支持小米、华为、三星、索尼。
+Badge已经做了缓存处理，同时去区别了多个项目在一个手机的缓存区别。
+
+1.增加数量
+```
+Badge.add(cntext);
+```
+2.重置数量
+```
+Badge.reset(context);
+```
+3.设置数量
+```
+Badge.setNumber(context,number);
+```
+4.获取数量
+```
+int number = Badge.number(context);
+```
+## CoreDialog
+快速自定义对话框
+```
+CoreDialog.Builder builder = new CoreDialog.Builder(context);
+builder.layoutResId(R.layout.xxxx);
+builder.width(LinearLayout.LayoutParams.MATCH_PARENT);
+builder.width(LinearLayout.LayoutParams.WRAP_CONTENT);
+builder.cancelable(false);
+builder.canceledOnTouchOutside(false);
+builder.animResId(CoreDialog.ANIM_BOTTOM);
+builder.themeResId(CoreDialog.THEME_TRANSLUCENT);
+builder.gravity(Gravity.BOTTOM);
+CoreDialog dialog = builder.build();
+dialog.show();
+```
 ## AlterDialog
+1.单按钮
 ```
-        //单按钮
-        new AlertDialog.Builder(AndroidKit.this).msg("你是在测试我吗？").cancel("取消").confirm("确认").listener(null).build().show();
-        //双按钮
-        new AlertDialog.Builder(AndroidKit.this).msg("你是在测试我吗？").confirm("确认").listener(null).build().show();
+    new AlertDialog.Builder(AndroidKit.this).msg("你是在测试我吗？").cancel("取消").confirm("确认").listener(null).build().show();
 ```
-## Downloader使用(HucDownloader/Downloader)
-HucDownloader主要采用的是HttpUrlConnection、Downloader只要采用的是OkHttp
-但是两者使用方法一致，都是采用Builder模式。
-
+2.双按钮
 ```
-HucDownloader.Builder builder = new HucDownloader.Builder()
-          .url(file_url)
-          .name("Git.zip")
-          .folder("Downloader")
-          .isBreakpoint(true)
-          .listener(new OnDownloadListener() {
-                @Override
-                 public void onDownloading(long total, long progress, int percent) {
-
-                 }
-
-                 @Override
-                 public void onDownloadCompleted(File file) {
-
-                 }
-
-                 @Override
-                 public void onDownloadFailed(Exception e) {
-
-                       }
-
-                  });
-downloader = new HucDownloader(builder);
-downloader.start();
+new AlertDialog.Builder(AndroidKit.this).msg("你是在测试我吗？").confirm("确认").listener(null).build().show();
 ```
-## ImageSelector - 图片选择器
+## AddressSelector
+地址选择器
 ```
-//显示图片选择器
-ImageSelector.Builder builder = new ImageSelector.Builder(context);
-builder.crop(false);
-builder.size(300);
-showImageSelector(builder);
-
-//在页面重写如下方法获取选中结果
+new AddressSelector.Builder(AndroidKit.this).listener(new OnAddressSelectListener() {
 @Override
-public void onImageSelectSucceed(Uri uri) {
-    super.onImageSelectSucceed(uri);
-    //IOUtils是框架里面的类
-    File file = IOUtils.decodeUri(context,uri);
+public void onAddressSelected(String province, String city, String district, String provinceId, String cityId, String districtId) {
+        Log.e("Relin", province + city + district + "-" + provinceId + "," + cityId + "," + districtId);
+        showToast(province + city + district + "-" + provinceId + "," + cityId + "," + districtId);
+    }
+}).build().show();
+
+```
+## DateSelector
+日期选择器
+```
+new DateSelector.Builder(AndroidKit.this).type(DateSelector.TYPE_DATE).listener(new OnDateSelectListener() {
+    @Override
+    public void onDateSelected(String date) {
+        showToast(date);
+    }
+}).year(1992).month(12).day(24).build().show();
+```
+## DocumentSelector
+文件选择器
+```
+private DocumentSelector documentSelector;
+public void startDocumentSelector(){
+    DocumentSelector.Builder builder = new DocumentSelector.Builder(this);
+    builder.mode(DocumentSelector.MODE_IMAGE_CAPTURE);
+    builder.listener(new OnDocumentSelectListener() {
+        @Override
+        public void onDocumentSelect(DocumentSelector selector, Uri uri, String path) {
+            int code = getContentResolver().delete(uri,null,null);
+            Log.i("RRL","->onDocumentSelect path="+path+" , code = "+code);
+        }
+    });
+    documentSelector = builder.build();
 }
 
 @Override
-public void onImageSelectFailed(String msg) {
-    super.onImageSelectFailed(msg);
+protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    documentSelector.onActivityResult(requestCode,resultCode,data);
 }
 ```
-## ItemDialog - 选择弹框,工具可以单个字段列表数据选择
+## ItemDialog
+选择弹框,工具可以单个字段列表数据选择
 ```
 List<ItemDialogBody> bodies = new ArrayList<>();
 String names[] = new String[]{"重庆邮电大学", "重庆大学", "重庆科技大学", "重庆交通大学"};
@@ -463,7 +945,8 @@ itemBuilder.listener(new ItemDialog.OnItemDialogClickListener() {
 itemBuilder.build();
 ```
 
-## ItemSelector使用（底部列表选择器）
+## ItemSelector
+底部列表选择器
 ```
 ItemSelector.Builder builder = new ItemSelector.Builder(context);
 builder.items(new String[]{"A", "B", "C"});
@@ -475,170 +958,38 @@ public void onItemSelect(String content, int position) {
 });
 builder.build();
 ```
-
-## AddressSelector使用（地址选择器）
-```
-new AddressSelector.Builder(AndroidKit.this).listener(new OnAddressSelectListener() {
-    @Override
-    public void onAddressSelected(String province, String city, String district, String provinceId, String cityId, String districtId) {
-        Log.e("Relin", province + city + district + "-" + provinceId + "," + cityId + "," + districtId);
-        showToast(province + city + district + "-" + provinceId + "," + cityId + "," + districtId);
-    }
-}).provinceId("3")
-.cityId("36")
-.area("398")
-.build().show();
-
-```
-## DateSelector使用(日期选择器)
-```
-new DateSelector.Builder(AndroidKit.this).type(DateSelector.TYPE_DATE).listener(new OnDateSelectListener() {
-    @Override
-    public void onDateSelected(String date) {
-        showToast(date);
-    }
-}).year(1992).month(12).day(24).build().show();
-```
-## 更新对话框
+## Update
+应用更新，支持进度条显示。
 ```
 Update.show(context, R.drawable.ic_launcher, "项目名称", "http://192.168.1.33:8080/app/SG_201906171.apk", "您有有新版本是否更新？", true);
 ```
-## 快速自定义对话框(Dialog.Builder)
+## Downloader
+下载器，HucDownloader主要采用的是HttpUrlConnection、Downloader只要采用的是OkHttp，但是两者使用方法一致，都是采用Builder模式。
+
 ```
-    public static void showRentPeriods(BaseAty aty) {
-        Dialog.Builder builder = new Dialog.Builder(aty);
-        builder.gravity(Gravity.BOTTOM);
-        builder.width(LinearLayout.LayoutParams.MATCH_PARENT);
-        builder.height((int) (Screen.height() * 0.3));
-        builder.themeResId(Dialog.THEME_TRANSLUCENT);//半透明背景
-        builder.layoutResId(R.layout.dialog_rent_periods);
-        builder.canceledOnTouchOutside(true);
-        builder.cancelable(true);
-        builder.animResId(Dialog.ANIM_BOTTOM);//底部进入动画
-        final Dialog dialog = builder.build();
-        final RentPeriodsViewHolder holder = new RentPeriodsViewHolder();
-        ViewUtils.inject(holder, dialog.contentView);
-        final List<String> items = new ArrayList<>();
-        for (int i = 3; i < 13; i += 3) {
-            items.add(i + "期");
-        }
-        holder.loopView.setItems(items);
-        holder.loopView.setInitPosition(0);
-        holder.tv_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        holder.tv_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
+Downloader.Builder builder = new Downloader.Builder(context);
+builder.isBreakpoint(false);
+builder.url("https://xxx");
+builder.listener(new OnDownloadListener() {
+    @Override
+    public void onDownloading(long total, long progress, int percent) {
+
     }
 
-    public static class RentPeriodsViewHolder {
-        @ViewInject(R.id.tv_cancel)
-        private TextView tv_cancel;
-        @ViewInject(R.id.tv_ok)
-        private TextView tv_ok;
-        @ViewInject(R.id.loopView)
-        private LoopView loopView;
+    @Override
+    public void onDownloadCompleted(File file) {
+
     }
+
+    @Override
+    public void onDownloadFailed(Exception e) {
+
+    }
+});
+builder.build();
 ```
-## SQLiteHelper（数据库类使用）
-```
-//创建表格
-SQLiteHelper.with(context).createTable("table_name",new String[]{"column_name_a","column_name_b"});
-User user = new User();
-SQLiteHelper.with(context).createTable(user);
-
-//删除表格数据（不删除表）
-SQLiteHelper.with(context).deleteTable("table_name");
-SQLiteHelper.with(context).deleteTable(User.class);
-SQLiteHelper.with(context).dropTable("table_name");//删除表
-
-//删除数据
-SQLiteHelper.with(context).delete("sql");
-SQLiteHelper.with(context).delete(User.class,"user_id=?",new String[]{"1"});
-SQLiteHelper.with(context).delete("table_name","user_id=?",new String[]{"1"});
-
-//查询
-List<Map<String, String>> list = SQLiteHelper.with(context).query("sql");
-List<User> list = SQLiteHelper.with(context).query(User.class,"sql");
-
-//插入数据
-User user = new User();
-SQLiteHelper.with(context).insert(user);
-
-SQLiteHelper.with(context).insert("sql");
-
-ContentValues values = new ContentValues();
-values.put("user_id","1");
-values.put("user_name","name");
-SQLiteHelper.with(context).insert("table_name",values);
-
-//更新数据
-SQLiteHelper.with(context).update("sql");
-
-User user = new User();
-user.setUserName("Name");
-ContentValues values = new ContentValues();
-values.put("user_id","1");
-values.put("user_name","name");
-SQLiteHelper.with(context).update(user,values,"user_id=?",new String[]{"1"});
-```
-## Badge（APP桌面角标-红色圆点）
-主要是显示红色圆点，但是不支持所有手机类型，目前支持小米、华为、三星、索尼。
-Badge已经做了缓存处理，同时去区别了多个项目在一个手机的缓存区别。
-```
-//增加数量
-Badge.add(cntext);
-//重置数量
-Badge.reset(context);
-//设置数量
-Badge.setNumber(context,number);
-//获取数量
-int number = Badge.number(context);
-```
-## DataStorage(数据缓存)
-目前支持int string double float long Set Map<String,String> List<Map<String,String>>数据类型
-```
-DataStorage.with(context).put("username","xxxx");
-String username = DataStorage.with(context).getString("username","");
-```
-
-## DateUtils - 时间工具类
-```
-//现在时间
-String now = DateUtils.now(DateUtils.DATE_FORMAT_YYYY_MM_DD);
-
-//时间戳转时间
-String time = DateUtils.parseFromTimestamp(timestamp);
-String time = DateUtils.parseFromTimestamp(timestamp,DateUtils.DATE_FORMAT_YYYY_MM_DD);
-
-//时间字符串转时间对象
-Date date = DateUtils.parse("2019-09-10 09:00:10");
-Date date = DateUtils.parse("2019-09-10 09:00:10",DateUtils.DATE_FORMAT_YYYY_MM_DD_BLANK_24H_MM_SS);
-```
-
-## Log - 日志，使用方法跟系统的一致，只是为了打印长字符的时候能够打印完全做了换行打印。
-```
-com.android.utils.Log.i("Relin","xxxxxxx");
-```
-
-## StatusBar（状态栏工具类）
-工具包含对沉浸状态设置、状态栏颜色、字体颜色修改（深色、浅色）
-```
-//如果在页面中（Activity/Fragment）可以直接调用父类方法设置
-setStatusBarColor(R.color.color_white);
-//详细使用方法，对应类有注释https://github.com/RelinRan/AndroidKit/blob/master/app/src/main/java/com/android/utils/StatusBar.java
-```
-
-## Uploader - 上传文件
-工具可以对文件上传进行监听
+## Uploader
+文件上传工具
 ```
 Uploader.Builder builder = new Uploader.Builder();
 builder.url(Constants.BASE_URL + "/appApi/file/uploadImage");
@@ -650,18 +1001,84 @@ builder.params(params);
 builder.mediaType(Uploader.MEDIA_TYPE_FORM);
 builder.build();
 ```
+## SQLite
+数据库操作
 
-## VideoRecordAty - 视频录制
+1.创建表
 ```
-//AndroidManifest.xml配置
-<activity android:name="com.android.video.VideoRecordAty"></activity>
+//方式1
+SQLite.with(context).createTable("table_name",new String[]{"column_name_a","column_name_b"});
+//方式2
+User user = new User();
+SQLite.with(context).createTable(user);
+```
+2.删除表格数据（不删除表）
+```
+//方式1
+SQLite.with(context).deleteTable("table_name");
+//方式2
+SQLite.with(context).deleteTable(User.class);
+//方式3
+SQLite.with(context).dropTable("table_name");//删除表
+```
+3.删除数据
+```
+//方式1
+SQLite.with(context).delete("sql");
+//方式2
+SQLite.with(context).delete(User.class,"user_id=?",new String[]{"1"});
+//方式3
+SQLite.with(context).delete("table_name","user_id=?",new String[]{"1"});
+```
+4.查询
+```
+//方式1
+List<Map<String, String>> list = SQLite.with(context).query("sql");
+//方式2
+List<User> list = SQLite.with(context).query(User.class,"sql");
+```
+5.插入数据
+```
+//方式1
+User user = new User();
+SQLite.with(context).insert(user);
+//方式2
+SQLite.with(context).insert("sql");
+//方式3
+ContentValues values = new ContentValues();
+values.put("user_id","1");
+values.put("user_name","name");
+SQLite.with(context).insert("table_name",values);
+```
+6.更新数据
+```
+//方式1
+SQLite.with(context).update("sql");
+//方式2
+User user = new User();
+user.setUserName("Name");
+ContentValues values = new ContentValues();
+values.put("user_id","1");
+values.put("user_name","name");
+SQLite.with(context).update(user,values,"user_id=?",new String[]{"1"});
+```
 
-//跳转页面
+
+## VideoRecordAty
+视频录制
+1.AndroidManifest.xml配置
+```
+<activity android:name="com.androidx.video.VideoRecordAty"></activity>
+```
+2.跳转页面
+```
 Bundle bundle = new Bundle();
 //限制录制多少秒，如果不限制就传0
 bundle.putLong(VideoRecordAty.VIDEO_DURATION,60*1000);
-startActivityForResult(VideoRecordAty.class,null,520);
-
+startActivityForResult(VideoRecordAty.class,520,bundle);
+```
+3.处理结果
+```
 @Override
 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);

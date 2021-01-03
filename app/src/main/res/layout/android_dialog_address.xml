@@ -50,7 +50,7 @@
         android:paddingBottom="15dp"
         android:paddingTop="15dp">
 
-        <com.android.view.LoopView
+        <com.androidx.view.LoopView
             android:id="@+id/lv_province"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -64,7 +64,7 @@
             su:lv_textFitReduce="5"
             su:lv_textSize="16sp" />
 
-        <com.android.view.LoopView
+        <com.androidx.view.LoopView
             android:id="@+id/lv_city"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -78,7 +78,7 @@
             su:lv_textFitReduce="5"
             su:lv_textSize="16sp" />
 
-        <com.android.view.LoopView
+        <com.androidx.view.LoopView
             android:id="@+id/lv_area"
             android:layout_width="0dp"
             android:layout_height="match_parent"
