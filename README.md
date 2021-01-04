@@ -101,6 +101,7 @@ Android_Window_Animation_Bottom
 ```
 
 ## View findViewById
+
 1.注解
 ```
 @ViewInject(R.id.et_user)
@@ -113,6 +114,7 @@ findViewById(EditText.class,R.id.et_user).setText("user");
 
 ## Toast
 以下方法直接在Activity extends CoreActivity和Fragment extends CoreFragment可直接调用
+
 1.页面底部显示
 ```
 showToast("加载成功");
@@ -167,6 +169,7 @@ Http.init(options);
 ```
 
 2.常规使用
+
 2.1接口类
 ```
 import com.androidx.net.Http;
@@ -192,6 +195,7 @@ public class MainApi {
 }
 ```
 2.2接口使用(CoreActivity|CoreFragment)
+
 ```
 private MainApi mainApi;
 
@@ -304,16 +308,19 @@ navigationBar.setOnNavigationBarClickListener(new NavigationBar.OnNavigationBarC
     }
 });
 ```
+
 6.显示
 ```
 navigationBar.show();
 ```
+
 7.隐藏
 ```
 navigationBar.hide();
 ```
 
 ### Activity
+
 Activity页面只需要继承CoreActivity,如果是TV研发需要继承TVCoreActivity
 ```
 public class MainActivity extends CoreActivity implements NavigationBar.OnNavigationBarClickListener {
@@ -360,6 +367,7 @@ public class MainActivity extends CoreActivity implements NavigationBar.OnNaviga
 ```
 
 ## Fragment
+
 Fragment页面只需要继承CoreFragment,如果是TV研发需要继承TVCoreFragment
 ```
 public class MainFragment extends CoreFragment {
@@ -403,6 +411,7 @@ public class MainFragment extends CoreFragment {
 
 ```
 ## SwipeRequestLayout
+
 刷新加载控件，支持上拉加载更多，下拉刷新。
 
 1.xml
@@ -481,6 +490,7 @@ swipeRequestLayout.setLoadable(false);
      androidx:solid="@color/colorBlack41" />
 ```
 ## TextGroupView
+
 ImageView + TextView + TextView + TextView + ImageView + EditText组合控件
 多用于横排布局，左边图标，中间文字或者输入框，右边箭头类似的布局。
 详细：https://github.com/RelinRan/TextGroupView
@@ -504,6 +514,7 @@ ImageView + TextView + TextView + TextView + ImageView + EditText组合控件
 ```
 ##  BannerPager
 轮播图,支持指示器位置自定义，显示自定义。
+
 1.xml
 ```
 <com.androidx.view.BannerPager
@@ -516,6 +527,7 @@ ImageView + TextView + TextView + TextView + ImageView + EditText组合控件
      android:layout_width="match_parent"
      android:layout_height="200dp"></com.androidx.view.BannerPager>
 ```
+
 2.设置数据
 ```
     private BannerPager banner;
@@ -582,6 +594,7 @@ RecyclerView使用的Adapter,可快速绑定View对应数据。
 ```
 
 ## BasisAdapter
+
 实用于ListView、GridView、FlowListView，在BaseAdapter基础上升级封装，可快速构建列表。
 ```
     private class DebugAdapter extends BasisAdapter<ResponseBody> {
@@ -1063,7 +1076,6 @@ values.put("user_name","name");
 SQLite.with(context).update(user,values,"user_id=?",new String[]{"1"});
 ```
 
-
 ## VideoRecordAty
 视频录制
 1.AndroidManifest.xml配置
@@ -1092,3 +1104,165 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 }
 ```
 
+## ImageProvider
+图片提供者，创建图片文件、File和Bitmap转换、图片压缩
+
+1.创建图片
+```
+File file = ImageProvider.buildFile(context,Environment.DIRECTORY_PICTURES,".jpg");
+```
+
+2.Bitmap转byte[]
+```
+byte[] data = ImageProvider.getBytes(bitmap);
+```
+
+3.获取图片角度
+```
+int angle = ImageProvider.angle(path);
+```
+
+4.旋转图片
+```
+Bitmap bitmap = ImageProvider.rotate(String pathName, int angle, int outWidth, int outHeight);
+```
+
+5.压缩图片到1024kb以下
+```
+ByteArrayOutputStream bos = compress(bitmap, Bitmap.CompressFormat.PNG, 1024);
+```
+
+6.压缩图片到500kb以下，获取文件
+```
+File file = ImageProvider.buildFile(context,Environment.DIRECTORY_PICTURES,".jpg");
+String outPutPath = file.getAbsolutePath();
+File file = decodeBitmap(bitmap, Bitmap.CompressFormat.PNG, 500, outPutPath);
+```
+
+7.是否是图片
+```
+boolean isImage = ImageProvider.isImage(path);
+```
+
+8.图片转Base64
+```
+String base64 = encodeBase64(file);
+```
+
+9.图片转Base64,不URLEncode
+```
+String base64 = encodeBase64(file,false);
+```
+
+10.Base64转图片,不URLDecode
+```
+String base64 = decodeBase64(base64String,path,false);
+```
+
+11.Uri转Bitmap
+```
+Bitmap bitmap = decodeUri(context,uri);
+```
+
+## IntentProvider
+常用Intent提供者
+
+1.打开类型选择器
+```
+String mineType = "image/*";
+//方式1
+IntentProvider.pick(Activity activity,mineType);
+//方式2
+IntentProvider.pick(Fragment fragment, String mineType);
+```
+
+2.系统拍照
+```
+//方式1
+IntentProvider.imageCapture(Activity activity, Uri outPutUri);
+//方式2
+IntentProvider.imageCapture(Fragment fragment, Uri outPutUri);
+```
+
+3.打开文件
+```
+IntentProvider.openDocument(Context context, String path);
+```
+
+## IOProvider
+文件操作提供者
+
+1.获取挂载的缓存文件夹
+```
+IOProvider.getExternalCacheDir(Context context);
+```
+
+2.创建文件
+```
+File file = IOProvider.createFile(Context context, String dir, String name);
+```
+
+3.创建新文件夹
+```
+String path = IOProvider.makeDirs(Context context, String dir) ;
+```
+
+4.删除文件
+```
+boolean result = IOProvider.delete(File file);
+```
+
+5.计算文件大小
+```
+long length = IOProvider.length(File file);
+```
+
+6.获取文件后缀
+```
+String suffix = IOProvider.getSuffix(String path);
+```
+
+7.获取文件类型
+```
+String mineType = IOProvider.getMimeType(String path);
+```
+
+8.根据URL生产文件名
+```
+String name =  IOProvider.buildNameByUrl(String url)
+```
+
+9.获取Assets文件内容
+```
+String content = IOProvider.readAssets(Context context, String fileName);
+```
+
+10.获取文件内容
+```
+String content = IOProvider.read(File file);
+```
+
+11.写入文件（传入文件名，内容）
+```
+IOProvider.write(Context context, String name, String content);
+```
+
+12.文件流转文件
+```
+File file = IOProvider.decodeInputStream(InputStream inputStream, String path);
+```
+
+13.文件转byte[]
+```
+byte[] data = IOProvider.decodeFile(File file);
+```
+
+14.byte[]转文件
+```
+File file = IOProvider.decodeBytes(byte[] bytes, String path)
+```
+
+15.通过文件名获取资源id
+```
+int resId = findResId("android_ic_close", R.drawable.class);
+```

@@ -414,7 +414,7 @@ public class IOProvider {
      * @param path  文件路径
      * @return
      */
-    public static File decideBytes(byte[] bytes, String path) {
+    public static File decodeBytes(byte[] bytes, String path) {
         File file = new File(path);
         if (file.getParentFile().exists()) {
             file.mkdirs();
