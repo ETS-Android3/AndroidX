@@ -1194,7 +1194,7 @@ IntentProvider.openDocument(Context context, String path);
 
 1.获取挂载的缓存文件夹
 ```
-IOProvider.getExternalCacheDir(Context context);
+String path = IOProvider.getExternalCacheDir(Context context);
 ```
 
 2.创建文件
@@ -1266,3 +1266,48 @@ File file = IOProvider.decodeBytes(byte[] bytes, String path)
 ```
 int resId = findResId("android_ic_close", R.drawable.class);
 ```
+
+## Validator
+验证器
+
+1.自定义正则
+```
+Validator.REGEX_PHONE = "xxx";
+```
+
+2.验证手机号
+```
+Validator.isPhone(String number);
+```
+
+3.验证身份证号（粗略的校验）
+```
+Validator.isIdCard(String number);
+```
+
+4.验证微信号
+```
+Validator.isWeChat(String number);
+```
+
+5.验证密码
+默认正则，密码长度为8到20位,必须包含字母和数字，字母区分大小写
+```
+Validator.isPassword(String password);
+```
+
+6.验证数字
+```
+Validator.isNumeric(String number);
+```
+
+7.验证邮箱
+```
+Validator.isEmail(String mail);
+```
+
+8.验证QQ
+```
+Validator.isQQ(String number);
+```
+
