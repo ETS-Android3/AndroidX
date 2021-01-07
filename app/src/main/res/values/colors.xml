@@ -69,8 +69,11 @@
     <color name="colorItemSelectorDivider">#CDCDCD</color>
     <color name="colorItemSelectorConfirm">#0EB692</color>
     <color name="colorItemSelectorCancel">#454545</color>
-
-    <color name="colorTabPressedBackground">#F2F2F2</color>
+    <!--页面标签-->
+    <color name="colorPagerTabStripDivider">#AEAEAE</color>
+    <color name="colorPagerTabStripText">#333333</color>
+    <color name="colorPagerTabStripSelectedText">#0EB692</color>
+    <color name="colorPagerTabStripUnderline">#0EB692</color>
 
     <color name="colorVideoBackground">#FF9D01</color>
     <color name="colorVideoTitle">#FF9D01</color>

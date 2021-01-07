@@ -40,7 +40,7 @@ public class Screen {
      * @param px
      * @return
      */
-    public static float pxToDp(float px){
+    public static float px2Dp(float px){
         return px/density();
     }
 
@@ -49,7 +49,7 @@ public class Screen {
      * @param dp
      * @return
      */
-    public static float dpToPx(float dp){
+    public static float dp2Px(float dp){
         return dp*density();
     }
 
@@ -59,7 +59,7 @@ public class Screen {
      * @param spValue sp值
      * @return px值
      */
-    public static int spToPx(float spValue) {
+    public static int sp2Px(float spValue) {
         final float fontScale = Resources.getSystem().getDisplayMetrics().scaledDensity;
         return (int) (spValue * fontScale + 0.5f);
     }
@@ -70,7 +70,7 @@ public class Screen {
      * @param pxValue px值
      * @return sp值
      */
-    public static int pxToSp(float pxValue) {
+    public static int px2Sp(float pxValue) {
         final float fontScale = Resources.getSystem().getDisplayMetrics().scaledDensity;
         return (int) (pxValue / fontScale + 0.5f);
     }

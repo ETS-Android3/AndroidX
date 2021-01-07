@@ -286,6 +286,49 @@
         <attr name="android:horizontalSpacing" />
     </declare-styleable>
 
+    <!--页面标签-->
+    <declare-styleable name="PagerTabStrip">
+        <!--选中位置-->
+        <attr name="position" format="integer"></attr>
+        <!--标签布局-->
+        <attr name="tabLayout" format="enum">
+            <enum name="match_parent" value="-1"/>
+            <enum name="wrap_content" value="-2"/>
+        </attr>
+        <!--标签宽度-->
+        <attr name="tabWidth" format="dimension"></attr>
+        <!--标签水平间距-->
+        <attr name="tabPaddingHorizontal" format="dimension"></attr>
+        <!--标签垂直间距-->
+        <attr name="tabPaddingVertical" format="dimension"></attr>
+        <!--标签文字大小-->
+        <attr name="tabTextSize" format="dimension"></attr>
+        <!--标签文字颜色-->
+        <attr name="tabTextColor" format="reference|color"></attr>
+        <!--标签选中颜色-->
+        <attr name="tabTextSelectSize" format="dimension"></attr>
+        <!--标签分割线颜色-->
+        <attr name="dividerColor" format="color"></attr>
+        <!--标签宽度-->
+        <attr name="dividerWidth" format="dimension"></attr>
+        <!--标签垂直间距-->
+        <attr name="dividerPaddingVertical" format="dimension"></attr>
+        <!--标签布局方式-->
+        <attr name="underlineLayout" format="enum">
+            <enum name="match_parent" value="-1"/>
+            <enum name="wrap_content" value="-2"/>
+        </attr>
+        <!--下划线颜色-->
+        <attr name="underlineColor" format="color"></attr>
+        <!--下划线资源-->
+        <attr name="underlineResId" format="reference"></attr>
+        <!--下划线高度-->
+        <attr name="underlineHeight" format="dimension"></attr>
+        <!--下划线动画持续时间-->
+        <attr name="underlineDuration" format="integer"></attr>
+    </declare-styleable>
+
+
 
     <declare-styleable name="CircleProgressButton">
         <attr name="radius" />

@@ -7,6 +7,7 @@ package com.androidx.view;
  */
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.util.AttributeSet;
@@ -29,11 +30,11 @@ public class FlowListView extends ViewGroup {
     /**
      * 竖向间距
      */
-    private int verticalSpacing = (int) Screen.dpToPx(8);
+    private int verticalSpacing = (int) (8* Resources.getSystem().getDisplayMetrics().density);
     /**
      * 横向间距
      */
-    private int horizontalSpacing = (int) Screen.dpToPx(8);
+    private int horizontalSpacing = (int) (8* Resources.getSystem().getDisplayMetrics().density);
     /**
      * 数据监察者
      */
