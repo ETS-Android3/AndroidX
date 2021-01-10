@@ -28,6 +28,9 @@ import androidx.viewpager.widget.ViewPager;
 import com.androidx.R;
 import com.androidx.util.Log;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Author: Relin
  * Description:页面标签
@@ -344,8 +347,25 @@ public class PagerTabStrip extends HorizontalScrollView {
      * @param position 位置
      */
     public void setPosition(int position) {
+        smoothScrollToPosition(position);
+    }
+
+    /**
+     * 动画滑动到对应位置
+     *
+     * @param position 位置
+     */
+    public void smoothScrollToPosition(final int position) {
         this.position = position;
         notifyDataSetChanged();
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                View view = tabParent.getChildAt(position);
+                smoothScrollTo((int) view.getX(), 0);
+            }
+        }, 50);
     }
 
     /**
