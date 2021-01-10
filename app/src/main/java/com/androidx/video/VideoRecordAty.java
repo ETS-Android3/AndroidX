@@ -6,7 +6,6 @@ import android.hardware.Camera;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -25,24 +24,26 @@ import androidx.annotation.NonNull;
 import com.androidx.R;
 import com.androidx.app.CoreActivity;
 import com.androidx.app.NavigationBar;
-import com.androidx.view.CircleProgressButton;
+import com.androidx.view.CircleTimerView;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class VideoRecordAty extends CoreActivity implements SurfaceHolder.Callback, View.OnClickListener {
+/**
+ * 视频录制
+ */
+public class VideoRecordAty extends CoreActivity implements SurfaceHolder.Callback, View.OnClickListener, CircleTimerView.OnTimerChangeListener {
 
-    public static final String VIDEO_PATH = "path";
-    public static final String VIDEO_HEIGHT = "width";
-    public static final String VIDEO_WIDTH = "height";
-    public static final String VIDEO_DURATION = "duration";
-    public static final String CAMERA_ID = "cameraId";
+    public final String TAG = VideoRecordAty.class.getSimpleName();
+    public static final String VIDEO_PARAMS = "params";
 
     private SurfaceView surfaceView;
-    private CircleProgressButton btn_start;
+    private CircleTimerView timerButton;
     private ImageView iv_finish;
     private LinearLayout ll_finish;
     private ImageView iv_flash;
@@ -55,13 +56,17 @@ public class VideoRecordAty extends CoreActivity implements SurfaceHolder.Callba
     private Camera camera;
     private SurfaceHolder surfaceHolder;
     private MediaRecorder mediaRecorder;
-    private int cameraId;
-    private String videoPath;
     private boolean isFront;
     private boolean isRecording;
-    private int width;
-    private int height;
-    private long duration = 0;
+
+    private VideoRecordParams params;
+    private String videoFolder;
+    private String videoPath;
+    private int width = 1920;
+    private int height = 1080;
+    private int duration = 15 * 1000;
+    private int cameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
+    private int videoEncoder = MediaRecorder.VideoEncoder.H264;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,13 +83,19 @@ public class VideoRecordAty extends CoreActivity implements SurfaceHolder.Callba
     @Override
     protected void onCreate(Bundle savedInstanceState, NavigationBar bar) {
         bar.hide();
-        width = getIntent().getIntExtra(VIDEO_HEIGHT, 1920);
-        height = getIntent().getIntExtra(VIDEO_WIDTH, 1080);
-        duration = getIntent().getLongExtra(VIDEO_DURATION, 15 * 1000);
-        cameraId = getIntent().getIntExtra(CAMERA_ID, Camera.CameraInfo.CAMERA_FACING_BACK);
-
+        if (getIntent().getSerializableExtra(VIDEO_PARAMS) != null) {
+            params = (VideoRecordParams) getIntent().getSerializableExtra(VIDEO_PARAMS);
+            videoFolder = params.getVideoFolder();
+            videoPath = params.getVideoPath();
+            width = params.getWidth();
+            height = params.getHeight();
+            duration = params.getDuration();
+            cameraId = params.getCameraId();
+            videoEncoder = params.getVideoEncoder();
+        }
+        //find view by id
         surfaceView = findViewById(R.id.android_sv_camera);
-        btn_start = findViewById(R.id.android_btn_start);
+        timerButton = findViewById(R.id.android_btn_start);
         iv_flash = findViewById(R.id.android_iv_flash);
         iv_switch = findViewById(R.id.android_iv_switch);
         iv_finish = findViewById(R.id.android_iv_finish);
@@ -93,21 +104,20 @@ public class VideoRecordAty extends CoreActivity implements SurfaceHolder.Callba
         iv_ok = findViewById(R.id.android_iv_ok);
         iv_cancel = findViewById(R.id.android_iv_cancel);
         v_right = findViewById(R.id.v_right);
-
+        //点击事件
         iv_finish.setOnClickListener(this);
         iv_cancel.setOnClickListener(this);
         iv_ok.setOnClickListener(this);
         iv_switch.setOnClickListener(this);
         iv_flash.setOnClickListener(this);
-
-        btn_start.setDuration(-1);
-
+        //设置显示隐藏
         ll_finish.setVisibility(View.VISIBLE);
         iv_cancel.setVisibility(View.GONE);
         iv_ok.setVisibility(View.GONE);
-
+        //初始化类
+        handler = new VideoHandler();
         mediaRecorder = new MediaRecorder();
-
+        //预览初始化
         surfaceHolder = surfaceView.getHolder();
         surfaceHolder.addCallback(this);
         surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
@@ -118,49 +128,53 @@ public class VideoRecordAty extends CoreActivity implements SurfaceHolder.Callba
                 return false;
             }
         });
-        btn_start.setOnCircleProgressButtonListener(new CircleProgressButton.OnCircleProgressButtonListener() {
-
-            @Override
-            public void onAnimationStart() {
-                if (mediaRecorder != null && !isRecording && camera != null) {
-                    camera.unlock();
-                    mediaRecorder.start();
-                    startHandler();
-                }
-            }
-
-            @Override
-            public void OnCircleProgress(float percent) {
-            }
-
-            @Override
-            public void onAnimationEnd() {
-                isRecording = false;
-                iv_finish.setVisibility(View.GONE);
-                btn_start.setVisibility(View.GONE);
-                v_right.setVisibility(View.GONE);
-                ll_finish.setVisibility(View.VISIBLE);
-                iv_cancel.setVisibility(View.VISIBLE);
-                iv_ok.setVisibility(View.VISIBLE);
-                if (mediaRecorder != null) {
-                    mediaRecorder.stop();
-                }
-                stopHand();
-            }
-        });
+        //计时器按钮
+        timerButton.setDuration(duration);
+        timerButton.setOnTimerChangeListener(this);
     }
 
+    @Override
+    public void onTimerStart() {
+        iv_flash.setEnabled(false);
+        iv_switch.setEnabled(false);
+        if (mediaRecorder != null && !isRecording && camera != null) {
+            camera.unlock();
+            mediaRecorder.start();
+            startVideoTimer();
+        }
+    }
+
+    @Override
+    public void onTimerChanged(long duration, long millisInFuture) {
+
+    }
+
+    @Override
+    public void onTimerFinish() {
+        iv_flash.setEnabled(true);
+        iv_switch.setEnabled(true);
+        isRecording = false;
+        iv_finish.setVisibility(View.GONE);
+        timerButton.setVisibility(View.GONE);
+        v_right.setVisibility(View.GONE);
+        ll_finish.setVisibility(View.VISIBLE);
+        iv_cancel.setVisibility(View.VISIBLE);
+        iv_ok.setVisibility(View.VISIBLE);
+        if (mediaRecorder != null) {
+            mediaRecorder.setOnErrorListener(null);
+            mediaRecorder.setPreviewDisplay(null);
+            try {
+                mediaRecorder.stop();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        stopVideoTimer();
+    }
 
     @Override
     public void surfaceCreated(final SurfaceHolder surfaceHolder) {
-        new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                int previewSizes[] = initCamera(cameraId);
-                initMediaRecorder(camera, mediaRecorder, surfaceHolder, previewSizes[0], previewSizes[1]);
-            }
-        }.sendEmptyMessageDelayed(0, 50);
+        sendSurfaceCreated();
     }
 
 
@@ -197,9 +211,11 @@ public class VideoRecordAty extends CoreActivity implements SurfaceHolder.Callba
             camera.release();
         }
         camera = Camera.open(cameraId);
-        Camera.Parameters parameters = camera.getParameters();//获取camera的parameter实例
+        //获取camera的parameter实例
+        Camera.Parameters parameters = camera.getParameters();
         parameters.set("orientation", "portrait");
-        List<Camera.Size> sizeList = parameters.getSupportedPreviewSizes();//获取所有支持的camera尺寸
+        //获取所有支持的camera尺寸
+        List<Camera.Size> sizeList = parameters.getSupportedPreviewSizes();
         for (int i = 0; i < sizeList.size(); i++) {
             Camera.Size size = sizeList.get(i);
             if (size.width == width && size.height == height) {
@@ -210,9 +226,12 @@ public class VideoRecordAty extends CoreActivity implements SurfaceHolder.Callba
         }
         Camera.Size optimalSize = getOptimalPreviewSize(sizeList, width, height);
         Log.i("SupportedPreviewSizes", "Target preview size " + optimalSize.width + " x " + optimalSize.height);
-        parameters.setPreviewSize(optimalSize.width, optimalSize.height);//把camera.size赋值到parameters
-//      parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);//装换摄像头需要注释此代码
-        camera.setParameters(parameters);//把parameters设置给camera
+        //把camera.size赋值到parameters
+        parameters.setPreviewSize(optimalSize.width, optimalSize.height);
+        //装换摄像头需要注释此代码
+        //parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+        //把parameters设置给camera
+        camera.setParameters(parameters);
         camera.setDisplayOrientation(90);
         try {
             camera.setPreviewDisplay(surfaceHolder);
@@ -313,6 +332,23 @@ public class VideoRecordAty extends CoreActivity implements SurfaceHolder.Callba
         }
     }
 
+    /**
+     * 获取媒体录制
+     *
+     * @return
+     */
+    public MediaRecorder getMediaRecorder() {
+        return mediaRecorder;
+    }
+
+    /**
+     * 设置媒体录制
+     *
+     * @param mediaRecorder
+     */
+    public void setMediaRecorder(MediaRecorder mediaRecorder) {
+        this.mediaRecorder = mediaRecorder;
+    }
 
     /**
      * 初始化录制对象
@@ -337,9 +373,9 @@ public class VideoRecordAty extends CoreActivity implements SurfaceHolder.Callba
             @Override
             public void onError(MediaRecorder mr, int what, int extra) {
                 // 发生错误，停止录制
-                VideoRecordAty.this.mediaRecorder.stop();
-                VideoRecordAty.this.mediaRecorder.release();
-                VideoRecordAty.this.mediaRecorder = null;
+                getMediaRecorder().stop();
+                getMediaRecorder().release();
+                setMediaRecorder(null);
             }
         });
         // 设置音频采集方式
@@ -351,7 +387,7 @@ public class VideoRecordAty extends CoreActivity implements SurfaceHolder.Callba
         //设置audio的编码格式
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         //设置video的编码格式
-        mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
+        mediaRecorder.setVideoEncoder(videoEncoder);
         //设置录制的视频编码比特率
         mediaRecorder.setVideoEncodingBitRate(5 * 1024 * 1024);
         //设置要捕获的视频的宽度和高度
@@ -359,16 +395,20 @@ public class VideoRecordAty extends CoreActivity implements SurfaceHolder.Callba
         //设置记录会话的最大持续时间（毫秒）
 //      mediaRecorder.setMaxDuration(60 * 1000);
         mediaRecorder.setOrientationHint(cameraId == Camera.CameraInfo.CAMERA_FACING_BACK ? 90 : 270);//90 270
-        videoPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        if (videoPath != null) {
-            File dir = new File(videoPath + "/Videos");
-            if (!dir.exists()) {
-                dir.mkdir();
-            }
-            videoPath = dir + "/" + System.currentTimeMillis() + ".mp4";
-            //设置输出文件的路径
-            mediaRecorder.setOutputFile(videoPath);
+        if (videoFolder == null) {
+            videoFolder = getExternalCacheDir().getAbsolutePath();
         }
+        File dir = new File(videoFolder + "/Videos");
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+        if (videoPath == null) {
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMDDHHmmss");
+            String name = "VIDEO_" + format.format(new Date()) + ".mp4";
+            videoPath = dir + "/" + name;
+        }
+        //设置输出文件的路径
+        mediaRecorder.setOutputFile(videoPath);
         //准备录制
         try {
             mediaRecorder.prepare();
@@ -380,7 +420,7 @@ public class VideoRecordAty extends CoreActivity implements SurfaceHolder.Callba
     /**
      * 释放录制对象
      */
-    private void releaseMediaRecorder() {
+    protected void releaseMediaRecorder() {
         if (mediaRecorder != null) {
             mediaRecorder.release();
             mediaRecorder = null;
@@ -402,31 +442,38 @@ public class VideoRecordAty extends CoreActivity implements SurfaceHolder.Callba
             finish();
         } else if (id == R.id.android_iv_ok) {
             Intent intent = new Intent();
-            intent.putExtra(VIDEO_PATH, videoPath);
+            intent.putExtra(VIDEO_PARAMS, params);
             setResult(RESULT_OK, intent);
             finish();
         }
         if (id == R.id.android_iv_flash) {
             isOpenFlash = !isOpenFlash;
-            switchFlash(isOpenFlash);
+            setFlash(isOpenFlash);
         }
     }
 
     private boolean isOpenFlash;
 
-    private void switchFlash(boolean open) {
-        Camera.Parameters parameters = camera.getParameters();//获取camera的parameter实例
+    /**
+     * 设置闪光灯
+     *
+     * @param open 是否打开
+     */
+    protected void setFlash(boolean open) {
+        //获取camera的parameter实例
+        Camera.Parameters parameters = camera.getParameters();
         if (open) {
             //打开闪光灯
             iv_flash.setImageResource(R.drawable.android_ic_video_flash_uncheck);
-            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);//开启
-            camera.setParameters(parameters);
+            //开启
+            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
         } else {
             //关闭闪光灯
             iv_flash.setImageResource(R.drawable.android_ic_video_flash_check);
-            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);//关闭
-            camera.setParameters(parameters);
+            //关闭
+            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
         }
+        camera.setParameters(parameters);
     }
 
     /**
@@ -435,7 +482,7 @@ public class VideoRecordAty extends CoreActivity implements SurfaceHolder.Callba
      * @param time   时间
      * @param tvShow 控件
      */
-    private static void showVideoTime(long time, TextView tvShow) {
+    private void showVideoTime(long time, TextView tvShow) {
         DecimalFormat format = new DecimalFormat("00");
         long second = time / 1000;
         long hour = second / 60 / 60;
@@ -452,33 +499,59 @@ public class VideoRecordAty extends CoreActivity implements SurfaceHolder.Callba
         tvShow.setText(timeText);
     }
 
-    private void stopHand() {
+    /**
+     * 开始视频计时器
+     */
+    protected void startVideoTimer() {
+        videoTime = System.currentTimeMillis();
         if (handler != null) {
-            handler.removeMessages(0);
+            handler.sendEmptyMessage(WHAT_VIDEO_TIME);
         }
     }
 
-    private void startHandler() {
-        videoTime = System.currentTimeMillis();
+    /**
+     * 停止视频计时器
+     */
+    protected void stopVideoTimer() {
         if (handler != null) {
-            handler.sendEmptyMessage(0);
+            handler.removeMessages(WHAT_VIDEO_TIME);
         }
+    }
+
+    /**
+     * 发送SurfaceCreated消息
+     */
+    protected void sendSurfaceCreated() {
+        handler.sendEmptyMessageDelayed(WHAT_SURFACE_CREATED, 50);
     }
 
     private long videoTime = 0;
+    private VideoHandler handler;
     private boolean isOpenIndicator;
-    private Handler handler = new Handler() {
+    private final int WHAT_VIDEO_TIME = 0;
+    private final int WHAT_SURFACE_CREATED = 1;
+    /**
+     * VideoHandler中间类
+     */
+    private class VideoHandler extends Handler {
 
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
-            isOpenIndicator = !isOpenIndicator;
-            tv_time.setCompoundDrawablesWithIntrinsicBounds(isOpenIndicator ? R.drawable.android_video_red_dot : R.drawable.android_video_white_dot, 0, 0, 0);
-            long pass = System.currentTimeMillis() - videoTime;
-            showVideoTime(pass, tv_time);
-            handler.sendEmptyMessageDelayed(0, 100);
+            switch (msg.what) {
+                case WHAT_SURFACE_CREATED:
+                    int previewSizes[] = initCamera(cameraId);
+                    initMediaRecorder(camera, mediaRecorder, surfaceHolder, previewSizes[0], previewSizes[1]);
+                    break;
+                case WHAT_VIDEO_TIME:
+                    isOpenIndicator = !isOpenIndicator;
+                    tv_time.setCompoundDrawablesWithIntrinsicBounds(isOpenIndicator ? R.drawable.android_video_red_dot : R.drawable.android_video_white_dot, 0, 0, 0);
+                    long pass = System.currentTimeMillis() - videoTime;
+                    showVideoTime(pass, tv_time);
+                    handler.sendEmptyMessageDelayed(0, 100);
+                    break;
+            }
         }
-
-    };
+    }
 
 }

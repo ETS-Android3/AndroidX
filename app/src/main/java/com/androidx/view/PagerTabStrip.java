@@ -75,11 +75,11 @@ public class PagerTabStrip extends HorizontalScrollView {
     /**
      * 标签文字大小
      */
-    private int textSize = (int) (14* Resources.getSystem().getDisplayMetrics().density);
+    private int textSize = (int) (14 * Resources.getSystem().getDisplayMetrics().density);
     /**
      * 选中标签文字大小
      */
-    private int textSelectSize = (int) (14* Resources.getSystem().getDisplayMetrics().density);
+    private int textSelectSize = (int) (14 * Resources.getSystem().getDisplayMetrics().density);
     /**
      * 标签文字状态颜色
      */
@@ -196,13 +196,26 @@ public class PagerTabStrip extends HorizontalScrollView {
         underlineHeight = typedArray.getDimensionPixelOffset(R.styleable.PagerTabStrip_underlineHeight, underlineHeight);
         duration = typedArray.getInt(R.styleable.PagerTabStrip_underlineDuration, duration);
         typedArray.recycle();
-        //父级
-        container = new FrameLayout(context);
+        //初始化父级和容器
+        initContainerParent(context);
+    }
+
+    /**
+     * 初始化容器和父级
+     *
+     * @param context
+     */
+    protected void initContainerParent(Context context) {
+        if (container == null) {
+            container = new FrameLayout(context);
+        }
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         params.gravity = Gravity.CENTER_VERTICAL;
         addView(container, params);
         //标签父级
-        tabParent = buildTabParent();
+        if (tabParent == null) {
+            tabParent = buildTabParent();
+        }
         addTabParent(tabParent);
         //初始化模拟数据
         int count = 5;
@@ -380,7 +393,7 @@ public class PagerTabStrip extends HorizontalScrollView {
      */
     protected TextView buildTabText(int textSize, int textColor, int textSelectedColor, CharSequence text) {
         TextView textView = new TextView(getContext());
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX,textSize);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         textView.setTextColor(textColor);
         textView.setText(text);
         if (textSelectedColor != 0) {
@@ -561,7 +574,7 @@ public class PagerTabStrip extends HorizontalScrollView {
         TextView tabView = findTabView(position);
         int textWidth = (int) tabView.getPaint().measureText(tabView.getText().toString());
         int underlineWidth = tabView.getMeasuredWidth() + (position == count - 1 ? 0 : dividerWidth);
-        int padding = 0,marginHorizontal = tabPaddingHorizontal;
+        int padding = 0, marginHorizontal = tabPaddingHorizontal;
         if (tabLayoutParams == TabLayoutParams.MATCH_PARENT) {
             if (tabUnderlineParams == TabUnderlineParams.MATCH_PARENT) {
                 padding = 0;
@@ -657,238 +670,502 @@ public class PagerTabStrip extends HorizontalScrollView {
         animator.start();
     }
 
-
+    /**
+     * 获取标签容器
+     *
+     * @return
+     */
     public FrameLayout getContainer() {
         return container;
     }
 
+    /**
+     * 设置标签容器
+     *
+     * @param container
+     */
     public void setContainer(FrameLayout container) {
         this.container = container;
         requestLayout();
     }
 
+    /**
+     * 获取标签父级
+     *
+     * @return
+     */
     public LinearLayout getTabParent() {
         return tabParent;
     }
 
+    /**
+     * 设置标签父级
+     *
+     * @param tabParent
+     */
     public void setTabParent(LinearLayout tabParent) {
         this.tabParent = tabParent;
         requestLayout();
     }
 
+    /**
+     * 获取下划线持续时间
+     *
+     * @return
+     */
     public int getDuration() {
         return duration;
     }
 
+    /**
+     * 设置下划线持续时间
+     *
+     * @param duration
+     */
     public void setDuration(int duration) {
         this.duration = duration;
         requestLayout();
     }
 
+    /**
+     * 选中位置
+     *
+     * @return
+     */
     public int getPosition() {
         return position;
     }
 
+    /**
+     * 标签布局方式
+     *
+     * @return
+     */
     public int getTabLayoutParams() {
         return tabLayoutParams;
     }
 
+    /**
+     * 设置标签布局
+     *
+     * @param tabLayoutParams
+     */
     public void setTabLayoutParams(int tabLayoutParams) {
         this.tabLayoutParams = tabLayoutParams;
         requestLayout();
     }
 
+    /**
+     * 获取标签下划线参数
+     *
+     * @return
+     */
     public int getTabUnderlineParams() {
         return tabUnderlineParams;
     }
 
+    /**
+     * 设置标签下划线参数
+     *
+     * @param tabUnderlineParams
+     */
     public void setTabUnderlineParams(int tabUnderlineParams) {
         this.tabUnderlineParams = tabUnderlineParams;
         requestLayout();
     }
 
+    /**
+     * 获取标签水平间距
+     *
+     * @return
+     */
     public int getTabPaddingHorizontal() {
         return tabPaddingHorizontal;
     }
 
+    /**
+     * 设置标签水平间距
+     *
+     * @param tabPaddingHorizontal
+     */
     public void setTabPaddingHorizontal(int tabPaddingHorizontal) {
         this.tabPaddingHorizontal = tabPaddingHorizontal;
         requestLayout();
     }
 
+    /**
+     * 获取标签垂直间距
+     *
+     * @return
+     */
     public int getTabPaddingVertical() {
         return tabPaddingVertical;
     }
 
+    /**
+     * 设置标签垂直间距
+     *
+     * @param tabPaddingVertical
+     */
     public void setTabPaddingVertical(int tabPaddingVertical) {
         this.tabPaddingVertical = tabPaddingVertical;
         requestLayout();
     }
 
+    /**
+     * 获取标签宽度
+     *
+     * @return
+     */
     public int getTabWidth() {
         return tabWidth;
     }
 
+    /**
+     * 设置标签宽度
+     *
+     * @param tabWidth
+     */
     public void setTabWidth(int tabWidth) {
         this.tabWidth = tabWidth;
         requestLayout();
     }
 
+    /**
+     * 获取文字大小
+     *
+     * @return
+     */
     public int getTextSize() {
         return textSize;
     }
 
+    /**
+     * 设置文字大小
+     *
+     * @param textSize
+     */
     public void setTextSize(int textSize) {
         this.textSize = textSize;
         requestLayout();
     }
 
+    /**
+     * 获取文字选中文字大小
+     *
+     * @return
+     */
     public int getTextSelectSize() {
         return textSelectSize;
     }
 
+    /**
+     * 设置文字选中大小
+     *
+     * @param textSelectSize
+     */
     public void setTextSelectSize(int textSelectSize) {
         this.textSelectSize = textSelectSize;
         requestLayout();
     }
 
+    /**
+     * 获取文字颜色状态
+     *
+     * @return
+     */
     public ColorStateList getTextColorStateList() {
         return textColorStateList;
     }
 
+    /**
+     * 设置文字颜色状态
+     *
+     * @param textColorStateList
+     */
     public void setTextColorStateList(ColorStateList textColorStateList) {
         this.textColorStateList = textColorStateList;
         requestLayout();
     }
 
+    /**
+     * 获取文字颜色
+     *
+     * @return
+     */
     public int getTextColor() {
         return textColor;
     }
 
+    /**
+     * 设置文字颜色
+     *
+     * @param textColor
+     */
     public void setTextColor(int textColor) {
         this.textColor = textColor;
         requestLayout();
     }
 
+    /**
+     * 获取文字选中颜色
+     *
+     * @return
+     */
     public int getTextSelectedColor() {
         return textSelectedColor;
     }
 
+    /**
+     * 设置文字选中颜色
+     *
+     * @param textSelectedColor
+     */
     public void setTextSelectedColor(int textSelectedColor) {
         this.textSelectedColor = textSelectedColor;
         requestLayout();
     }
 
+    /**
+     * 获取分割线
+     *
+     * @return
+     */
     public View getDividerView() {
         return dividerView;
     }
 
+    /**
+     * 设置分割线
+     *
+     * @param dividerView
+     */
     public void setDividerView(View dividerView) {
         this.dividerView = dividerView;
         requestLayout();
     }
 
+    /**
+     * 获取分割线颜色
+     *
+     * @return
+     */
     public int getDividerColor() {
         return dividerColor;
     }
 
+    /**
+     * 设置分割线颜色
+     *
+     * @param dividerColor
+     */
     public void setDividerColor(@ColorInt int dividerColor) {
         this.dividerColor = dividerColor;
         requestLayout();
     }
 
+    /**
+     * 获取分割线资源
+     *
+     * @return
+     */
     public int getDividerResId() {
         return dividerResId;
     }
 
+    /**
+     * 设置分割线资源
+     *
+     * @param dividerResId
+     */
     public void setDividerResId(@ColorRes int dividerResId) {
         this.dividerResId = dividerResId;
         requestLayout();
     }
 
+    /**
+     * 获取分割线宽度
+     *
+     * @return
+     */
     public int getDividerWidth() {
         return dividerWidth;
     }
 
+    /**
+     * 设置分割线宽度
+     *
+     * @param dividerWidth
+     */
     public void setDividerWidth(int dividerWidth) {
         this.dividerWidth = dividerWidth;
         requestLayout();
     }
 
+    /**
+     * 获取分割线垂直间距
+     *
+     * @return
+     */
     public int getDividerPaddingVertical() {
         return dividerPaddingVertical;
     }
 
+    /**
+     * 设置分割线垂直间距
+     *
+     * @param dividerPaddingVertical
+     */
     public void setDividerPaddingVertical(int dividerPaddingVertical) {
         this.dividerPaddingVertical = dividerPaddingVertical;
         requestLayout();
     }
 
+    /**
+     * 获取下划线
+     *
+     * @return
+     */
     public View getUnderlineView() {
         return underlineView;
     }
 
+    /**
+     * 设置下划线
+     *
+     * @param underlineView
+     */
     public void setUnderlineView(View underlineView) {
         this.underlineView = underlineView;
         requestLayout();
     }
 
+    /**
+     * 获取下划线颜色
+     *
+     * @return
+     */
     public int getUnderlineColor() {
         return underlineColor;
     }
 
+    /**
+     * 设置下划线颜色
+     *
+     * @param underlineColor
+     */
     public void setUnderlineColor(int underlineColor) {
         this.underlineColor = underlineColor;
         requestLayout();
     }
 
+    /**
+     * 获取下划线资源
+     *
+     * @return
+     */
     public int getUnderlineResId() {
         return underlineResId;
     }
 
+    /**
+     * 设置下划线资源
+     *
+     * @param underlineResId
+     */
     public void setUnderlineResId(int underlineResId) {
         this.underlineResId = underlineResId;
         requestLayout();
     }
 
+    /**
+     * 获取下划线Drawable
+     *
+     * @return
+     */
     public Drawable getUnderlineDrawable() {
         return underlineDrawable;
     }
 
+    /**
+     * 设置下划线Drawable
+     *
+     * @param underlineDrawable
+     */
     public void setUnderlineDrawable(Drawable underlineDrawable) {
         this.underlineDrawable = underlineDrawable;
         requestLayout();
     }
 
+    /**
+     * 获取下划线高度
+     *
+     * @return
+     */
     public int getUnderlineHeight() {
         return underlineHeight;
     }
 
+    /**
+     * 设置下划线高度
+     *
+     * @param underlineHeight
+     */
     public void setUnderlineHeight(int underlineHeight) {
         this.underlineHeight = underlineHeight;
         requestLayout();
     }
 
+    /**
+     * 获取页面标题
+     *
+     * @return
+     */
     public CharSequence[] getPageTitle() {
         return pageTitle;
     }
 
+    /**
+     * 设置ViewPager
+     *
+     * @return
+     */
     public ViewPager getViewPager() {
         return viewPager;
     }
 
+    /**
+     * 获取PagerAdapter
+     *
+     * @return
+     */
     public PagerAdapter getPagerAdapter() {
         return pagerAdapter;
     }
 
+    /**
+     * 设置PagerAdapter
+     *
+     * @param pagerAdapter
+     */
     public void setPagerAdapter(PagerAdapter pagerAdapter) {
         this.pagerAdapter = pagerAdapter;
     }
 
+    /**
+     * 获取数据监听
+     *
+     * @return
+     */
     public ViewPagerDataSetObserver getDataSetObserver() {
         return dataSetObserver;
     }
 
+    /**
+     * 设置数据监听
+     *
+     * @param dataSetObserver
+     */
     public void setDataSetObserver(ViewPagerDataSetObserver dataSetObserver) {
         this.dataSetObserver = dataSetObserver;
     }

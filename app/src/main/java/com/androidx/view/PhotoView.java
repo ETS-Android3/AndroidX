@@ -1,6 +1,5 @@
 package com.androidx.view;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -20,13 +19,14 @@ import android.widget.ImageView;
 import android.widget.OverScroller;
 import android.widget.Scroller;
 
+import androidx.appcompat.widget.AppCompatImageView;
+
 /**
- * Created by liuheng on 2015/6/21.
- * <p></p>
- * 如有任何意见和建议可邮件  bmme@vip.qq.com
+ * Author: Relin
+ * Description:可缩放ImageView
+ * Date:2021/01/08 00:37
  */
-@SuppressLint("AppCompatCustomView")
-public class PhotoView extends ImageView {
+public class PhotoView extends AppCompatImageView {
 
     private final static int MIN_ROTATE = 35;
     private final static int ANIMA_DURING = 340;

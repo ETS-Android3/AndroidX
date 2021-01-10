@@ -328,19 +328,54 @@
         <attr name="underlineDuration" format="integer"></attr>
     </declare-styleable>
 
-
-
-    <declare-styleable name="CircleProgressButton">
-        <attr name="radius" />
-        <attr name="circleColor" />
+    <!--圆形计时控件-->
+    <declare-styleable name="CircleTimerView">
+        <!--外部半径-->
+        <attr name="outsideRadius" format="dimension" />
+        <!--外部颜色-->
+        <attr name="outsideColor" format="color" />
+        <!--内部半径-->
+        <attr name="insideRadius" format="dimension" />
+        <!--内部颜色-->
+        <attr name="insideColor" format="color" />
+        <!--线条宽度-->
+        <attr name="strokeWidth"/>
+        <!--线条颜色-->
         <attr name="strokeColor" />
-        <attr name="strokeWidth" />
-        <attr name="strokeWidthIncremental" format="dimension" />
-        <attr name="progressColor" format="color" />
-        <attr name="progressWidth" format="dimension" />
+        <!--持续时长-->
         <attr name="duration" />
+        <!--当前时长-->
+        <attr name="millisInFuture" format="integer" />
+        <!--是否是按钮-->
+        <attr name="button" format="boolean" />
     </declare-styleable>
 
+    <!--圆圈进度-->
+    <declare-styleable name="CircleProgressView">
+        <!--进度值-->
+        <attr name="progress" format="integer" />
+        <!--进度最大值-->
+        <attr name="max" format="integer" />
+        <!--进度颜色-->
+        <attr name="progressColor" format="color"/>
+        <!--进度文字-->
+        <attr name="progressTextVisibility" format="enum">
+            <enum name="visible" value="0"></enum>
+            <enum name="invisible" value="4"></enum>
+        </attr>
+        <!--进度文字-->
+        <attr name="progressTextSize" format="dimension" />
+        <!--进度文字颜色-->
+        <attr name="progressTextColor" format="color" />
+        <!--进度背景色-->
+        <attr name="progressBackgroundColor" format="color" />
+        <!--进度开始角度 0-360-->
+        <attr name="progressStartAngle" format="float" />
+        <!--圆圈线宽度-->
+        <attr name="progressStrokeWidth" format="dimension" />
+        <!--圆圈半径-->
+        <attr name="progressRadius" format="dimension" />
+    </declare-styleable>
 
     <declare-styleable name="LoopView">
         <attr name="lv_textSize" format="dimension" />
@@ -356,25 +391,6 @@
         <attr name="lv_initialPosition" format="integer" />
         <attr name="lv_scaleX" format="float" />
     </declare-styleable>
-
-
-    <declare-styleable name="PagerSlidingTabStrip">
-        <attr name="pstsIndicatorColor" format="color" />
-        <attr name="pstsIndicatorLinePercent" format="float" />
-        <attr name="pstsUnderlineColor" format="color" />
-        <attr name="pstsDividerColor" format="color" />
-        <attr name="pstsIndicatorHeight" format="dimension" />
-        <attr name="pstsUnderlineHeight" format="dimension" />
-        <attr name="pstsDividerPadding" format="dimension" />
-        <attr name="pstsTabPaddingLeftRight" format="dimension" />
-        <attr name="pstsScrollOffset" format="dimension" />
-        <attr name="pstsTabBackground" format="reference" />
-        <attr name="pstsShouldExpand" format="boolean" />
-        <attr name="pstsTextAllCaps" format="boolean" />
-        <attr name="pstsTabTextUnCheckColor" format="color" />
-        <attr name="pstsTabTextCheckColor" format="color" />
-    </declare-styleable>
-
 
     <declare-styleable name="TextGroupView">
         <!--背景颜色-->
@@ -630,33 +646,6 @@
         <attr name="right_imagePaddingTop" format="dimension" />
         <attr name="right_imagePaddingRight" format="dimension" />
         <attr name="right_imagePaddingBottom" format="dimension" />
-    </declare-styleable>
-
-    <!--圆圈进度-->
-    <declare-styleable name="CircleProgressView">
-        <!--进度值-->
-        <attr name="progress" format="integer" />
-        <!--进度最大值-->
-        <attr name="max" format="integer" />
-        <!--进度颜色-->
-        <attr name="progressColor" />
-        <!--进度文字-->
-        <attr name="progressTextVisibility" format="enum">
-            <enum name="visible" value="0"></enum>
-            <enum name="invisible" value="4"></enum>
-        </attr>
-        <!--进度文字-->
-        <attr name="progressTextSize" format="dimension" />
-        <!--进度文字颜色-->
-        <attr name="progressTextColor" format="color" />
-        <!--进度背景色-->
-        <attr name="progressBackgroundColor" format="color" />
-        <!--进度开始角度 0-360-->
-        <attr name="progressStartAngle" format="float" />
-        <!--圆圈线宽度-->
-        <attr name="progressStrokeWidth" format="dimension" />
-        <!--圆圈半径-->
-        <attr name="progressRadius" format="dimension" />
     </declare-styleable>
 
 </resources>

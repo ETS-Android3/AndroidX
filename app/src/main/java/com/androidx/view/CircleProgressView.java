@@ -57,7 +57,7 @@ public class CircleProgressView extends View {
     /**
      * 进度
      */
-    private int progress = 65;
+    private int progress = 0;
 
     /**
      * 进度最大值

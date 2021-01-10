@@ -514,8 +514,6 @@ ImageView + TextView + TextView + TextView + ImageView + EditText组合控件
 ```
 ##  BannerPager
 轮播图,支持指示器位置自定义，显示自定义。
-
-1.xml
 ```
 <com.androidx.view.BannerPager
      android:id="@+id/banner"
@@ -528,7 +526,7 @@ ImageView + TextView + TextView + TextView + ImageView + EditText组合控件
      android:layout_height="200dp"></com.androidx.view.BannerPager>
 ```
 
-2.设置数据
+1.设置数据
 ```
     private BannerPager banner;
     private BannerListAdapter bannerListAdapter;
@@ -570,6 +568,188 @@ ImageView + TextView + TextView + TextView + ImageView + EditText组合控件
     }
 
 ```
+
+2.轮播持续时间
+```
+androidx:duration="3000"
+```
+
+3.指示器显示位置
+```
+androidx:indicatorGravity="bottom|center_horizontal"
+```
+
+4.指示器显示位置
+```
+androidx:indicatorGravity="bottom|center_horizontal"
+```
+
+5.指示器选中背景
+```
+androidx:indicatorSelected="@drawable/android_indicator_selected"
+```
+
+6.指示器未选中背景
+```
+androidx:indicatorUnSelected="@drawable/android_indicator_unselected"
+```
+6.自动轮播
+```
+androidx:isAutoPlay="true"
+```
+
+## ClearEditTextView
+快速清除内容的EditTextView
+```
+<com.androidx.view.ClearEditTextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:drawableRight="@drawable/android_ic_clear_text">
+</com.androidx.view.ClearEditTextView>
+```
+1.清除按钮图标
+```
+android:drawableRight="@drawable/android_ic_clear_text"
+```
+
+## CircleTimerView
+圆圈计时器
+```
+<com.androidx.view.CircleTimerView
+     android:layout_width="100dp"
+     android:layout_height="100dp"
+     android:layout_gravity="center"
+     android:layout_marginTop="20dp"
+     androidx:button="false"
+     androidx:duration="1000"
+     androidx:strokeWidth="15dp"
+     androidx:insideColor="#3A8681"
+     androidx:millisInFuture="250"
+     androidx:outsideColor="#C4C4C4">
+</com.androidx.view.CircleTimerView>
+```
+
+1.持续时长
+```
+androidx:duration="1000"
+```
+
+2.当前时长
+```
+androidx:millisInFuture="250"
+```
+
+3.线条宽度
+```
+androidx:strokeWidth="15dp"
+```
+
+4.外部颜色
+```
+androidx:outsideColor="#C4C4C4"
+```
+
+5.内部颜色
+```
+androidx:insideColor="#C4C4C4"
+```
+
+6.是否是按钮
+```
+androidx:button="false"
+```
+
+## CircleProgressView
+圆圈进度
+
+```
+<com.androidx.view.CircleProgressView
+     android:layout_width="100dp"
+     android:layout_height="100dp"
+     android:layout_gravity="center">
+</com.androidx.view.CircleProgressView>
+```
+
+1.进度背景颜色
+```
+androidx:progressBackgroundColor="#DEDEDE"
+```
+
+2.进度颜色
+```
+androidx:progressColor="#DEDEDE"
+```
+
+3.文字是否可见
+```
+androidx:progressTextVisibility="visible"
+```
+
+4.文字颜色
+```
+androidx:progressTextColor="@color/colorPrimary"
+```
+
+5.文字大小
+```
+androidx:progressTextSize="14sp"
+```
+
+## AlphabetView
+字母列表
+```
+<com.androidx.view.AlphabetView
+   android:layout_width="wrap_content"
+   android:layout_height="wrap_content">
+</com.androidx.view.AlphabetView>
+```
+
+1.文字默认颜色
+```
+android:textColor="@color/colorPrimary"
+```
+
+2.文字选中颜色
+```
+app:checkColor="@color/colorPrimary"
+```
+
+3.文字大小
+```
+android:textSize="14sp"
+```
+
+## StatusView
+状态（成功、警告、网络）
+```
+<com.androidx.view.StatusView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:status="success">
+</com.androidx.view.StatusView>
+```
+
+1.状态类型
+```
+app:status="success"
+```
+
+2.颜色
+```
+android:color="@color/colorPrimary"
+```
+
+3.圆圈线条宽度，成功|警告类型使用
+```
+app:circleStrokeWidth="1dp"
+```
+
+4.是否使用动画
+```
+app:isAnimator="false"
+```
+
+## PhotoView
 
 ## RecyclerAdapter
 RecyclerView使用的Adapter,可快速绑定View对应数据。
