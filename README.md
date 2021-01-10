@@ -1,7 +1,7 @@
 # AndroidX
 Android开发框架（Android development integration tools）
 注意：2021-01-01开始的是2.0版本不向下兼容1.0-2.0之间的版本，旧版本请使用2.0以下版本，2.0以下版本是兼容1.0-2.0之间的版本,2.0以上版本进行了代码重构，在2.0以后版本完全兼容2.0以上版本。
-## 配置
+## Maven
 1.build.grade
 ```
 allprojects {
