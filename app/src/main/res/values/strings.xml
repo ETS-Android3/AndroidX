@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">AndroidX</string>
     <string name="swipe_layout_load_more">加载更多...</string>
-    <string name="image_selector_take_photo">拍照</string>
-    <string name="image_selector_photo_album">相册</string>
-    <string name="image_selector_photo_cancel">取消</string>
+    <string name="document_selector_take_photo">拍照</string>
+    <string name="document_selector_photo_album">相册</string>
+    <string name="document_selector_cancel">取消</string>
     <string name="content_error_message">网络数据异常，请稍后再试</string>
     <string name="content_error_reload">重新加载</string>
     <string name="debug_mode">研发模式</string>

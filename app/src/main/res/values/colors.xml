@@ -78,4 +78,8 @@
     <color name="colorVideoTitle">#FF9D01</color>
     <color name="colorVideoBackground">#FF9D01</color>
     <color name="colorVideoContent">#585858</color>
+    <!--文档选择器-->
+    <color name="colorDocumentSelectorBackground">#FFFFFF</color>
+    <color name="colorDocumentSelectorMenuText">#333333</color>
+    <color name="colorDocumentSelectorCancelText">#333333</color>
 </resources>

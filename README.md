@@ -1094,7 +1094,7 @@ new DateSelector.Builder(AndroidKit.this).type(DateSelector.TYPE_DATE).listener(
 }).year(1992).month(12).day(24).build().show();
 ```
 ## DocumentSelector
-文件选择器
+文件选择器(逻辑代码)
 ```
 private DocumentSelector documentSelector;
 public void startDocumentSelector(){
@@ -1116,7 +1116,24 @@ protected void onActivityResult(int requestCode, int resultCode, @Nullable Inten
     documentSelector.onActivityResult(requestCode,resultCode,data);
 }
 ```
-## ItemDialog
+## FileSelector
+文件选择器(UI + DocumentSelector),底部弹出选择拍照、相册。
+```
+private FileSelector fileSelector;
+public void onFileSelector(View view) {
+    fileSelector = new FileSelector.Builder(this).build();
+}
+
+@Override
+protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+   super.onActivityResult(requestCode, resultCode, data);
+   if (fileSelector != null) {
+        fileSelector.onActivityResult(requestCode, resultCode, data);
+     }
+}
+```
+
+## ItemSelector
 选择弹框,工具可以单个字段列表数据选择
 ```
 List<ItemDialogBody> bodies = new ArrayList<>();
@@ -1126,7 +1143,7 @@ for (int i = 0; i < names.length; i++) {
     body.setName(names[i]);
     bodies.add(body);
 }
-ItemDialog.Builder itemBuilder = new ItemDialog.Builder(AndroidKit.this);
+ItemSelector.Builder itemBuilder = new ItemSelector.Builder(context);
 itemBuilder.title("选择大学");
 itemBuilder.bodies(bodies);
 itemBuilder.listener(new ItemDialog.OnItemDialogClickListener() {
@@ -1138,10 +1155,10 @@ itemBuilder.listener(new ItemDialog.OnItemDialogClickListener() {
 itemBuilder.build();
 ```
 
-## ItemSelector
+## BottomSelector
 底部列表选择器
 ```
-ItemSelector.Builder builder = new ItemSelector.Builder(context);
+BottomSelector.Builder builder = new BottomSelector.Builder(context);
 builder.items(new String[]{"A", "B", "C"});
 builder.listener(new OnItemSelectListener() {
 @Override

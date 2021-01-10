@@ -1,6 +1,6 @@
 package com.androidx.dialog;
 
-public class ItemDialogBody {
+public class SelectorBody {
 
     /**
      * 名称

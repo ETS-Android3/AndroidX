@@ -3,22 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="6dp"
     android:paddingLeft="6dp"
-    android:paddingRight="6dp">
+    android:paddingRight="6dp"
+    android:paddingBottom="6dp">
 
     <ListView
         android:id="@+id/android_lv_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/android_dialog_background"
+        android:background="@drawable/android_document_selector_background"
         android:divider="@color/colorDivider"
         android:dividerHeight="1dp"></ListView>
 
     <TextView
         android:id="@+id/tv_cancel"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="42dp"
         android:layout_marginTop="5dp"
         android:background="@drawable/android_image_selector"
         android:gravity="center"
