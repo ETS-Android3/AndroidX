@@ -13,11 +13,6 @@ import com.androidx.view.LoopView;
 
 import java.util.ArrayList;
 
-/**
- * @author Relin
- * @description 底部选择器<br />
- * @date 2021-01-10 21:10.
- */
 public class BottomSelector {
 
     /**
@@ -107,7 +102,94 @@ public class BottomSelector {
             }
         }
         this.list = builder.list;
-        build(context, listener);
+        onCreate(builder);
+    }
+
+
+    /**
+     * 显示日期选择器
+     *
+     * @param builder 构建者
+     * @return
+     */
+    protected void onCreate(Builder builder) {
+        dialog = new CoreDialog.Builder(context)
+                .width(LinearLayout.LayoutParams.MATCH_PARENT)
+                .height(LinearLayout.LayoutParams.WRAP_CONTENT)
+                .layoutResId(R.layout.android_item_selector)
+                .animResId(CoreDialog.ANIM_BOTTOM)
+                .themeResId(translucent ? R.style.Android_Theme_Dialog_Translucent_Background : R.style.Android_Theme_Dialog_Transparent_Background)
+                .gravity(Gravity.BOTTOM)
+                .build();
+        LinearLayout ll_bar = dialog.contentView.findViewById(R.id.ll_bar);
+        TextView tv_cancel = dialog.contentView.findViewById(R.id.tv_cancel);
+        TextView tv_complete = dialog.contentView.findViewById(R.id.tv_complete);
+        final LoopView lv_loop = dialog.contentView.findViewById(R.id.lv_loop);
+
+        ll_bar.setBackgroundColor(titleBarBackgroundColor);
+        tv_cancel.setTextColor(titleBarCancelTextColor);
+        tv_complete.setTextColor(titleBarConfirmTextColor);
+        tv_cancel.setTextSize(titleBarTextSize);
+        tv_complete.setTextSize(titleBarTextSize);
+
+        lv_loop.setDividerColor(dividerColor);
+        lv_loop.setCenterTextColor(selectedColor);
+        lv_loop.setOuterTextColor(unselectedColor);
+        lv_loop.setTextSize(textSize);
+        if (loop) {
+            lv_loop.setLoop();
+        } else {
+            lv_loop.setNotLoop();
+        }
+        if (list != null) {
+            lv_loop.setItems(list);
+        }
+        tv_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (dialog.dialog == null) {
+                    return;
+                }
+                dialog.dialog.dismiss();
+            }
+        });
+        tv_complete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null && Size.of(list) != 0) {
+                    listener.onItemSelect(list.get(lv_loop.getSelectedItem()), lv_loop.getSelectedItem());
+                }
+                dialog.dialog.dismiss();
+            }
+        });
+    }
+
+    /**
+     * 显示
+     */
+    public void show() {
+        dialog.show();
+    }
+
+    /**
+     * 隐藏
+     */
+    public void dismiss() {
+        if (dialog != null) {
+            dialog.dismiss();
+        }
+    }
+
+    /**
+     * 是否显示
+     *
+     * @return
+     */
+    public boolean isShowing() {
+        if (dialog == null) {
+            return false;
+        }
+        return dialog.isShowing();
     }
 
     public static class Builder {
@@ -270,82 +352,6 @@ public class BottomSelector {
         }
     }
 
-    /**
-     * 显示
-     */
-    public void show() {
-        if (dialog != null) {
-            dialog.show();
-        }
-    }
 
-    /**
-     * 消失
-     */
-    public void dismiss() {
-        if (dialog != null) {
-            dialog.dismiss();
-        }
-    }
-
-
-    /**
-     * 显示日期选择器
-     *
-     * @param context  上下文
-     * @param listener 选择监听
-     * @return
-     */
-    protected void build(Context context, final OnItemSelectListener listener) {
-        dialog = new CoreDialog.Builder(context)
-                .width(LinearLayout.LayoutParams.MATCH_PARENT)
-                .height(LinearLayout.LayoutParams.WRAP_CONTENT)
-                .layoutResId(R.layout.android_item_selector)
-                .animResId(CoreDialog.ANIM_BOTTOM)
-                .themeResId(translucent ? R.style.Android_Theme_Dialog_Translucent_Background : R.style.Android_Theme_Dialog_Transparent_Background)
-                .gravity(Gravity.BOTTOM)
-                .build();
-        LinearLayout ll_bar = dialog.contentView.findViewById(R.id.ll_bar);
-        TextView tv_cancel = dialog.contentView.findViewById(R.id.tv_cancel);
-        TextView tv_complete = dialog.contentView.findViewById(R.id.tv_complete);
-        final LoopView lv_loop = dialog.contentView.findViewById(R.id.lv_loop);
-
-        ll_bar.setBackgroundColor(titleBarBackgroundColor);
-        tv_cancel.setTextColor(titleBarCancelTextColor);
-        tv_complete.setTextColor(titleBarConfirmTextColor);
-        tv_cancel.setTextSize(titleBarTextSize);
-        tv_complete.setTextSize(titleBarTextSize);
-
-        lv_loop.setDividerColor(dividerColor);
-        lv_loop.setCenterTextColor(selectedColor);
-        lv_loop.setOuterTextColor(unselectedColor);
-        lv_loop.setTextSize(textSize);
-        if (loop) {
-            lv_loop.setLoop();
-        } else {
-            lv_loop.setNotLoop();
-        }
-        if (list != null) {
-            lv_loop.setItems(list);
-        }
-        tv_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (dialog.dialog == null) {
-                    return;
-                }
-                dialog.dialog.dismiss();
-            }
-        });
-        tv_complete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null && Size.of(list) != 0) {
-                    listener.onItemSelect(list.get(lv_loop.getSelectedItem()), lv_loop.getSelectedItem());
-                }
-                dialog.dialog.dismiss();
-            }
-        });
-    }
 
 }

@@ -138,28 +138,25 @@ public class ItemSelector {
             builder.bodies(list);
         }
         this.bodies = builder.bodies;
-        build(context, bodies, position, listener);
+        onCreate(builder);
     }
 
     /**
      * 构建
      *
-     * @param context                   上下文对象
-     * @param bodies                    数
-     * @param position                  默认选中位置
-     * @param onItemDialogClickListener 点击事件
+     * @param builder 构建者
      */
-    private void build(Context context, List<SelectorBody> bodies, int position, OnItemDialogClickListener onItemDialogClickListener) {
-        CoreDialog.Builder builder = new CoreDialog.Builder(context);
-        builder.gravity(Gravity.CENTER);
-        builder.width((int) (Screen.width() * 0.75f));
-        builder.height(LinearLayout.LayoutParams.WRAP_CONTENT);
-        builder.themeResId(CoreDialog.THEME_TRANSLUCENT);//半透明背景
-        builder.layoutResId(R.layout.android_dialog_items);
-        builder.canceledOnTouchOutside(cancelable);
-        builder.cancelable(cancelable);
-        builder.animResId(CoreDialog.ANIM_SCALE);//底部进入动画
-        dialog = builder.build();
+    private void onCreate(Builder builder) {
+        CoreDialog.Builder coreBuilder = new CoreDialog.Builder(context);
+        coreBuilder.gravity(Gravity.CENTER);
+        coreBuilder.width((int) (Screen.width() * 0.75f));
+        coreBuilder.height(LinearLayout.LayoutParams.WRAP_CONTENT);
+        coreBuilder.themeResId(CoreDialog.THEME_TRANSLUCENT);//半透明背景
+        coreBuilder.layoutResId(R.layout.android_dialog_items);
+        coreBuilder.canceledOnTouchOutside(cancelable);
+        coreBuilder.cancelable(cancelable);
+        coreBuilder.animResId(CoreDialog.ANIM_SCALE);//底部进入动画
+        dialog = coreBuilder.build();
         //找到控件
         FrameLayout android_fl_title = dialog.contentView.findViewById(R.id.android_fl_title);
         ImageView android_iv_icon = dialog.contentView.findViewById(R.id.android_iv_icon);
@@ -192,7 +189,7 @@ public class ItemSelector {
         for (int i = 0; i < Size.of(bodies); i++) {
             bodies.get(i).setCheck(i == position ? true : false);
         }
-        ItemDialogAdapter adapter = new ItemDialogAdapter(context, dialog, bodies, onItemDialogClickListener);
+        ItemDialogAdapter adapter = new ItemDialogAdapter(context, dialog, bodies, listener);
         android_lv_content.setAdapter(adapter);
     }
 
@@ -200,24 +197,21 @@ public class ItemSelector {
      * 显示
      */
     public void show() {
-        if (dialog == null) {
-            return;
-        }
         dialog.show();
     }
 
     /**
-     * 消失
+     * 隐藏
      */
     public void dismiss() {
-        if (dialog == null) {
-            return;
+        if (dialog != null) {
+            dialog.dismiss();
         }
-        dialog.dismiss();
     }
 
     /**
      * 是否显示
+     *
      * @return
      */
     public boolean isShowing() {

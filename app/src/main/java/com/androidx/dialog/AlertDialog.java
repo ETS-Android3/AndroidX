@@ -15,7 +15,8 @@ import com.androidx.util.Screen;
  * @description 提示框可以设置提示内容、按钮文字，<br/>
  * 监听按钮的点击事件。<br/>
  */
-public class AlertDialog {
+public class AlertDialog implements View.OnClickListener {
+
 
     public enum Type {
         CANCEL, CONFIRM
@@ -92,14 +93,15 @@ public class AlertDialog {
         this.width = builder.width;
         this.translucent = builder.translucent;
         this.listener = builder.listener;
-        createDialog();
-        show();
+        onCreate(builder);
     }
 
     /**
      * 创建对话框
+     *
+     * @param builder
      */
-    private void createDialog() {
+    protected void onCreate(Builder builder) {
         dialog = new CoreDialog.Builder(context)
                 .width(width)
                 .height(LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -108,7 +110,114 @@ public class AlertDialog {
                 .themeResId(translucent ? R.style.Android_Theme_Dialog_Translucent_Background : R.style.Android_Theme_Dialog_Transparent_Background)
                 .gravity(Gravity.CENTER)
                 .build();
+        TextView tv_title = dialog.contentView.findViewById(R.id.dialog_title);
+        TextView tv_content = dialog.contentView.findViewById(R.id.dialog_content);
+        TextView dialog_ok = dialog.contentView.findViewById(R.id.dialog_ok);
+        tv_title.setText(title);
+        if (title == null || title.length() == 0) {
+            tv_title.setVisibility(View.GONE);
+        } else {
+            tv_title.setVisibility(View.VISIBLE);
+        }
+        tv_content.setText(msg);
+        if (msgColor != 0) {
+            tv_content.setTextColor(msgColor);
+        }
+        if (titleColor != 0) {
+            tv_title.setTextColor(titleColor);
+        }
+        if (confirmColor != 0) {
+            dialog_ok.setTextColor(confirmColor);
+        }
+        if (cancel != null) {
+            TextView dialog_cancel = dialog.contentView.findViewById(R.id.dialog_cancel);
+            if (cancelColor != 0) {
+                dialog_cancel.setTextColor(cancelColor);
+            }
+            dialog_cancel.setText(cancel);
+            dialog_cancel.setOnClickListener(this);
+
+        }
+        dialog_ok.setText(confirm);
+        dialog_ok.setOnClickListener(this);
     }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.dialog_cancel) {
+            onCancel();
+        }
+        if (v.getId() == R.id.dialog_ok) {
+            onConfirm();
+        }
+    }
+
+    protected void onCancel() {
+        if (listener != null) {
+            listener.onAlertDialog(dialog, Type.CANCEL);
+        }
+        dismiss();
+    }
+
+    protected void onConfirm() {
+        if (listener != null) {
+            listener.onAlertDialog(dialog, Type.CONFIRM);
+        }
+        dismiss();
+    }
+
+    /**
+     * 返回对话框对象
+     *
+     * @return
+     */
+    public CoreDialog dialog() {
+        return dialog;
+    }
+
+    /**
+     * 显示选择对话框
+     */
+    public void show() {
+        dialog.show();
+    }
+
+    /**
+     * 隐藏对话框对象
+     */
+    public void dismiss() {
+        if (dialog != null) {
+            dialog.dismiss();
+        }
+    }
+
+    /**
+     * 是否显示
+     *
+     * @return
+     */
+    public boolean isShowing() {
+        if (dialog == null) {
+            return false;
+        }
+        return dialog.isShowing();
+    }
+
+    /**
+     * 提示对话框监听
+     */
+    public interface OnAlertDialogListener {
+
+        /**
+         * 对话框点击取消
+         *
+         * @param dialog 对话框
+         * @param type   类型
+         */
+        void onAlertDialog(CoreDialog dialog, Type type);
+
+    }
+
 
     /**
      * 构造器
@@ -332,100 +441,5 @@ public class AlertDialog {
         }
     }
 
-    /**
-     * 返回对话框对象
-     *
-     * @return
-     */
-    public CoreDialog dialog() {
-        return dialog;
-    }
-
-    /**
-     * 隐藏对话框对象
-     */
-    public void dismiss() {
-        if (dialog != null) {
-            dialog.dismiss();
-        }
-    }
-
-    /**
-     * 显示选择对话框
-     */
-    public CoreDialog show() {
-        doDialog(dialog);
-        dialog.show();
-        return dialog;
-    }
-
-    /**
-     * 处理对话框逻辑
-     *
-     * @param dialog 对话框
-     */
-    private void doDialog(final CoreDialog dialog) {
-        TextView tv_title = dialog.contentView.findViewById(R.id.dialog_title);
-        TextView tv_content = dialog.contentView.findViewById(R.id.dialog_content);
-        TextView dialog_ok = dialog.contentView.findViewById(R.id.dialog_ok);
-        tv_title.setText(title);
-        if (title == null || title.length() == 0) {
-            tv_title.setVisibility(View.GONE);
-        } else {
-            tv_title.setVisibility(View.VISIBLE);
-        }
-        tv_content.setText(msg);
-        if (msgColor != 0) {
-            tv_content.setTextColor(msgColor);
-        }
-        if (titleColor != 0) {
-            tv_title.setTextColor(titleColor);
-        }
-        if (confirmColor != 0) {
-            dialog_ok.setTextColor(confirmColor);
-        }
-        if (cancel != null) {
-            TextView dialog_cancel = dialog.contentView.findViewById(R.id.dialog_cancel);
-            if (cancelColor != 0) {
-                dialog_cancel.setTextColor(cancelColor);
-            }
-            dialog_cancel.setText(cancel);
-            dialog_cancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (listener != null) {
-                        listener.onAlertDialog(dialog, Type.CANCEL);
-                    }
-                    dialog.dismiss();
-                }
-            });
-
-        }
-        dialog_ok.setText(confirm);
-        dialog_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    listener.onAlertDialog(dialog, Type.CONFIRM);
-                }
-                dialog.dismiss();
-            }
-        });
-    }
-
-    /**
-     * 提示对话框监听
-     */
-    public interface OnAlertDialogListener {
-
-        /**
-         * 对话框点击取消
-         *
-         * @param dialog 对话框
-         * @param type   类型
-         */
-        void onAlertDialog(CoreDialog dialog, Type type);
-
-    }
 
 }

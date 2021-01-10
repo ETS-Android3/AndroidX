@@ -270,8 +270,7 @@ public class AddressSelector {
         this.provinceVisibility = builder.provinceVisibility;
         this.cityVisibility = builder.cityVisibility;
         this.areaVisibility = builder.areaVisibility;
-        createDialog();
-        show();
+        onCreate(builder);
     }
 
     /**
@@ -1008,7 +1007,7 @@ public class AddressSelector {
     /**
      * 创建对话框
      */
-    private void createDialog() {
+    protected void onCreate(Builder builder) {
         dialog = new CoreDialog.Builder(context)
                 .width(Screen.width())
                 .height(LinearLayout.LayoutParams.WRAP_CONTENT)

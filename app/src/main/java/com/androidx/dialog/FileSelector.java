@@ -27,23 +27,77 @@ import java.util.List;
  */
 public class FileSelector implements View.OnClickListener, BasisAdapter.OnItemClickListener<String> {
 
+    /**
+     * 构建者
+     */
     public final Builder builder;
+    /**
+     * 上下文对象
+     */
     public final Context context;
+    /**
+     * 菜单
+     */
     public final List<String> menu;
+    /**
+     * 菜单文字颜色
+     */
     public final int menuTextColor;
+    /**
+     * 菜单文字大小
+     */
     public final int menuTextSize;
+    /**
+     * 菜单背景颜色
+     */
     public final int menuBackgroundColor;
+    /**
+     * 菜单背景
+     */
     public final int menuBackground;
+    /**
+     * 菜单分割线高度
+     */
     public final int menuDividerHeight;
+    /**
+     * 菜单分割线颜色
+     */
     public final int menuDividerColor;
+    /**
+     * 取消文字
+     */
     public final String cancelText;
+    /**
+     * 取消文字颜色
+     */
     public final int cancelTextColor;
+    /**
+     * 取消文字大小
+     */
     public final int cancelTextSize;
+    /**
+     * 菜单点击事件
+     */
     public final OnMenuItemClickListener onMenuItemClickListener;
+    /**
+     * 文档选择监听
+     */
     public final OnDocumentSelectListener onDocumentSelectListener;
+    /**
+     * Dialog对象
+     */
     private CoreDialog dialog;
+    /**
+     * 适配器
+     */
     private DocumentDialogAdapter adapter;
+    /**
+     * 选择器构建者
+     */
     private DocumentSelector.Builder selectorBuilder;
+    /**
+     * 选择器
+     */
     private DocumentSelector selector;
 
     public FileSelector(Builder builder) {
@@ -204,22 +258,69 @@ public class FileSelector implements View.OnClickListener, BasisAdapter.OnItemCl
 
     public static class Builder {
 
+        /**
+         * 上下文对象
+         */
         private Context context;
+        /**
+         * Activity
+         */
         private AppCompatActivity activity;
+        /**
+         * Fragment
+         */
         private Fragment fragment;
+        /**
+         * 选择器
+         */
         private DocumentSelector.Builder selector;
-
+        /**
+         * 菜单
+         */
         private List<String> menu;
+        /**
+         * 菜单文字颜色
+         */
         private int menuTextColor = Color.parseColor("#333333");
+        /**
+         * 菜单文字大小
+         */
         private int menuTextSize = 14;
+        /**
+         * 菜单背景颜色
+         */
         private int menuBackgroundColor = 0;
+        /**
+         * 菜单背景
+         */
         private int menuBackground = 0;
+        /**
+         * 菜单分割线高度
+         */
         private int menuDividerHeight = 1;
+        /**
+         * 菜单分割线颜色
+         */
         private int menuDividerColor = Color.parseColor("#F8F8F8");
+        /**
+         * 取消文字
+         */
         private String cancelText = "取消";
+        /**
+         * 取消文字颜色
+         */
         private int cancelTextColor = Color.parseColor("#333333");
+        /**
+         * 取消文字大小
+         */
         private int cancelTextSize = 14;
+        /**
+         * 菜单点击监听
+         */
         private OnMenuItemClickListener menuItemClickListener;
+        /**
+         * 文档选择监听
+         */
         private OnDocumentSelectListener documentSelectListener;
 
         public Builder(AppCompatActivity activity) {

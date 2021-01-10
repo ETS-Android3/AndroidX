@@ -196,8 +196,7 @@ public class DateSelector {
         this.hour = builder.hour;
         this.minute = builder.minute;
         this.second = builder.second;
-        createDialog(context, type, listener);
-        show();
+        onCreate(builder);
     }
 
     public static class Builder {
@@ -451,12 +450,10 @@ public class DateSelector {
     /**
      * 显示日期选择器
      *
-     * @param context  上下文
-     * @param type     类型
-     * @param listener 选择监听
+     * @param builder 构建者
      * @return
      */
-    private void createDialog(Context context, final int type, final OnDateSelectListener listener) {
+    protected void onCreate(Builder builder) {
         dialog = new CoreDialog.Builder(context)
                 .width(LinearLayout.LayoutParams.MATCH_PARENT)
                 .height(LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -633,7 +630,7 @@ public class DateSelector {
      * @param lv_minute  分钟控件
      * @param lv_second  秒控件
      */
-    private void createHourMinuteSecond(Calendar calendar, final ArrayList<String> hourList, final ArrayList<String> minuteList, final ArrayList<String> secondList, final LoopView lv_hour, final LoopView lv_minute, final LoopView lv_second) {
+    protected void createHourMinuteSecond(Calendar calendar, final ArrayList<String> hourList, final ArrayList<String> minuteList, final ArrayList<String> secondList, final LoopView lv_hour, final LoopView lv_minute, final LoopView lv_second) {
         final DecimalFormat decimalFormat = new DecimalFormat("00");
         //时
         int hourPosition = 0;
@@ -679,7 +676,7 @@ public class DateSelector {
      * @param lv_month  月份控件
      * @param lv_day    日期控件
      */
-    private void createYearMonthDay(final ArrayList<String> yearList, final ArrayList<String> monthList, final ArrayList<String> dayList, final LoopView lv_year, final LoopView lv_month, final LoopView lv_day) {
+    protected void createYearMonthDay(final ArrayList<String> yearList, final ArrayList<String> monthList, final ArrayList<String> dayList, final LoopView lv_year, final LoopView lv_month, final LoopView lv_day) {
         //年份
         int yearPosition = 0;
         final int nowYear = Calendar.getInstance().get(Calendar.YEAR);
@@ -735,7 +732,7 @@ public class DateSelector {
      * @param amList 年份数据
      * @param lv_am  年份控件
      */
-    private void createAM(final ArrayList<String> amList, final LoopView lv_am) {
+    protected void createAM(final ArrayList<String> amList, final LoopView lv_am) {
         //年份
         int position = 0;
         String names[] = new String[]{"上午", "下午"};
