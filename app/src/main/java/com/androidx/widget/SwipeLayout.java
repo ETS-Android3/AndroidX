@@ -277,19 +277,9 @@ public abstract class SwipeLayout extends FrameLayout {
         contentView = new View[getChildCount()];
         checkViewGroup(this, true);
         if (absListView != null && absListView.getVisibility() == VISIBLE) {
-            if (absListView instanceof MeasureListView) {
-                absListView.setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
-            }
             absListView.setOnScrollListener(new AbsListViewOnScrollListener());
         }
         if (recyclerView != null) {
-            if (scrollView != null && scrollView.getVisibility() == VISIBLE) {
-                scrollView.setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
-            }
-            if (nestedScrollView != null && nestedScrollView.getVisibility() == VISIBLE) {
-                nestedScrollView.setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
-                recyclerView.setNestedScrollingEnabled(false);
-            }
             recyclerView.addOnScrollListener(new RecyclerViewOnScrollListener());
         }
         //头部
