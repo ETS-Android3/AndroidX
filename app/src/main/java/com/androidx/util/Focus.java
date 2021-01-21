@@ -103,9 +103,9 @@ public class Focus {
             public void run() {
                 View itemView = recyclerView.getLayoutManager().findViewByPosition(position);
                 if (itemView != null && itemView.findViewById(id) != null) {
-                    ImageView iv_stroke = (ImageView) itemView.findViewById(id);
-                    if (iv_stroke != null) {
-                        iv_stroke.requestFocus();
+                    View v = itemView.findViewById(id);
+                    if (v != null) {
+                        v.requestFocus();
                     }
                 }
             }
