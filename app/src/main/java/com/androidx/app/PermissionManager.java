@@ -165,58 +165,40 @@ public class PermissionManager {
         if (obj instanceof Fragment) {
             fragment = (Fragment) obj;
         }
-        if (!isRequestPermissions()) {
-            if (listener != null) {
-                int grantResults[] = new int[permissions.length];
-                for (int i = 0; i < permissions.length; i++) {
-                    grantResults[i] = PackageManager.PERMISSION_DENIED;
-                }
-                listener.onRequestPermissionsSucceed(requestCode, permissions, grantResults);
-            }
-            return;
-        }
         if (permissions == null) {
             return;
         }
         if (permissions.length == 0) {
             return;
         }
-        List<String> list = new ArrayList<>();
+        List<String> deniedPermissionList = new ArrayList<>();
         for (int i = 0; i < permissions.length; i++) {
-            Context context = activity == null ? fragment.getActivity() : activity;
+            Context context = activity == null ? fragment.getContext() : activity;
             if (ContextCompat.checkSelfPermission(context, permissions[i]) == PackageManager.PERMISSION_DENIED) {
-                list.add(permissions[i]);
+                deniedPermissionList.add(permissions[i]);
             }
         }
-        int size = Size.of(list);
-        if (size != 0) {
-            String[] denied = new String[size];
-            for (int i = 0; i < size; i++) {
-                denied[i] = list.get(i);
-            }
-            if (denied.length != 0) {
-                if (permissions == null) {
-                    return;
-                }
-                if (permissions.length == 0) {
-                    return;
-                }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (activity != null) {
-                        ActivityCompat.requestPermissions(activity, permissions, requestCode);
-                    }
-                    if (fragment != null) {
-                        fragment.requestPermissions(permissions, requestCode);
-                    }
-                }
-            }
-        } else {
+        int deniedSize = Size.of(deniedPermissionList);
+        if (deniedSize == 0) {
             int grantResults[] = new int[permissions.length];
             for (int i = 0; i < permissions.length; i++) {
                 grantResults[i] = PackageManager.PERMISSION_DENIED;
             }
             if (listener != null) {
                 listener.onRequestPermissionsSucceed(requestCode, permissions, grantResults);
+            }
+        } else {
+            String[] deniedPermissions = new String[deniedSize];
+            for (int i = 0; i < deniedSize; i++) {
+                deniedPermissions[i] = deniedPermissionList.get(i);
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (activity != null) {
+                    ActivityCompat.requestPermissions(activity, deniedPermissions, requestCode);
+                }
+                if (fragment != null) {
+                    fragment.requestPermissions(deniedPermissions, requestCode);
+                }
             }
         }
     }

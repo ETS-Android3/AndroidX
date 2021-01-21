@@ -141,14 +141,16 @@ public class NavigationBar implements View.OnClickListener {
             ActionBar.LayoutParams layoutParams = onActionBarLayoutParams();
             layoutParams.gravity = Gravity.CENTER_HORIZONTAL | Gravity.CENTER_HORIZONTAL;
             actionBar = activity.getSupportActionBar();
-            //设置不显示底部阴影分割线
-            actionBar.setElevation(0f);
-            actionBar.setDisplayShowHomeEnabled(false);
-            actionBar.setDisplayShowCustomEnabled(true);
-            actionBar.setDisplayShowTitleEnabled(false);
-            actionBar.setCustomView(contentView, layoutParams);
-            toolbar = (Toolbar) contentView.getParent();
-            toolbar.setContentInsetsAbsolute(0, 0);
+            if (actionBar!=null){
+                //设置不显示底部阴影分割线
+                actionBar.setElevation(0f);
+                actionBar.setDisplayShowHomeEnabled(false);
+                actionBar.setDisplayShowCustomEnabled(true);
+                actionBar.setDisplayShowTitleEnabled(false);
+                actionBar.setCustomView(contentView, layoutParams);
+                toolbar = (Toolbar) contentView.getParent();
+                toolbar.setContentInsetsAbsolute(0, 0);
+            }
         }
         onCreate(contentView);
     }
@@ -259,6 +261,9 @@ public class NavigationBar implements View.OnClickListener {
      * @return
      */
     public boolean isShowing() {
+        if (actionBar==null){
+            return false;
+        }
         return actionBar.isShowing();
     }
 

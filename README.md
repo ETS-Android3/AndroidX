@@ -1,6 +1,9 @@
 # AndroidX
 Android开发框架（Android development integration tools）
-注意：2021-01-01开始的是2.0版本不向下兼容1.0-2.0之间的版本，旧版本请使用2.0以下版本，2.0以下版本是兼容1.0-2.0之间的版本,2.0以上版本进行了代码重构，在2.0以后版本完全兼容2.0以上版本。
+注意：2021-01-01开始
+2.0.0版本不向下兼容1.0-2.0之间的版本
+2.0.0以下版本是兼容1.0-2.0之间的版本,
+2.0.0以上版本进行了代码重构，在2.0以后版本完全兼容2.0以上版本。
 ## Maven
 1.build.grade
 ```
@@ -598,6 +601,84 @@ androidx:indicatorUnSelected="@drawable/android_indicator_unselected"
 androidx:isAutoPlay="true"
 ```
 
+## PagerTabStrip
+ViewPager顶部Tab,也可单独使用为Tab.
+```
+<com.androidx.view.PagerTabStrip
+    android:id="@+id/strip"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    androidx:dividerColor="#EF7A4A"
+    androidx:dividerWidth="1dp"
+    androidx:tabLayout="wrap_content"
+    androidx:tabTextColor="@color/selector_tab_text"
+    androidx:tabPaddingHorizontal="40dp"
+    androidx:underlineLayout="wrap_content"
+    androidx:underlineResId="@drawable/shape_radius_green">
+</com.androidx.view.PagerTabStrip>
+```
+1.tab布局自适应，超屏可滑动
+```
+androidx:tabLayout="wrap_content"
+```
+2.tab布局占屏宽，非超屏
+```
+androidx:tabLayout="match_parent"
+```
+3.tab文字颜色，支持selector
+```
+androidx:tabTextColor="@color/selector_tab_text"
+```
+4.tab文字selector
+```
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/colorPagerTabStripSelectedText" android:state_selected="true"></item>
+    <item android:color="@color/colorPagerTabStripText"></item>
+</selector>
+```
+5.分割线颜色
+```
+androidx:dividerColor="#EF7A4A"
+```
+6.分割线宽度
+```
+androidx:dividerWidth="1dp"
+```
+7.tab水平内间距
+```
+androidx:tabPaddingHorizontal="40dp"
+```
+8.下划线布局超屏可滑动
+```
+androidx:underlineLayout="wrap_content"
+```
+9.下划线布局非超屏
+```
+androidx:underlineLayout="match_parent"
+```
+10.下划线资源drawable
+```
+androidx:underlineResId="@drawable/shape_radius_green"
+```
+11.单独使用设置String[]数据
+```
+String[] pageTitles = new String[]{"全部", "待支付", "待发货", "待评价", "已完成","售后"};
+PagerTabStrip strip = findViewById(R.id.strip);
+strip.setPageTitle(pageTitles);
+strip.setPosition(0);
+```
+12.ViewPager使用设置数据源
+```
+PagerTabStrip strip = findViewById(R.id.strip);
+ViewPager viewPager = findViewById(R.id.pager);
+//adapter为FragmentPagerAdapter或者PagerAdapter的子类，然后重写getPageTitle()方法设置tab文字。
+viewPager.setAdapter(adapter);
+strip.setViewPager(viewPager);
+strip.setPosition(0);
+```
+
+
 ## ClearEditTextView
 快速清除内容的EditTextView
 ```
@@ -750,6 +831,22 @@ app:isAnimator="false"
 ```
 
 ## PhotoView
+```
+<com.androidx.view.PhotoView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+</com.androidx.view.PhotoView>
+```
+
+1.设置可缩放
+```
+photoView.enable();
+```
+
+2.设置最大缩放值
+```
+photoView.setMaxScale(3.0f);
+```
 
 ## RecyclerAdapter
 RecyclerView使用的Adapter,可快速绑定View对应数据。
