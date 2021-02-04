@@ -135,6 +135,10 @@ public class PagerTabStrip extends HorizontalScrollView {
      * 下划线高度
      */
     private int underlineHeight = 8;
+    /**
+     * 下划线宽度比例
+     */
+    private float underlineWidthScale = 1.0F;
 
     /**
      * 标签
@@ -197,6 +201,7 @@ public class PagerTabStrip extends HorizontalScrollView {
         underlineColor = typedArray.getColor(R.styleable.PagerTabStrip_underlineColor, underlineColor);
         underlineDrawable = typedArray.getDrawable(R.styleable.PagerTabStrip_underlineResId);
         underlineHeight = typedArray.getDimensionPixelOffset(R.styleable.PagerTabStrip_underlineHeight, underlineHeight);
+        underlineWidthScale = typedArray.getFloat(R.styleable.PagerTabStrip_underlineWidthScale, underlineWidthScale);
         duration = typedArray.getInt(R.styleable.PagerTabStrip_underlineDuration, duration);
         typedArray.recycle();
         //初始化父级和容器
@@ -618,7 +623,7 @@ public class PagerTabStrip extends HorizontalScrollView {
             }
         }
         underlineWidth -= padding;
-        LayoutParams underlineParams = new LayoutParams(underlineWidth, underlineHeight);
+        LayoutParams underlineParams = new LayoutParams((int) (underlineWidth*underlineWidthScale), underlineHeight);
         if (tabUnderlineParams == TabUnderlineParams.MATCH_PARENT) {
             underlineParams.leftMargin = 0;
             underlineParams.rightMargin = 0;
