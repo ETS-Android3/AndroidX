@@ -569,6 +569,7 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
      */
     public void startActivity(Class cls, Bundle options) {
         Intent intent = new Intent(getContext(), cls);
+        intent.putExtras(options);
         startActivity(intent, options);
     }
 
@@ -591,6 +592,7 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
      */
     public void startActivityForResult(Class cls, int requestCode, Bundle options) {
         Intent intent = new Intent(getContext(), cls);
+        intent.putExtras(options);
         startActivityForResult(intent, requestCode, options);
     }
 
