@@ -215,7 +215,7 @@ public class ShapeButton extends AppCompatTextView {
         if (cornerRadius != 0) {
             drawable.setCornerRadius(cornerRadius);
         } else {
-            drawable.setCornerRadii(new float[]{topLeftRadius, topLeftRadius, topRightRadius, topRightRadius, bottomLeftRadius, bottomLeftRadius, bottomRightRadius, bottomRightRadius});
+            drawable.setCornerRadii(new float[]{topLeftRadius, topLeftRadius, topRightRadius, topRightRadius, bottomRightRadius, bottomRightRadius,bottomLeftRadius, bottomLeftRadius,});
         }
         return drawable;
     }
