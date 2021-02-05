@@ -102,7 +102,7 @@ public class PagerTabStrip extends HorizontalScrollView {
     /**
      * 分割线颜色
      */
-    private int dividerColor = Color.parseColor("#FFFFFF");
+    private int dividerColor = Color.parseColor("#00000000");
     /**
      * 分割线资源
      */
@@ -110,7 +110,7 @@ public class PagerTabStrip extends HorizontalScrollView {
     /**
      * 分割线宽度
      */
-    private int dividerWidth = 2;
+    private int dividerWidth = 0;
     /**
      * 跟个先垂直间距
      */
@@ -136,9 +136,13 @@ public class PagerTabStrip extends HorizontalScrollView {
      */
     private int underlineHeight = 8;
     /**
-     * 下划线宽度比例
+     * 下划线左边间距
      */
-    private float underlineWidthScale = 1.0F;
+    private float underlinePaddingLeft = 0;
+    /**
+     * 下划线右边间距
+     */
+    private float underlinePaddingRight = 0;
 
     /**
      * 标签
@@ -201,7 +205,8 @@ public class PagerTabStrip extends HorizontalScrollView {
         underlineColor = typedArray.getColor(R.styleable.PagerTabStrip_underlineColor, underlineColor);
         underlineDrawable = typedArray.getDrawable(R.styleable.PagerTabStrip_underlineResId);
         underlineHeight = typedArray.getDimensionPixelOffset(R.styleable.PagerTabStrip_underlineHeight, underlineHeight);
-        underlineWidthScale = typedArray.getFloat(R.styleable.PagerTabStrip_underlineWidthScale, underlineWidthScale);
+        underlinePaddingLeft = typedArray.getFloat(R.styleable.PagerTabStrip_underlinePaddingLeft, underlinePaddingLeft);
+        underlinePaddingRight = typedArray.getFloat(R.styleable.PagerTabStrip_underlinePaddingRight, underlinePaddingRight);
         duration = typedArray.getInt(R.styleable.PagerTabStrip_underlineDuration, duration);
         typedArray.recycle();
         //初始化父级和容器
@@ -568,7 +573,12 @@ public class PagerTabStrip extends HorizontalScrollView {
         if (underlineDrawable != null) {
             underline.setBackground(underlineDrawable);
         }
-        return underline;
+        FrameLayout lineViewGroup = new FrameLayout(getContext());
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        params.leftMargin = (int) underlinePaddingLeft;
+        params.rightMargin = (int) underlinePaddingRight;
+        lineViewGroup.addView(underline, params);
+        return lineViewGroup;
     }
 
     /**
@@ -583,7 +593,7 @@ public class PagerTabStrip extends HorizontalScrollView {
         if (underlineView.getParent() == null) {
             parent.addView(underlineView);
         }
-        int end = computeTabUnderlineTranslationY(position);
+        float end = computeTabUnderlineTranslationY(position);
         startTabUnderlineTranslation(underlineView, end);
     }
 
@@ -623,7 +633,7 @@ public class PagerTabStrip extends HorizontalScrollView {
             }
         }
         underlineWidth -= padding;
-        LayoutParams underlineParams = new LayoutParams((int) (underlineWidth*underlineWidthScale), underlineHeight);
+        LayoutParams underlineParams = new LayoutParams(underlineWidth, underlineHeight);
         if (tabUnderlineParams == TabUnderlineParams.MATCH_PARENT) {
             underlineParams.leftMargin = 0;
             underlineParams.rightMargin = 0;
@@ -653,7 +663,7 @@ public class PagerTabStrip extends HorizontalScrollView {
      * @param position
      * @return
      */
-    protected int computeTabUnderlineTranslationY(int position) {
+    protected float computeTabUnderlineTranslationY(int position) {
         int translationY = 0;
         int count = tabParent.getChildCount();
         if (position == 0) {

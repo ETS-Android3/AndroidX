@@ -324,8 +324,10 @@
         <attr name="underlineResId" format="reference"></attr>
         <!--下划线高度-->
         <attr name="underlineHeight" format="dimension"></attr>
-        <!--下划线宽度比例-->
-        <attr name="underlineWidthScale" format="float"></attr>
+        <!--下划线左边间距-->
+        <attr name="underlinePaddingLeft" format="dimension"></attr>
+        <!--下划线右边间距-->
+        <attr name="underlinePaddingRight" format="dimension"></attr>
         <!--下划线动画持续时间-->
         <attr name="underlineDuration" format="integer"></attr>
     </declare-styleable>
