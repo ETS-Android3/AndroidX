@@ -242,12 +242,28 @@ public abstract class SwipeLayout extends FrameLayout {
     }
 
     /**
+     * 获取头部View
+     * @return
+     */
+    public View getHeaderView() {
+        return headerView;
+    }
+
+    /**
      * 设置脚部View
      *
      * @param footerView
      */
     protected void setFooterView(View footerView) {
         this.footerView = footerView;
+    }
+
+    /**
+     * 获取脚部View
+     * @return
+     */
+    public View getFooterView() {
+        return footerView;
     }
 
     /**

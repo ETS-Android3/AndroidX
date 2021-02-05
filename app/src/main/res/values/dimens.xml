@@ -18,4 +18,8 @@
     <!--指示器-->
     <dimen name="indicator_width">10dp</dimen>
     <dimen name="indicator_height">10dp</dimen>
+    <!--调试按钮-->
+    <dimen name="debug_layout_marginBottom">100dp</dimen>
+    <dimen name="debug_layout_marginRight">10dp</dimen>
+    <dimen name="debug_padding">5dp</dimen>
 </resources>

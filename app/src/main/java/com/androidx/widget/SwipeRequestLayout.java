@@ -89,7 +89,8 @@ public class SwipeRequestLayout extends SwipeLayout {
         //LoadingView
         LinearLayout.LayoutParams headerParams = new LinearLayout.LayoutParams(headerLoadingWidth, headerLoadingHeight);
         header = new LoadingView(context);
-        header.setBackgroundResource(R.drawable.android_loading_background);
+        header.setBackgroundResource(R.drawable.android_swipe_header_loading_background);
+        header.setStreakColor(getResources().getColor(R.color.colorSwipeHeaderLoadingStreak));
         header.setLayoutParams(headerParams);
         headerParent.addView(header);
         return headerParent;
@@ -105,6 +106,9 @@ public class SwipeRequestLayout extends SwipeLayout {
         footer = new LoadingView(context);
         LayoutParams footerParams = new LayoutParams(footerLoadingWidth, footerLoadingHeight);
         footer.setLayoutParams(footerParams);
+        footer.setBackgroundResource(R.drawable.android_swipe_footer_loading_background);
+        footer.setStreakColor(getResources().getColor(R.color.colorSwipeFooterLoadingStreak));
+        footer.setTextColor(getResources().getColor(R.color.colorSwipeFooterLoadingText));
         footer.setText(footerLoadingText);
         footer.setTextSize(footerLoadingTextSize);
         footer.setOrientation(LoadingView.HORIZONTAL);

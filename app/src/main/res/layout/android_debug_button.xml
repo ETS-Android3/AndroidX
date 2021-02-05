@@ -4,9 +4,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="right|bottom"
-    android:layout_marginBottom="10dp"
-    android:layout_marginRight="10dp"
-    android:padding="5dp"
+    android:layout_marginBottom="@dimen/debug_layout_marginBottom"
+    android:layout_marginRight="@dimen/debug_layout_marginRight"
+    android:padding="@dimen/debug_padding"
     android:text="@string/debug_button"
     android:textColor="@color/colorDebugButton"
     android:textSize="@dimen/debug_button_size" />

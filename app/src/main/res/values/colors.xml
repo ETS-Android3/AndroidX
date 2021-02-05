@@ -22,6 +22,14 @@
     <color name="colorLoadingBackground">#80000000</color>
     <color name="colorLoadingStreak">#0EB692</color>
     <color name="colorLoadingText">#0EB692</color>
+    <!--头部-->
+    <color name="colorSwipeHeaderLoadingBackground">#F8F8F8</color>
+    <color name="colorSwipeHeaderLoadingStreak">#0EB692</color>
+    <color name="colorSwipeHeaderLoadingText">#0EB692</color>
+    <!--脚部-->
+    <color name="colorSwipeFooterLoadingBackground">#00000000</color>
+    <color name="colorSwipeFooterLoadingStreak">#0EB692</color>
+    <color name="colorSwipeFooterLoadingText">#0EB692</color>
     <!--按钮颜色-->
     <color name="colorButtonUnpressed">#FFFFFF</color>
     <color name="colorButtonPressed">#F9F9F9</color>

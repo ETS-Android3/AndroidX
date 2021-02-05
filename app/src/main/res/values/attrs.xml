@@ -158,7 +158,7 @@
         <!--脚部加载宽度-->
         <attr name="footerLoadingWidth" format="dimension" />
         <!--脚部加载高度-->
-        <attr name="footerLoadingHeight" format="dimension" />、
+        <attr name="footerLoadingHeight" format="dimension" />
         <!--脚部加载文字-->
         <attr name="footerLoadingText" format="string" />
         <!--脚部加载文字大小-->
