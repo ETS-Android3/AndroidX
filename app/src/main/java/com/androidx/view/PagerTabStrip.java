@@ -27,6 +27,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.androidx.R;
 import com.androidx.util.Log;
+import com.androidx.util.Screen;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -56,6 +57,10 @@ public class PagerTabStrip extends HorizontalScrollView {
      */
     private int position = 0;
     /**
+     * 标签数据
+     */
+    private CharSequence[] tabItems;
+    /**
      * 标签布局参数
      */
     private int tabLayoutParams = TabLayoutParams.MATCH_PARENT;
@@ -70,7 +75,7 @@ public class PagerTabStrip extends HorizontalScrollView {
     /**
      * 垂直间距
      */
-    private int tabPaddingVertical = 30;
+    private int tabPaddingVertical = 0;
     /**
      * 标签宽度
      */
@@ -138,11 +143,11 @@ public class PagerTabStrip extends HorizontalScrollView {
     /**
      * 下划线左边间距
      */
-    private float underlinePaddingLeft = 0;
+    private float underlinePaddingLeft = 10;
     /**
      * 下划线右边间距
      */
-    private float underlinePaddingRight = 0;
+    private float underlinePaddingRight = 10;
 
     /**
      * 标签
@@ -184,6 +189,16 @@ public class PagerTabStrip extends HorizontalScrollView {
         //xml参数
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.PagerTabStrip);
         position = typedArray.getInt(R.styleable.PagerTabStrip_position, position);
+        tabItems = typedArray.getTextArray(R.styleable.PagerTabStrip_tabItems);
+        if (tabItems != null) {
+            pageTitle = tabItems;
+        } else {
+            int count = 5;
+            pageTitle = new CharSequence[count];
+            for (int i = 0; i < count; i++) {
+                pageTitle[i] = "Item";
+            }
+        }
         tabLayoutParams = typedArray.getInt(R.styleable.PagerTabStrip_tabLayout, tabLayoutParams);
         tabUnderlineParams = typedArray.getInt(R.styleable.PagerTabStrip_underlineLayout, tabUnderlineParams);
         tabPaddingHorizontal = typedArray.getDimensionPixelOffset(R.styleable.PagerTabStrip_tabPaddingHorizontal, tabPaddingHorizontal);
@@ -197,16 +212,16 @@ public class PagerTabStrip extends HorizontalScrollView {
             int selectColor = typedArray.getResources().getColor(R.color.colorPagerTabStripSelectedText);
             textColorStateList = buildColorStateList(selectColor, normalColor);
         }
-        textColor = textColorStateList.getDefaultColor();
-        textSelectedColor = textColorStateList.getColorForState(new int[]{android.R.attr.state_selected}, typedArray.getResources().getColor(R.color.colorPagerTabStripSelectedText));
+        textColor = textColorStateList.getColorForState(new int[]{android.R.attr.state_empty}, typedArray.getResources().getColor(R.color.colorPagerTabStripText));
+        textSelectedColor = textColorStateList.getColorForState(new int[]{android.R.attr.state_checked}, typedArray.getResources().getColor(R.color.colorPagerTabStripSelectedText));
         dividerColor = typedArray.getColor(R.styleable.PagerTabStrip_dividerColor, dividerColor);
         dividerWidth = typedArray.getDimensionPixelOffset(R.styleable.PagerTabStrip_dividerWidth, dividerWidth);
         dividerPaddingVertical = typedArray.getDimensionPixelOffset(R.styleable.PagerTabStrip_dividerPaddingVertical, dividerPaddingVertical);
         underlineColor = typedArray.getColor(R.styleable.PagerTabStrip_underlineColor, underlineColor);
         underlineDrawable = typedArray.getDrawable(R.styleable.PagerTabStrip_underlineResId);
         underlineHeight = typedArray.getDimensionPixelOffset(R.styleable.PagerTabStrip_underlineHeight, underlineHeight);
-        underlinePaddingLeft = typedArray.getFloat(R.styleable.PagerTabStrip_underlinePaddingLeft, underlinePaddingLeft);
-        underlinePaddingRight = typedArray.getFloat(R.styleable.PagerTabStrip_underlinePaddingRight, underlinePaddingRight);
+        underlinePaddingLeft = typedArray.getDimension(R.styleable.PagerTabStrip_underlinePaddingLeft, underlinePaddingLeft);
+        underlinePaddingRight = typedArray.getDimension(R.styleable.PagerTabStrip_underlinePaddingRight, underlinePaddingRight);
         duration = typedArray.getInt(R.styleable.PagerTabStrip_underlineDuration, duration);
         typedArray.recycle();
         //初始化父级和容器
@@ -231,11 +246,6 @@ public class PagerTabStrip extends HorizontalScrollView {
         }
         addTabParent(tabParent);
         //初始化模拟数据
-        int count = 5;
-        pageTitle = new CharSequence[count];
-        for (int i = 0; i < count; i++) {
-            pageTitle[i] = "item";
-        }
         setPageTitle(pageTitle);
     }
 
@@ -249,19 +259,14 @@ public class PagerTabStrip extends HorizontalScrollView {
     protected ColorStateList buildColorStateList(int selected, int normal) {
         int[] colors = new int[]{selected, normal};
         int[][] states = new int[2][];
-        states[0] = new int[]{android.R.attr.state_selected};
-        states[1] = new int[]{};
+        states[0] = new int[]{android.R.attr.state_checked};
+        states[1] = new int[]{android.R.attr.state_empty};
         return new ColorStateList(states, colors);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        underlineResId = R.drawable.android_shape_radius8_primary;
-        if (underlineView == null) {
-            underlineView = buildTabUnderline(underlineColor, underlineResId);
-        }
-        addTabUnderline(container, underlineView, underlineHeight);
     }
 
     public class TabLayoutParams {
@@ -349,6 +354,9 @@ public class PagerTabStrip extends HorizontalScrollView {
         if (pageTitle != null) {
             addTabText(tabParent, pageTitle, position, tabPaddingHorizontal, tabPaddingVertical);
         }
+        underlineResId = R.drawable.android_shape_radius8_primary;
+        underlineView = buildTabUnderline(underlineColor, underlineResId);
+        addTabUnderline(container, underlineView, underlineHeight);
     }
 
     /**
@@ -449,16 +457,17 @@ public class PagerTabStrip extends HorizontalScrollView {
             TextView tab = buildTabText(position == i ? textSelectSize : textSize, textColor, position == i ? textSelectedColor : 0, text);
             tab.setGravity(Gravity.CENTER);
             tab.setOnClickListener(new TabClickListener(this, tab, i));
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(tabWidth, LinearLayout.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(tabWidth, LinearLayout.LayoutParams.MATCH_PARENT);
             //平均分
             if (tabLayoutParams == TabLayoutParams.MATCH_PARENT) {
-                params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT);
-                tab.setPadding(0, tabPaddingVertical, 0, tabPaddingVertical);
+                tabWidth = Screen.width() / pageTitles.length;
+                params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
+                tab.setPadding(0, tabPaddingVertical, 0, 0);
                 params.weight = 1;
             }
             //自适应
             if (tabLayoutParams == TabLayoutParams.WRAP_CONTENT) {
-                params = new LinearLayout.LayoutParams(tabWidth, LinearLayout.LayoutParams.WRAP_CONTENT);
+                params = new LinearLayout.LayoutParams(tabWidth, LinearLayout.LayoutParams.MATCH_PARENT);
                 tab.setPadding(tabPaddingHorizontal, tabPaddingVertical, tabPaddingHorizontal, tabPaddingVertical);
             }
             params.gravity = Gravity.CENTER;
@@ -574,7 +583,7 @@ public class PagerTabStrip extends HorizontalScrollView {
             underline.setBackground(underlineDrawable);
         }
         FrameLayout lineViewGroup = new FrameLayout(getContext());
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(tabWidth, LayoutParams.WRAP_CONTENT);
         params.leftMargin = (int) underlinePaddingLeft;
         params.rightMargin = (int) underlinePaddingRight;
         lineViewGroup.addView(underline, params);

@@ -633,7 +633,7 @@ androidx:tabTextColor="@color/selector_tab_text"
 ```
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="@color/colorPagerTabStripSelectedText" android:state_selected="true"></item>
+    <item android:color="@color/colorPagerTabStripSelectedText" android:state_checked="true"></item>
     <item android:color="@color/colorPagerTabStripText"></item>
 </selector>
 ```

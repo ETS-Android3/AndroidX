@@ -217,7 +217,7 @@ public class Debug implements View.OnClickListener {
         }
 
         @Override
-        public int getItemLayoutResId() {
+        public int getItemLayoutResId(int viewType) {
             return R.layout.android_debug_item;
         }
 

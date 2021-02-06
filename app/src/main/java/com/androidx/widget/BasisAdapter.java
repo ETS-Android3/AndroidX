@@ -37,6 +37,10 @@ public abstract class BasisAdapter<T> extends BaseAdapter implements ViewHolder.
      */
     private ViewHolder viewHolder;
 
+    public BasisAdapter(){
+
+    }
+
     public BasisAdapter(Context context) {
         this.context = context;
     }
@@ -46,7 +50,7 @@ public abstract class BasisAdapter<T> extends BaseAdapter implements ViewHolder.
      *
      * @return
      */
-    public abstract int getItemLayoutResId();
+    protected abstract int getItemLayoutResId(int viewType);
 
     /**
      * 获取视图类型
@@ -75,7 +79,7 @@ public abstract class BasisAdapter<T> extends BaseAdapter implements ViewHolder.
      * @return
      */
     protected View getItemView(ViewGroup parent, int viewType) {
-        return LayoutInflater.from(getContext()).inflate(getItemLayoutResId(), parent, false);
+        return LayoutInflater.from(getContext()).inflate(getItemLayoutResId(viewType), parent, false);
     }
 
     /**

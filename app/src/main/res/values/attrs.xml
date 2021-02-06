@@ -295,6 +295,8 @@
             <enum name="match_parent" value="-1"/>
             <enum name="wrap_content" value="-2"/>
         </attr>
+        <!--标签数据-->
+        <attr name="tabItems" format="reference"></attr>
         <!--标签宽度-->
         <attr name="tabWidth" format="dimension"></attr>
         <!--标签水平间距-->
@@ -306,13 +308,13 @@
         <!--标签文字颜色-->
         <attr name="tabTextColor" format="reference|color"></attr>
         <!--标签选中颜色-->
-        <attr name="tabTextSelectSize" format="dimension"></attr>
+        <attr name="tabTextSelectSize" format="dimension|reference"></attr>
         <!--标签分割线颜色-->
-        <attr name="dividerColor" format="color"></attr>
+        <attr name="dividerColor" format="color|reference"></attr>
         <!--标签宽度-->
         <attr name="dividerWidth" format="dimension"></attr>
         <!--标签垂直间距-->
-        <attr name="dividerPaddingVertical" format="dimension"></attr>
+        <attr name="dividerPaddingVertical" format="dimension|reference"></attr>
         <!--标签布局方式-->
         <attr name="underlineLayout" format="enum">
             <enum name="match_parent" value="-1"/>
@@ -323,13 +325,13 @@
         <!--下划线资源-->
         <attr name="underlineResId" format="reference"></attr>
         <!--下划线高度-->
-        <attr name="underlineHeight" format="dimension"></attr>
+        <attr name="underlineHeight" format="dimension|reference"></attr>
         <!--下划线左边间距-->
-        <attr name="underlinePaddingLeft" format="dimension"></attr>
+        <attr name="underlinePaddingLeft" format="dimension|reference"></attr>
         <!--下划线右边间距-->
-        <attr name="underlinePaddingRight" format="dimension"></attr>
+        <attr name="underlinePaddingRight" format="dimension|reference"></attr>
         <!--下划线动画持续时间-->
-        <attr name="underlineDuration" format="integer"></attr>
+        <attr name="underlineDuration" format="integer|reference"></attr>
     </declare-styleable>
 
     <!--圆形计时控件-->

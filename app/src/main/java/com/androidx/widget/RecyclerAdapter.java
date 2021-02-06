@@ -36,6 +36,10 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
      */
     private ViewHolder viewHolder;
 
+    public RecyclerAdapter(){
+
+    }
+
     public RecyclerAdapter(Context context) {
         this.context = context;
     }
@@ -45,7 +49,7 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
      *
      * @return
      */
-    protected abstract int getItemLayoutResId();
+    protected abstract int getItemLayoutResId(int viewType);
 
     /**
      * 获取View容器
@@ -64,7 +68,7 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
      * @return
      */
     protected View getItemView(ViewGroup parent, int viewType) {
-        return LayoutInflater.from(getContext()).inflate(getItemLayoutResId(), parent, false);
+        return LayoutInflater.from(getContext()).inflate(getItemLayoutResId(viewType), parent, false);
     }
 
     @NonNull

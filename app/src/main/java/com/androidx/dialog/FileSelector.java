@@ -224,7 +224,7 @@ public class FileSelector implements View.OnClickListener, BasisAdapter.OnItemCl
         }
 
         @Override
-        public int getItemLayoutResId() {
+        public int getItemLayoutResId(int viewType) {
             return R.layout.android_item_document_selector;
         }
 

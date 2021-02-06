@@ -47,6 +47,9 @@ public abstract class BannerAdapter<T> extends PagerAdapter implements ViewHolde
      */
     private ViewHolder viewHolder;
 
+    public BannerAdapter(){
+
+    }
 
     public BannerAdapter(Context context) {
         this.context = context;
@@ -109,7 +112,7 @@ public abstract class BannerAdapter<T> extends PagerAdapter implements ViewHolde
      * @param parent      父控件
      * @return
      */
-    public View getView(int position, View convertView, ViewGroup parent) {
+    protected View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             if (getItemLayoutResId() == 0) {
                 ImageView imageView = new ImageView(context);
