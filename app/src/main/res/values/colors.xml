@@ -11,6 +11,8 @@
     <color name="colorGaryF8">#F8F8F8</color>
     <color name="colorGaryEE">#EEEEEE</color>
     <color name="colorBlack41">#3C3F41</color>
+    <!--内容-->
+    <color name="colorRootLayout">#00000000</color>
     <!--导航栏颜色-->
     <color name="colorNavigationBar">#656565</color>
     <color name="colorNavigationBarTitle">#FFFFFF</color>
