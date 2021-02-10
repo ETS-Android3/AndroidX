@@ -34,7 +34,7 @@ public abstract class VideoListFgt extends CoreFragment implements VideoScanner.
     protected void onCreate(Bundle savedInstanceState, NavigationBar bar) {
         minSize = getActivity().getIntent().getLongExtra(VIDEO_MIN_SIZE, 0);
         maxSize = getActivity().getIntent().getLongExtra(VIDEO_MAX_SIZE, 20);
-        android_lv_content = getView().findViewById(R.id.android_lv_content);
+        android_lv_content = findViewById(R.id.android_lv_content);
         if (VideoScanner.list == null) {
             showLoading();
             VideoScanner.Builder builder = new VideoScanner.Builder(getContext());

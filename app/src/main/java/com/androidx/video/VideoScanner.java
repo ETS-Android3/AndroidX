@@ -9,12 +9,15 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import com.androidx.content.ImageProvider;
 import com.androidx.text.Time;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 
 /**
@@ -30,6 +33,7 @@ public class VideoScanner {
     public final long minSize;
     public final long maxSize;
     private final boolean rescan;
+    private ScannerHandler handler;
     public final OnVideoScanListener listener;
 
     public VideoScanner(Builder builder) {
@@ -38,6 +42,7 @@ public class VideoScanner {
         this.minSize = builder.minSize;
         this.maxSize = builder.maxSize;
         this.listener = builder.listener;
+        handler = new ScannerHandler();
         scan();
     }
 
@@ -123,23 +128,23 @@ public class VideoScanner {
             public void run() {
                 super.run();
                 VideoScanner.list = scan(context);
-                handler.sendEmptyMessage(0);
+                if (handler != null) {
+                    handler.sendEmptyMessage(0);
+                }
             }
         }.start();
     }
 
-    /**
-     * 通知刷新UI
-     */
-    private Handler handler = new Handler() {
+    private class ScannerHandler extends Handler {
+
         @Override
-        public void handleMessage(Message msg) {
+        public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
             if (listener != null) {
                 listener.onVideoScan(list);
             }
         }
-    };
+    }
 
     /**
      * 视频扫描监听
