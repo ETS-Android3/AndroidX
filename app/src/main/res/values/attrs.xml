@@ -312,7 +312,7 @@
         <!--标签分割线颜色-->
         <attr name="dividerColor" format="color|reference"></attr>
         <!--标签宽度-->
-        <attr name="dividerWidth" format="dimension"></attr>
+        <attr name="dividerWidth" format="dimension|reference"></attr>
         <!--标签垂直间距-->
         <attr name="dividerPaddingVertical" format="dimension|reference"></attr>
         <!--标签布局方式-->
@@ -321,7 +321,9 @@
             <enum name="wrap_content" value="-2"/>
         </attr>
         <!--下划线颜色-->
-        <attr name="underlineColor" format="color"></attr>
+        <attr name="underlineColor" format="color|reference"></attr>
+        <!--下划线圆角-->
+        <attr name="underlineRadius" format="dimension|reference"></attr>
         <!--下划线资源-->
         <attr name="underlineResId" format="reference"></attr>
         <!--下划线高度-->

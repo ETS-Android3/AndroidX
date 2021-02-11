@@ -7,7 +7,9 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -43,11 +45,11 @@ public class PagerTabStrip extends HorizontalScrollView {
     /**
      * 标签父级的父级
      */
-    private FrameLayout container;
+    private FrameLayout tabFrame;
     /**
      * 标签父级
      */
-    private LinearLayout tabParent;
+    private LinearLayout tabLinear;
     /**
      * 下划线持续时间
      */
@@ -71,7 +73,7 @@ public class PagerTabStrip extends HorizontalScrollView {
     /**
      * 水平间距
      */
-    private int tabPaddingHorizontal = 20;
+    private int tabPaddingHorizontal = 10;
     /**
      * 垂直间距
      */
@@ -79,7 +81,7 @@ public class PagerTabStrip extends HorizontalScrollView {
     /**
      * 标签宽度
      */
-    private int tabWidth = LinearLayout.LayoutParams.WRAP_CONTENT;
+    private int tabWidth = (int) (50 * Resources.getSystem().getDisplayMetrics().density);
     /**
      * 标签文字大小
      */
@@ -127,11 +129,15 @@ public class PagerTabStrip extends HorizontalScrollView {
     /**
      * 下划线颜色
      */
-    private int underlineColor = Color.parseColor("#E6E6E6");
+    private int underlineColor = Color.parseColor("#3D9D69");
     /**
      * 下划线资源
      */
     private int underlineResId = 0;
+    /**
+     * 圆角
+     */
+    private float underlineRadius = 5;
     /**
      * 下划线背景
      */
@@ -166,6 +172,8 @@ public class PagerTabStrip extends HorizontalScrollView {
      */
     private ViewPagerDataSetObserver dataSetObserver;
 
+    private int height = (int) (getResources().getDisplayMetrics().density * 45);
+
 
     public PagerTabStrip(@NonNull Context context) {
         super(context);
@@ -196,7 +204,7 @@ public class PagerTabStrip extends HorizontalScrollView {
             int count = 5;
             pageTitle = new CharSequence[count];
             for (int i = 0; i < count; i++) {
-                pageTitle[i] = "Item";
+                pageTitle[i] = "item";
             }
         }
         tabLayoutParams = typedArray.getInt(R.styleable.PagerTabStrip_tabLayout, tabLayoutParams);
@@ -218,33 +226,87 @@ public class PagerTabStrip extends HorizontalScrollView {
         dividerWidth = typedArray.getDimensionPixelOffset(R.styleable.PagerTabStrip_dividerWidth, dividerWidth);
         dividerPaddingVertical = typedArray.getDimensionPixelOffset(R.styleable.PagerTabStrip_dividerPaddingVertical, dividerPaddingVertical);
         underlineColor = typedArray.getColor(R.styleable.PagerTabStrip_underlineColor, underlineColor);
+        underlineColor = typedArray.getColor(R.styleable.PagerTabStrip_underlineColor, underlineColor);
+        underlineRadius = typedArray.getDimension(R.styleable.PagerTabStrip_underlineRadius, underlineRadius);
         underlineDrawable = typedArray.getDrawable(R.styleable.PagerTabStrip_underlineResId);
+        if (underlineDrawable == null) {
+            underlineDrawable = createShape(
+                    GradientDrawable.RECTANGLE,
+                    0, underlineColor,
+                    underlineColor, underlineRadius,
+                    0, 0,
+                    0, 0
+            );
+        }
         underlineHeight = typedArray.getDimensionPixelOffset(R.styleable.PagerTabStrip_underlineHeight, underlineHeight);
         underlinePaddingLeft = typedArray.getDimension(R.styleable.PagerTabStrip_underlinePaddingLeft, underlinePaddingLeft);
         underlinePaddingRight = typedArray.getDimension(R.styleable.PagerTabStrip_underlinePaddingRight, underlinePaddingRight);
         duration = typedArray.getInt(R.styleable.PagerTabStrip_underlineDuration, duration);
         typedArray.recycle();
         //初始化父级和容器
-        initContainerParent(context);
+        addTabFrame(getContext());
     }
+
+    /**
+     * 创建Shape
+     * 这个方法是为了创建一个Shape来替代xml创建Shape.
+     *
+     * @param shape             类型 GradientDrawable.RECTANGLE  GradientDrawable.OVAL
+     * @param strokeWidth       外线宽度 button stroke width
+     * @param strokeColor       外线颜色 button stroke color
+     * @param solidColor        填充颜色 button background color
+     * @param cornerRadius      圆角大小 all corner is the same as is the radius
+     * @param topLeftRadius     左上圆角 top left corner radius
+     * @param topRightRadius    右上圆角 top right corner radius
+     * @param bottomLeftRadius  底左圆角  bottom left corner radius
+     * @param bottomRightRadius 底右圆角 bottom right corner radius
+     * @return
+     */
+    public Drawable createShape(int shape, int strokeWidth,
+                                int strokeColor, int solidColor, float cornerRadius,
+                                float topLeftRadius, float topRightRadius,
+                                float bottomLeftRadius, float bottomRightRadius) {
+        GradientDrawable drawable = new GradientDrawable();
+        drawable.setShape(shape);
+        drawable.setSize(10, 10);
+        drawable.setStroke(strokeWidth, strokeColor);
+        drawable.setColor(solidColor);
+        if (cornerRadius != 0) {
+            drawable.setCornerRadius(cornerRadius);
+        } else {
+            drawable.setCornerRadii(new float[]{topLeftRadius, topLeftRadius, topRightRadius, topRightRadius, bottomLeftRadius, bottomLeftRadius, bottomRightRadius, bottomRightRadius});
+        }
+        return drawable;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
 
     /**
      * 初始化容器和父级
      *
      * @param context
      */
-    protected void initContainerParent(Context context) {
-        if (container == null) {
-            container = new FrameLayout(context);
+    protected void addTabFrame(Context context) {
+        if (tabFrame == null) {
+            tabFrame = new FrameLayout(context);
         }
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT
+        );
         params.gravity = Gravity.CENTER_VERTICAL;
-        addView(container, params);
-        //标签父级
-        if (tabParent == null) {
-            tabParent = buildTabParent();
+        if (tabFrame.getParent() == null) {
+            addView(tabFrame, params);
         }
-        addTabParent(tabParent);
+        //标签父级
+        if (tabLinear == null) {
+            tabLinear = buildTabLinear();
+            addTabLinear(tabLinear);
+        }
         //初始化模拟数据
         setPageTitle(pageTitle);
     }
@@ -264,10 +326,6 @@ public class PagerTabStrip extends HorizontalScrollView {
         return new ColorStateList(states, colors);
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
 
     public class TabLayoutParams {
         /**
@@ -352,11 +410,13 @@ public class PagerTabStrip extends HorizontalScrollView {
             }
         }
         if (pageTitle != null) {
-            addTabText(tabParent, pageTitle, position, tabPaddingHorizontal, tabPaddingVertical);
+            addTabText(tabLinear, pageTitle, position, tabPaddingHorizontal, tabPaddingVertical);
         }
         underlineResId = R.drawable.android_shape_radius8_primary;
-        underlineView = buildTabUnderline(underlineColor, underlineResId);
-        addTabUnderline(container, underlineView, underlineHeight);
+        if (underlineView == null) {
+            underlineView = buildTabUnderline(underlineColor, underlineResId, pageTitle.length);
+        }
+        addTabUnderline(tabFrame, (LinearLayout) underlineView, underlineHeight);
     }
 
     /**
@@ -380,7 +440,7 @@ public class PagerTabStrip extends HorizontalScrollView {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                View view = tabParent.getChildAt(position);
+                View view = tabLinear.getChildAt(position);
                 smoothScrollTo((int) view.getX(), 0);
             }
         }, 50);
@@ -391,34 +451,29 @@ public class PagerTabStrip extends HorizontalScrollView {
      *
      * @return
      */
-    protected LinearLayout buildTabParent() {
-        LinearLayout tabParent = new LinearLayout(getContext());
-        tabParent.setOrientation(LinearLayout.HORIZONTAL);
-        return tabParent;
+    protected LinearLayout buildTabLinear() {
+        LinearLayout tabLinear = new LinearLayout(getContext());
+        tabLinear.setOrientation(LinearLayout.HORIZONTAL);
+        return tabLinear;
     }
 
     /**
      * 添加父级
      *
-     * @param tabParent
+     * @param tabLinear
      */
-    protected void addTabParent(LinearLayout tabParent) {
-        if (tabParent.getParent() != null) {
-            ViewGroup viewGroup = (ViewGroup) tabParent.getParent();
-            viewGroup.removeView(tabParent);
+    protected void addTabLinear(LinearLayout tabLinear) {
+        if (tabLinear.getParent() != null) {
+            ViewGroup viewGroup = (ViewGroup) tabLinear.getParent();
+            viewGroup.removeView(tabLinear);
         }
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        container.addView(tabParent, params);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+        );
+        tabFrame.addView(tabLinear, params);
     }
 
-    /**
-     * 清空子控件
-     */
-    protected void clearTabParent() {
-        if (tabParent != null) {
-            tabParent.removeAllViews();
-        }
-    }
 
     /**
      * 标签文字
@@ -441,6 +496,15 @@ public class PagerTabStrip extends HorizontalScrollView {
     }
 
     /**
+     * 清空子控件
+     */
+    protected void clearTabLinear() {
+        if (tabLinear != null) {
+            tabLinear.removeAllViews();
+        }
+    }
+
+    /**
      * 添加标签
      *
      * @param parent               父级
@@ -450,7 +514,7 @@ public class PagerTabStrip extends HorizontalScrollView {
      * @param tabPaddingVertical   垂直间距
      */
     protected void addTabText(ViewGroup parent, CharSequence[] pageTitles, int position, int tabPaddingHorizontal, int tabPaddingVertical) {
-        clearTabParent();
+        clearTabLinear();
         int count = pageTitles.length;
         for (int i = 0; i < count; i++) {
             CharSequence text = pageTitles[i];
@@ -467,6 +531,11 @@ public class PagerTabStrip extends HorizontalScrollView {
             }
             //自适应
             if (tabLayoutParams == TabLayoutParams.WRAP_CONTENT) {
+                if (tabWidth==0){
+                    Rect rect = new Rect();
+                    tab.getPaint().getTextBounds(String.valueOf(text),0,text.length(),rect);
+                    tabWidth = rect.width() + tabPaddingHorizontal * 4;
+                }
                 params = new LinearLayout.LayoutParams(tabWidth, LinearLayout.LayoutParams.MATCH_PARENT);
                 tab.setPadding(tabPaddingHorizontal, tabPaddingVertical, tabPaddingHorizontal, tabPaddingVertical);
             }
@@ -479,6 +548,212 @@ public class PagerTabStrip extends HorizontalScrollView {
                 addTabDivider(parent, dividerView);
             }
         }
+    }
+
+    /**
+     * 标签分割线
+     *
+     * @param dividerWidth 宽度
+     * @param dividerColor 颜色
+     * @param dividerResId 资源id
+     */
+    protected View buildTabDivider(int dividerWidth, int dividerColor, int dividerResId, int dividerPaddingVertical) {
+        View dividerView = new View(getContext());
+        dividerView.setBackgroundColor(dividerColor);
+        if (dividerResId != 0) {
+            dividerView.setBackgroundResource(dividerResId);
+        }
+        LayoutParams params = new LayoutParams(dividerWidth, LayoutParams.MATCH_PARENT);
+        params.topMargin = dividerPaddingVertical;
+        params.bottomMargin = dividerPaddingVertical;
+        dividerView.setLayoutParams(params);
+        return dividerView;
+    }
+
+    /**
+     * 添加标签分割线
+     *
+     * @param parent      父级
+     * @param dividerView 分割线View
+     */
+    protected void addTabDivider(ViewGroup parent, View dividerView) {
+        if (dividerView.getParent() != null) {
+            parent.removeView(dividerView);
+        }
+        parent.addView(dividerView);
+    }
+
+    /**
+     * 标签下划线
+     *
+     * @param underlineColor 颜色
+     * @param underlineResId 资源id
+     * @param count          个数
+     * @return
+     */
+    protected View buildTabUnderline(int underlineColor, int underlineResId, int count) {
+        View underline = new View(getContext());
+        underline.setBackgroundColor(underlineColor);
+        if (underlineResId != 0) {
+            underline.setBackgroundResource(underlineResId);
+        }
+
+        if (underlineDrawable != null) {
+            underline.setBackground(underlineDrawable);
+        }
+
+        FrameLayout lineParent = new FrameLayout(getContext());
+        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        params.leftMargin = (int) underlinePaddingLeft;
+        params.rightMargin = (int) underlinePaddingRight;
+        lineParent.addView(underline, params);
+
+        LinearLayout lineFrame = new LinearLayout(getContext());
+        LinearLayout.LayoutParams layoutParams = null;
+        if (tabLayoutParams == TabLayoutParams.MATCH_PARENT) {
+            layoutParams = new LinearLayout.LayoutParams(0, underlineHeight);
+            layoutParams.weight = 1;
+            lineFrame.setWeightSum(count);
+        }
+        if (tabLayoutParams == TabLayoutParams.WRAP_CONTENT) {
+            layoutParams = new LinearLayout.LayoutParams(tabWidth, underlineHeight);
+        }
+
+        lineFrame.setGravity(Gravity.BOTTOM);
+        lineFrame.addView(lineParent, layoutParams);
+
+        return lineFrame;
+    }
+
+    /**
+     * 添加标签下划线
+     *
+     * @param parent          父级
+     * @param underlineView   下划线
+     * @param underlineHeight 高度
+     */
+    protected void addTabUnderline(FrameLayout parent, LinearLayout underlineView, int underlineHeight) {
+//        setTabUnderlineWidth(underlineView, underlineHeight, position);
+        if (underlineView.getParent() != null) {
+            parent.removeView(underlineView);
+            ;
+        }
+        if (underlineView.getParent() == null) {
+            parent.addView(underlineView);
+        }
+        float end = computeTabUnderlineTranslationY(position);
+        end = tabWidth * position;
+        Log.i(TAG, "->end=" + end);
+        startTabUnderlineTranslation(underlineView, end);
+    }
+
+    /**
+     * 设置标签下划线宽度
+     *
+     * @param underlineView   下划线
+     * @param underlineHeight 高度
+     * @param position        位置
+     */
+    protected void setTabUnderlineWidth(View underlineView, int underlineHeight, int position) {
+        int count = tabLinear.getChildCount();
+        TextView tabView = findTabView(position);
+        int textWidth = (int) tabView.getPaint().measureText(tabView.getText().toString());
+        int underlineWidth = tabWidth + (position == count - 1 ? 0 : dividerWidth);
+//        int underlineWidth = 84 + (position == count - 1 ? 0 : dividerWidth);
+        int padding = 0, marginHorizontal = tabPaddingHorizontal;
+        if (tabLayoutParams == TabLayoutParams.MATCH_PARENT) {
+            if (tabUnderlineParams == TabUnderlineParams.MATCH_PARENT) {
+                padding = 0;
+            }
+            if (tabUnderlineParams == TabUnderlineParams.WRAP_CONTENT) {
+                padding = underlineWidth - textWidth;
+                marginHorizontal = padding / 2;
+            }
+        }
+        if (tabLayoutParams == TabLayoutParams.WRAP_CONTENT) {
+            if (tabUnderlineParams == TabUnderlineParams.MATCH_PARENT) {
+                padding = 0;
+            }
+            if (tabUnderlineParams == TabUnderlineParams.WRAP_CONTENT) {
+                padding = tabView.getPaddingLeft() + tabView.getPaddingRight();
+                //自定义标签宽度
+                if (tabWidth != LinearLayout.LayoutParams.WRAP_CONTENT) {
+                    padding = underlineWidth - textWidth;
+                    marginHorizontal = padding / 2;
+                }
+            }
+        }
+        underlineWidth -= padding;
+        LayoutParams underlineParams = new LayoutParams(underlineWidth, underlineHeight);
+        if (tabUnderlineParams == TabUnderlineParams.MATCH_PARENT) {
+            underlineParams.leftMargin = 0;
+            underlineParams.rightMargin = 0;
+        }
+        if (tabUnderlineParams == TabUnderlineParams.WRAP_CONTENT) {
+            underlineParams.leftMargin = marginHorizontal;
+            underlineParams.rightMargin = marginHorizontal;
+        }
+        underlineParams.gravity = Gravity.BOTTOM;
+        underlineView.setLayoutParams(underlineParams);
+    }
+
+    /**
+     * 找到标签
+     *
+     * @param position 标签位置
+     * @return
+     */
+    public TextView findTabView(int position) {
+        int index = position * 2;
+        return (TextView) tabLinear.getChildAt(index);
+    }
+
+    /**
+     * 计算
+     *
+     * @param position
+     * @return
+     */
+    protected float computeTabUnderlineTranslationY(int position) {
+        int translationY = 0;
+        int count = tabLinear.getChildCount();
+        if (position == 0) {
+            translationY = 0;
+        }
+        if (position < count && position != 0) {
+            for (int i = 0; i < position * 2; i++) {
+                View view = tabLinear.getChildAt(i);
+                if (view instanceof TextView) {
+                    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
+                    translationY += view.getMeasuredWidth() + params.leftMargin + params.rightMargin;
+                    translationY += i == count - 1 ? 0 : dividerWidth;
+                }
+            }
+        }
+        return translationY;
+    }
+
+    /**
+     * 开始位移动画
+     *
+     * @param view 控件
+     * @param endX 结束位置
+     */
+    protected void startTabUnderlineTranslation(final View view, float endX) {
+        float x = view.getX();
+        if (tabUnderlineParams == TabUnderlineParams.WRAP_CONTENT && endX < x) {
+            x -= tabPaddingHorizontal;
+        }
+        ValueAnimator animator = ValueAnimator.ofFloat(x, endX);
+        animator.setTarget(view);
+        animator.setDuration(duration).start();
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                view.setTranslationX((Float) animation.getAnimatedValue());
+            }
+        });
+        animator.start();
     }
 
     /**
@@ -534,202 +809,21 @@ public class PagerTabStrip extends HorizontalScrollView {
     }
 
     /**
-     * 标签分割线
-     *
-     * @param dividerWidth 宽度
-     * @param dividerColor 颜色
-     * @param dividerResId 资源id
-     */
-    protected View buildTabDivider(int dividerWidth, int dividerColor, int dividerResId, int dividerPaddingVertical) {
-        View dividerView = new View(getContext());
-        dividerView.setBackgroundColor(dividerColor);
-        if (dividerResId != 0) {
-            dividerView.setBackgroundResource(dividerResId);
-        }
-        LayoutParams params = new LayoutParams(dividerWidth, LayoutParams.MATCH_PARENT);
-        params.topMargin = dividerPaddingVertical;
-        params.bottomMargin = dividerPaddingVertical;
-        dividerView.setLayoutParams(params);
-        return dividerView;
-    }
-
-    /**
-     * 添加标签分割线
-     *
-     * @param parent      父级
-     * @param dividerView 分割线View
-     */
-    protected void addTabDivider(ViewGroup parent, View dividerView) {
-        if (dividerView.getParent() != null) {
-            parent.removeView(dividerView);
-        }
-        parent.addView(dividerView);
-    }
-
-    /**
-     * 标签下划线
-     *
-     * @param underlineColor 颜色
-     * @param underlineResId 资源id
-     * @return
-     */
-    protected View buildTabUnderline(int underlineColor, int underlineResId) {
-        View underline = new View(getContext());
-        underline.setBackgroundColor(underlineColor);
-        if (underlineResId != 0) {
-            underline.setBackgroundResource(underlineResId);
-        }
-        if (underlineDrawable != null) {
-            underline.setBackground(underlineDrawable);
-        }
-        FrameLayout lineViewGroup = new FrameLayout(getContext());
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(tabWidth, LayoutParams.WRAP_CONTENT);
-        params.leftMargin = (int) underlinePaddingLeft;
-        params.rightMargin = (int) underlinePaddingRight;
-        lineViewGroup.addView(underline, params);
-        return lineViewGroup;
-    }
-
-    /**
-     * 添加标签下划线
-     *
-     * @param parent          父级
-     * @param underlineView   下划线
-     * @param underlineHeight 高度
-     */
-    protected void addTabUnderline(ViewGroup parent, View underlineView, int underlineHeight) {
-        setTabUnderlineWidth(underlineView, underlineHeight, position);
-        if (underlineView.getParent() == null) {
-            parent.addView(underlineView);
-        }
-        float end = computeTabUnderlineTranslationY(position);
-        startTabUnderlineTranslation(underlineView, end);
-    }
-
-    /**
-     * 设置标签下划线宽度
-     *
-     * @param underlineView   下划线
-     * @param underlineHeight 高度
-     * @param position        位置
-     */
-    protected void setTabUnderlineWidth(View underlineView, int underlineHeight, int position) {
-        int count = tabParent.getChildCount();
-        TextView tabView = findTabView(position);
-        int textWidth = (int) tabView.getPaint().measureText(tabView.getText().toString());
-        int underlineWidth = tabView.getMeasuredWidth() + (position == count - 1 ? 0 : dividerWidth);
-        int padding = 0, marginHorizontal = tabPaddingHorizontal;
-        if (tabLayoutParams == TabLayoutParams.MATCH_PARENT) {
-            if (tabUnderlineParams == TabUnderlineParams.MATCH_PARENT) {
-                padding = 0;
-            }
-            if (tabUnderlineParams == TabUnderlineParams.WRAP_CONTENT) {
-                padding = underlineWidth - textWidth;
-                marginHorizontal = padding / 2;
-            }
-        }
-        if (tabLayoutParams == TabLayoutParams.WRAP_CONTENT) {
-            if (tabUnderlineParams == TabUnderlineParams.MATCH_PARENT) {
-                padding = 0;
-            }
-            if (tabUnderlineParams == TabUnderlineParams.WRAP_CONTENT) {
-                padding = tabView.getPaddingLeft() + tabView.getPaddingRight();
-                //自定义标签宽度
-                if (tabWidth != LinearLayout.LayoutParams.WRAP_CONTENT) {
-                    padding = underlineWidth - textWidth;
-                    marginHorizontal = padding / 2;
-                }
-            }
-        }
-        underlineWidth -= padding;
-        LayoutParams underlineParams = new LayoutParams(underlineWidth, underlineHeight);
-        if (tabUnderlineParams == TabUnderlineParams.MATCH_PARENT) {
-            underlineParams.leftMargin = 0;
-            underlineParams.rightMargin = 0;
-        }
-        if (tabUnderlineParams == TabUnderlineParams.WRAP_CONTENT) {
-            underlineParams.leftMargin = marginHorizontal;
-            underlineParams.rightMargin = marginHorizontal;
-        }
-        underlineParams.gravity = Gravity.BOTTOM;
-        underlineView.setLayoutParams(underlineParams);
-    }
-
-    /**
-     * 找到标签
-     *
-     * @param position 标签位置
-     * @return
-     */
-    public TextView findTabView(int position) {
-        int index = position * 2;
-        return (TextView) tabParent.getChildAt(index);
-    }
-
-    /**
-     * 计算
-     *
-     * @param position
-     * @return
-     */
-    protected float computeTabUnderlineTranslationY(int position) {
-        int translationY = 0;
-        int count = tabParent.getChildCount();
-        if (position == 0) {
-            translationY = 0;
-        }
-        if (position < count && position != 0) {
-            for (int i = 0; i < position * 2; i++) {
-                View view = tabParent.getChildAt(i);
-                if (view instanceof TextView) {
-                    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
-                    translationY += view.getMeasuredWidth() + params.leftMargin + params.rightMargin;
-                    translationY += i == count - 1 ? 0 : dividerWidth;
-                }
-            }
-        }
-        return translationY;
-    }
-
-    /**
-     * 开始位移动画
-     *
-     * @param view 控件
-     * @param endX 结束位置
-     */
-    protected void startTabUnderlineTranslation(final View view, float endX) {
-        float x = view.getX();
-        if (tabUnderlineParams == TabUnderlineParams.WRAP_CONTENT && endX < x) {
-            x -= tabPaddingHorizontal;
-        }
-        ValueAnimator animator = ValueAnimator.ofFloat(x, endX);
-        animator.setTarget(view);
-        animator.setDuration(duration).start();
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                view.setTranslationX((Float) animation.getAnimatedValue());
-            }
-        });
-        animator.start();
-    }
-
-    /**
      * 获取标签容器
      *
      * @return
      */
-    public FrameLayout getContainer() {
-        return container;
+    public FrameLayout getTabFrame() {
+        return tabFrame;
     }
 
     /**
      * 设置标签容器
      *
-     * @param container
+     * @param tabFrame
      */
-    public void setContainer(FrameLayout container) {
-        this.container = container;
+    public void setTabFrame(FrameLayout tabFrame) {
+        this.tabFrame = tabFrame;
         requestLayout();
     }
 
@@ -738,17 +832,17 @@ public class PagerTabStrip extends HorizontalScrollView {
      *
      * @return
      */
-    public LinearLayout getTabParent() {
-        return tabParent;
+    public LinearLayout getTabLinear() {
+        return tabLinear;
     }
 
     /**
      * 设置标签父级
      *
-     * @param tabParent
+     * @param tabLinear
      */
-    public void setTabParent(LinearLayout tabParent) {
-        this.tabParent = tabParent;
+    public void setTabLinear(LinearLayout tabLinear) {
+        this.tabLinear = tabLinear;
         requestLayout();
     }
 
