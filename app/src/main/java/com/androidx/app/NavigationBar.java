@@ -281,6 +281,16 @@ public class NavigationBar implements View.OnClickListener {
     }
 
     /**
+     * 设置侵入式
+     * @param statusBarTextDark 状态栏文字颜色
+     */
+    public void setImmersed(boolean statusBarTextDark) {
+        hide();
+        setBackgroundColor(Color.TRANSPARENT);
+        setStatusBarTextColor(statusBarTextDark);
+    }
+
+    /**
      * 设置背景颜色
      * @param color 颜色
      */

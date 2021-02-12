@@ -12,40 +12,60 @@ import com.androidx.app.CoreActivity;
 import com.androidx.app.CoreFragment;
 import com.androidx.dialog.CoreDialog;
 
+/**
+ * 视频选择器
+ */
 public class VideoSelector {
 
+    /**
+     * 视频请求代码
+     */
     public static final int VIDEO_REQUEST_CODE = 4;
+    /**
+     * 录制
+     */
     public static final int TYPE_RECORDING = 1;
+    /**
+     * 选择
+     */
     public static final int TYPE_SELECT_VIDEO = 2;
+    /**
+     * 取消
+     */
     public static final int TYPE_CANCEL = 3;
 
-    private final Context context;
     private final CoreFragment fragment;
     private final CoreActivity activity;
-    private final long minSize;
-    private final long maxSize;
     private final long duration;
     private final int width;
     private final int height;
+    private final VideoListOptions listOptions;
     private final OnVideoSelectorListener listener;
 
 
     public VideoSelector(Builder builder) {
-        this.context = builder.context;
         this.fragment = builder.fragment;
         this.activity = builder.activity;
-        this.minSize = builder.minSize;
-        this.maxSize = builder.maxSize;
         this.width = builder.width;
         this.height = builder.height;
         this.listener = builder.listener;
         this.duration = builder.duration;
+        this.listOptions = builder.listOptions;
         show(builder);
+    }
+
+    public Context getContext() {
+        if (fragment != null) {
+            return fragment.getContext();
+        }
+        if (activity != null) {
+            return activity;
+        }
+        return null;
     }
 
     public static class Builder {
 
-        private Context context;
         private CoreFragment fragment;
         private CoreActivity activity;
         private long minSize = 0;
@@ -54,23 +74,17 @@ public class VideoSelector {
         private int height = 1920;
         private long duration = 15 * 1000;
         private OnVideoSelectorListener listener;
+        private VideoListOptions listOptions;
 
-        public Builder(Context context) {
-            this.context = context;
+        public Builder() {
         }
 
         public Builder(CoreFragment fragment) {
             this.fragment = fragment;
-            this.context = fragment.getContext();
         }
 
         public Builder(CoreActivity activity) {
             this.activity = activity;
-            this.context = activity;
-        }
-
-        public Context getContext() {
-            return context;
         }
 
         public CoreFragment fragment() {
@@ -145,6 +159,15 @@ public class VideoSelector {
             return this;
         }
 
+        public VideoListOptions listOptions() {
+            return listOptions;
+        }
+
+        public Builder listOptions(VideoListOptions listOptions) {
+            this.listOptions = listOptions;
+            return this;
+        }
+
         public VideoSelector build() {
             return new VideoSelector(this);
         }
@@ -160,7 +183,7 @@ public class VideoSelector {
      * @param builder 参数类
      */
     private android.app.Dialog show(final Builder builder) {
-        dialog = new CoreDialog.Builder(builder.context)
+        dialog = new CoreDialog.Builder(getContext())
                 .width(LinearLayout.LayoutParams.MATCH_PARENT)
                 .height(LinearLayout.LayoutParams.WRAP_CONTENT)
                 .layoutResId(R.layout.android_dialog_video_selector)
@@ -189,12 +212,12 @@ public class VideoSelector {
                 bundle.putInt("height", height);
                 bundle.putLong("duration", duration);
                 if (fragment != null) {
-                    fragment.startActivityForResult(VideoRecordAty.class,VIDEO_REQUEST_CODE, bundle);
+                    fragment.startActivityForResult(VideoRecordAty.class, VIDEO_REQUEST_CODE, bundle);
                 }
                 if (activity != null) {
                     activity.startActivityForResult(VideoRecordAty.class, VIDEO_REQUEST_CODE, bundle);
                 }
-                if (listener != null) {
+                if (listener != null && activity == null && fragment == null) {
                     listener.onVideoSelector(builder, TYPE_RECORDING);
                 }
             }
@@ -203,7 +226,13 @@ public class VideoSelector {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                if (listener != null) {
+                if (fragment != null) {
+                    VideoListAty.start(fragment, listOptions);
+                }
+                if (activity != null) {
+                    VideoListAty.start(activity, listOptions);
+                }
+                if (listener != null && activity == null && fragment == null) {
                     listener.onVideoSelector(builder, TYPE_SELECT_VIDEO);
                 }
             }

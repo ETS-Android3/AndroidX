@@ -102,15 +102,6 @@ public class VideoAdapter extends BaseAdapter {
     }
 
 
-    /**
-     * 封面图片加载器
-     */
-    public interface VideoImageLoader {
-
-        void onVideoImageLoad(String path, ImageView target);
-
-    }
-
     private OnItemClickListener onItemClickListener;
 
     public interface OnItemClickListener {

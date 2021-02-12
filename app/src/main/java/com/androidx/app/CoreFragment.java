@@ -639,11 +639,30 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
     /**
      * 添加Fragment
      *
+     * @param fragment 类名
+     */
+    protected void addFragment(CoreFragment fragment) {
+        addFragment(fragment, null);
+    }
+
+    /**
+     * 添加Fragment
+     *
      * @param fragmentClass 类名
      * @param args          参数
      */
     protected void addFragment(Class fragmentClass, Bundle args) {
         getFragmentController().add(fragmentClass, args, null, this, getContainerViewId());
+    }
+
+    /**
+     * 添加Fragment
+     *
+     * @param fragment 类名
+     * @param args          参数
+     */
+    protected void addFragment(CoreFragment fragment, Bundle args) {
+        getFragmentController().add(fragment, args, null, this, getContainerViewId());
     }
 
     /**
@@ -659,12 +678,33 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
     /**
      * 添加Fragment
      *
+     * @param fragment 类名
+     * @param params        参数
+     */
+    protected void addFragment(CoreFragment fragment, Object params) {
+        getFragmentController().add(fragment, null, params, this, getContainerViewId());
+    }
+
+    /**
+     * 添加Fragment
+     *
      * @param fragmentClass 类名
      * @param args          参数
      * @param params        参数
      */
     protected void addFragment(Class fragmentClass, Bundle args, Object params) {
         getFragmentController().add(fragmentClass, args, params, this, getContainerViewId());
+    }
+
+    /**
+     * 添加Fragment
+     *
+     * @param fragment 类名
+     * @param args          参数
+     * @param params        参数
+     */
+    protected void addFragment(CoreFragment fragment, Bundle args, Object params) {
+        getFragmentController().add(fragment, args, params, this, getContainerViewId());
     }
 
 
@@ -690,11 +730,31 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
     /**
      * 替换Fragment
      *
+     * @param fragment 类名
+     * @param args          参数
+     */
+    protected void replaceFragment(CoreFragment fragment, Bundle args) {
+        getFragmentController().replace(fragment, args, null, this, getContainerViewId());
+    }
+
+    /**
+     * 替换Fragment
+     *
      * @param fragmentClass 类名
      * @param params        参数
      */
     protected void replaceFragment(Class fragmentClass, Object params) {
         getFragmentController().replace(fragmentClass, null, params, this, getContainerViewId());
+    }
+
+    /**
+     * 替换Fragment
+     *
+     * @param fragment 类名
+     * @param params        参数
+     */
+    protected void replaceFragment(CoreFragment fragment, Object params) {
+        getFragmentController().replace(fragment, null, params, this, getContainerViewId());
     }
 
     /**
@@ -706,6 +766,17 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
      */
     protected void replaceFragment(Class fragmentClass, Bundle args, Object params) {
         getFragmentController().replace(fragmentClass, args, params, this, getContainerViewId());
+    }
+
+    /**
+     * 替换Fragment
+     *
+     * @param fragment 类名
+     * @param args          参数
+     * @param params        参数
+     */
+    protected void replaceFragment(CoreFragment fragment, Bundle args, Object params) {
+        getFragmentController().replace(fragment, args, params, this, getContainerViewId());
     }
 
     /**

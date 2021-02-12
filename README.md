@@ -322,6 +322,12 @@ navigationBar.show();
 navigationBar.hide();
 ```
 
+
+7.隐藏
+```
+navigationBar.hide();
+```
+
 ### Activity
 
 Activity页面只需要继承CoreActivity,如果是TV研发需要继承TVCoreActivity

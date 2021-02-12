@@ -80,7 +80,7 @@ public class FragmentController {
     /**
      * 处理Fragment
      *
-     * @param fragmentClass   Fragment类
+     * @param fragmentClass        Fragment类
      * @param args            数据
      * @param params          参数
      * @param callback        网络回调
@@ -89,55 +89,71 @@ public class FragmentController {
      * @param addToBackStack  添加到回退栈
      */
     public void commit(Class fragmentClass, Bundle args, Object params, FragmentHttpCallback callback, int containerViewId, Type type, boolean addToBackStack) {
+        String tag = getTag(fragmentClass);
+        CoreFragment fragment = (CoreFragment) getFragmentManager().findFragmentByTag(tag);
+        if (fragment == null) {
+            try {
+                fragment = (CoreFragment) fragmentClass.newInstance();
+                commit(fragment,args,params,callback,containerViewId,type,addToBackStack);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 处理Fragment
+     *
+     * @param fragment        Fragment类
+     * @param args            数据
+     * @param params          参数
+     * @param callback        网络回调
+     * @param containerViewId 布局ID
+     * @param type            类型
+     * @param addToBackStack  添加到回退栈
+     */
+    public void commit(CoreFragment fragment, Bundle args, Object params, FragmentHttpCallback callback, int containerViewId, Type type, boolean addToBackStack) {
         if (getFragmentManager() == null) {
             new RuntimeException("Commit failed, activity or fragment is null.").printStackTrace();
             return;
         }
-        this.fragmentClass = fragmentClass;
+        this.fragmentClass = fragment.getClass();
         if (fragmentClass != null) {
-            try {
-                String tag = getTag(fragmentClass);
-                CoreFragment fragment = (CoreFragment) getFragmentManager().findFragmentByTag(tag);
-                if (fragment == null) {
-                    fragment = (CoreFragment) fragmentClass.newInstance();
-                }
-                fragment.setArguments(args);
-                fragment.setParameters(params);
-                fragment.setFragmentHttpCallback(callback);
-                if (stackTopFragment != null) {
-                    stackTopFragment.onBeforeProcessing();
-                }
-                if (fragments == null) {
-                    fragments = new ArrayList();
-                }
-                if (!fragments.contains(fragment)) {
-                    fragments.add(fragment);
-                }
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                if (type != Type.ADD) {
-                    transaction.replace(containerViewId, fragment, tag);
-                } else if (!fragment.isAdded()) {
-                    transaction.add(containerViewId, fragment, tag);
-                } else {
-                    Iterator iterator = this.fragments.iterator();
-                    while (iterator.hasNext()) {
-                        CoreFragment lastFragment = (CoreFragment) iterator.next();
-                        transaction.hide(lastFragment);
-                    }
-                    stackTopFragment.onPause();
-                    transaction.show(fragment);
-                    fragment.onResume();
-                }
-                stackTopFragment = fragment;
-                if (addToBackStack) {
-                    transaction.addToBackStack(tag);
-                }
-                transaction.commitAllowingStateLoss();
-            } catch (InstantiationException var9) {
-                var9.printStackTrace();
-            } catch (IllegalAccessException var10) {
-                var10.printStackTrace();
+            String tag = getTag(fragmentClass);
+            fragment.setArguments(args);
+            fragment.setParameters(params);
+            fragment.setFragmentHttpCallback(callback);
+            if (stackTopFragment != null) {
+                stackTopFragment.onBeforeProcessing();
             }
+            if (fragments == null) {
+                fragments = new ArrayList();
+            }
+            if (!fragments.contains(fragment)) {
+                fragments.add(fragment);
+            }
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            if (type != Type.ADD) {
+                transaction.replace(containerViewId, fragment, tag);
+            } else if (!fragment.isAdded()) {
+                transaction.add(containerViewId, fragment, tag);
+            } else {
+                Iterator iterator = this.fragments.iterator();
+                while (iterator.hasNext()) {
+                    CoreFragment lastFragment = (CoreFragment) iterator.next();
+                    transaction.hide(lastFragment);
+                }
+                stackTopFragment.onPause();
+                transaction.show(fragment);
+                fragment.onResume();
+            }
+            stackTopFragment = fragment;
+            if (addToBackStack) {
+                transaction.addToBackStack(tag);
+            }
+            transaction.commitAllowingStateLoss();
         }
     }
 
@@ -154,6 +170,18 @@ public class FragmentController {
     }
 
     /**
+     * 添加
+     *
+     * @param fragment   Fragment
+     * @param args            参数
+     * @param callback        网络
+     * @param containerViewId 布局id
+     */
+    public void add(CoreFragment fragment, Bundle args, Object params, FragmentHttpCallback callback, int containerViewId) {
+        commit(fragment, args, params, callback, containerViewId, Type.ADD, false);
+    }
+
+    /**
      * 替代
      *
      * @param fragmentClass   Fragment
@@ -164,6 +192,19 @@ public class FragmentController {
     public void replace(Class<?> fragmentClass, Bundle args, Object params, FragmentHttpCallback callback, int containerViewId) {
         commit(fragmentClass, args, params, callback, containerViewId, Type.REPLACE, false);
     }
+
+    /**
+     * 替代
+     *
+     * @param fragment   Fragment
+     * @param args            参数
+     * @param callback        网络回调
+     * @param containerViewId 布局id
+     */
+    public void replace(CoreFragment fragment, Bundle args, Object params, FragmentHttpCallback callback, int containerViewId) {
+        commit(fragment, args, params, callback, containerViewId, Type.REPLACE, false);
+    }
+
 
     /**
      * 获取标识
@@ -186,6 +227,18 @@ public class FragmentController {
      */
     public void addToBackStack(Class<?> fragmentClass, Bundle args, Object params, FragmentHttpCallback callback, int containerViewId) {
         commit(fragmentClass, args, params, callback, containerViewId, Type.ADD, true);
+    }
+
+    /**
+     * 添加到回退栈
+     *
+     * @param fragment   Fragment
+     * @param args            参数
+     * @param callback        网络回调
+     * @param containerViewId 布局id
+     */
+    public void addToBackStack(CoreFragment fragment, Bundle args, Object params, FragmentHttpCallback callback, int containerViewId) {
+        commit(fragment, args, params, callback, containerViewId, Type.ADD, true);
     }
 
     /**

@@ -154,7 +154,6 @@ public class PagerTabStrip extends HorizontalScrollView {
      * 下划线右边间距
      */
     private float underlinePaddingRight = 10;
-
     /**
      * 标签
      */
@@ -171,8 +170,6 @@ public class PagerTabStrip extends HorizontalScrollView {
      * Adapter数据监听
      */
     private ViewPagerDataSetObserver dataSetObserver;
-
-    private int height = (int) (getResources().getDisplayMetrics().density * 45);
 
 
     public PagerTabStrip(@NonNull Context context) {
@@ -230,13 +227,11 @@ public class PagerTabStrip extends HorizontalScrollView {
         underlineRadius = typedArray.getDimension(R.styleable.PagerTabStrip_underlineRadius, underlineRadius);
         underlineDrawable = typedArray.getDrawable(R.styleable.PagerTabStrip_underlineResId);
         if (underlineDrawable == null) {
-            underlineDrawable = createShape(
-                    GradientDrawable.RECTANGLE,
+            underlineDrawable = createShape(GradientDrawable.RECTANGLE,
                     0, underlineColor,
                     underlineColor, underlineRadius,
                     0, 0,
-                    0, 0
-            );
+                    0, 0);
         }
         underlineHeight = typedArray.getDimensionPixelOffset(R.styleable.PagerTabStrip_underlineHeight, underlineHeight);
         underlinePaddingLeft = typedArray.getDimension(R.styleable.PagerTabStrip_underlinePaddingLeft, underlinePaddingLeft);
@@ -534,10 +529,10 @@ public class PagerTabStrip extends HorizontalScrollView {
                 if (tabWidth==0){
                     Rect rect = new Rect();
                     tab.getPaint().getTextBounds(String.valueOf(text),0,text.length(),rect);
-                    tabWidth = rect.width() + tabPaddingHorizontal * 4;
+                    tabWidth = rect.width() + tabPaddingHorizontal * 2;
                 }
                 params = new LinearLayout.LayoutParams(tabWidth, LinearLayout.LayoutParams.MATCH_PARENT);
-                tab.setPadding(tabPaddingHorizontal, tabPaddingVertical, tabPaddingHorizontal, tabPaddingVertical);
+                tab.setPadding(0, tabPaddingVertical, 0, tabPaddingVertical);
             }
             params.gravity = Gravity.CENTER;
             tab.setLayoutParams(params);

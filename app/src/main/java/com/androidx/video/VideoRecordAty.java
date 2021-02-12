@@ -23,6 +23,7 @@ import androidx.annotation.NonNull;
 
 import com.androidx.R;
 import com.androidx.app.CoreActivity;
+import com.androidx.app.CoreFragment;
 import com.androidx.app.NavigationBar;
 import com.androidx.view.CircleTimerView;
 
@@ -41,6 +42,7 @@ public class VideoRecordAty extends CoreActivity implements SurfaceHolder.Callba
 
     public final String TAG = VideoRecordAty.class.getSimpleName();
     public static final String VIDEO_PARAMS = "params";
+    public static final int REQUEST_CODE = 324;
 
     private SurfaceView surfaceView;
     private CircleTimerView timerButton;
@@ -78,6 +80,30 @@ public class VideoRecordAty extends CoreActivity implements SurfaceHolder.Callba
     @Override
     protected int getContentViewResId() {
         return R.layout.android_video_record;
+    }
+
+    /**
+     * 跳转到视频录制页面
+     *
+     * @param activity 页面
+     * @param params   参数
+     */
+    public static void start(CoreActivity activity, VideoRecordParams params) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(VIDEO_PARAMS, params);
+        activity.startActivityForResult(VideoRecordAty.class, REQUEST_CODE, bundle);
+    }
+
+    /**
+     * 跳转到视频录制页面
+     *
+     * @param fragment 页面
+     * @param params   参数
+     */
+    public static void start(CoreFragment fragment, VideoRecordParams params) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(VIDEO_PARAMS, params);
+        fragment.startActivityForResult(VideoRecordAty.class, REQUEST_CODE, bundle);
     }
 
     @Override
@@ -530,6 +556,7 @@ public class VideoRecordAty extends CoreActivity implements SurfaceHolder.Callba
     private boolean isOpenIndicator;
     private final int WHAT_VIDEO_TIME = 0;
     private final int WHAT_SURFACE_CREATED = 1;
+
     /**
      * VideoHandler中间类
      */

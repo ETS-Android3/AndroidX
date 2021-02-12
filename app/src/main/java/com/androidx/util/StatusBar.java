@@ -68,6 +68,10 @@ public class StatusBar {
         return context.getResources().getDimensionPixelSize(resourceId);
     }
 
+    public static void immerse(AppCompatActivity activity){
+        setTransparent(activity);
+    }
+
     //===========================================[状态栏颜色]=============================================
 
     /**

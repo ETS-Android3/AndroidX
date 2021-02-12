@@ -5,25 +5,52 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ListView;
 
+import androidx.annotation.Nullable;
+
 import com.androidx.R;
 import com.androidx.app.CoreFragment;
 import com.androidx.app.NavigationBar;
-import com.androidx.content.IOProvider;
 
 import java.util.List;
 
-public abstract class VideoListFgt extends CoreFragment implements VideoScanner.OnVideoScanListener, VideoAdapter.OnItemClickListener {
+public class VideoListFgt extends CoreFragment implements VideoScanner.OnVideoScanListener, VideoAdapter.OnItemClickListener {
 
+    /**
+     * 视频实体
+     */
     public static final String VIDEO_MEDIA = "video_media";
-    public static final String VIDEO_MIN_SIZE = "videoMinSize";
-    public static final String VIDEO_MAX_SIZE = "videoMaxSize";
-
-    private long minSize;
-    private long maxSize;
-
+    /**
+     * 最小视频大小，单位M
+     */
+    public static final String VIDEO_OPTIONS = "options";
+    /**
+     * 最小大小
+     */
+    private long minSize = 0;
+    /**
+     * 最大大小
+     */
+    private long maxSize = 50;
+    /**
+     * 数据适配器
+     */
     private VideoAdapter adapter;
+    /**
+     * 列表
+     */
     private List<VideoMedia> list;
+    /**
+     * 列表
+     */
     private ListView android_lv_content;
+    /**
+     * 视频图片加载器
+     */
+    private VideoImageLoader videoImageLoader;
+    /**
+     * 视频列表参数
+     */
+    private VideoListOptions videoListOptions;
 
     @Override
     protected int getContentViewResId() {
@@ -31,44 +58,86 @@ public abstract class VideoListFgt extends CoreFragment implements VideoScanner.
     }
 
     @Override
+    public void setArguments(@Nullable Bundle args) {
+        super.setArguments(args);
+        videoListOptions = (VideoListOptions) args.getSerializable(VIDEO_OPTIONS);
+        if (videoListOptions != null) {
+            minSize = videoListOptions.getMinSize();
+            maxSize = videoListOptions.getMaxSize();
+            setVideoImageLoader(videoListOptions.getVideoImageLoader());
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState, NavigationBar bar) {
-        minSize = getActivity().getIntent().getLongExtra(VIDEO_MIN_SIZE, 0);
-        maxSize = getActivity().getIntent().getLongExtra(VIDEO_MAX_SIZE, 20);
+        bar.hide();
         android_lv_content = findViewById(R.id.android_lv_content);
-        if (VideoScanner.list == null) {
+        notifyDataSetChanged();
+    }
+
+    /**
+     * 通知数据改变
+     */
+    public void notifyDataSetChanged() {
+        if (Video.with(getContext()).getList() == null) {
             showLoading();
             VideoScanner.Builder builder = new VideoScanner.Builder(getContext());
-            builder.path(IOProvider.getExternalCacheDir(getContext()));
             builder.minSize(minSize);
             builder.maxSize(maxSize);
             builder.listener(this);
             builder.build();
         } else {
-            list = VideoScanner.list;
-            adapter = new VideoAdapter(this, list, onCreateVideoImageLoader(), this);
+            list = Video.with(getContext()).getList();
+            adapter = new VideoAdapter(this, list, getVideoImageLoader(), this);
             android_lv_content.setAdapter(adapter);
         }
     }
 
+    /**
+     * 获取数据适配器对象
+     *
+     * @return
+     */
     public VideoAdapter getAdapter() {
         return adapter;
     }
 
+    /**
+     * 获取数据列表
+     *
+     * @return
+     */
     public List<VideoMedia> getList() {
         return list;
     }
 
+    /**
+     * 设置视频加载器
+     *
+     * @param videoImageLoader
+     */
+    public void setVideoImageLoader(VideoImageLoader videoImageLoader) {
+        this.videoImageLoader = videoImageLoader;
+        if (videoImageLoader != null) {
+            VideoListOptions.getInstance().setVideoImageLoader(videoImageLoader);
+        }
+    }
 
     /**
-     * 设置视频图片加载器
+     * 获取视频图片加载器
      *
      * @return
      */
-    public abstract VideoAdapter.VideoImageLoader onCreateVideoImageLoader();
+    public VideoImageLoader getVideoImageLoader() {
+        if (VideoListOptions.getInstance().getVideoImageLoader() != null) {
+            return VideoListOptions.getInstance().getVideoImageLoader();
+        }
+        return videoImageLoader;
+    }
 
     @Override
     public void onVideoScan(List<VideoMedia> list) {
-        adapter = new VideoAdapter(VideoListFgt.this, list, onCreateVideoImageLoader(), VideoListFgt.this);
+        adapter = new VideoAdapter(this, list, getVideoImageLoader(), this);
         android_lv_content.setAdapter(adapter);
         dismissLoading();
     }

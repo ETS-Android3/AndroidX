@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
@@ -28,17 +29,14 @@ import java.util.Scanner;
  */
 public class VideoScanner {
 
-    public static List<VideoMedia> list;
     public final Context context;
     public final long minSize;
     public final long maxSize;
-    private final boolean rescan;
     private ScannerHandler handler;
     public final OnVideoScanListener listener;
 
     public VideoScanner(Builder builder) {
         this.context = builder.context;
-        this.rescan = builder.rescan;
         this.minSize = builder.minSize;
         this.maxSize = builder.maxSize;
         this.listener = builder.listener;
@@ -49,10 +47,8 @@ public class VideoScanner {
     public static class Builder {
 
         private Context context;
-        private String path;
-        private long minSize = 1024;
-        private long maxSize = 20;
-        private boolean rescan;
+        private long minSize = 0;
+        private long maxSize = 50;
         private OnVideoScanListener listener;
 
         public Builder(Context context) {
@@ -61,15 +57,6 @@ public class VideoScanner {
 
         public Context context() {
             return context;
-        }
-
-        public String path() {
-            return path;
-        }
-
-        public Builder path(String path) {
-            this.path = path;
-            return this;
         }
 
         public long minSize() {
@@ -87,15 +74,6 @@ public class VideoScanner {
 
         public Builder maxSize(long maxSize) {
             this.maxSize = maxSize;
-            return this;
-        }
-
-        public boolean isRescan() {
-            return rescan;
-        }
-
-        public Builder rescan(boolean rescan) {
-            this.rescan = rescan;
             return this;
         }
 
@@ -117,19 +95,15 @@ public class VideoScanner {
      * 扫面视频
      */
     private void scan() {
-        if (list != null && !rescan) {
-            if (listener != null) {
-                listener.onVideoScan(list);
-            }
-            return;
-        }
         new Thread() {
             @Override
             public void run() {
                 super.run();
-                VideoScanner.list = scan(context);
                 if (handler != null) {
-                    handler.sendEmptyMessage(0);
+                    ArrayList<VideoMedia> list = (ArrayList<VideoMedia>) scan(context);
+                    Message message = handler.obtainMessage();
+                    message.obj = list;
+                    handler.sendMessage(message);
                 }
             }
         }.start();
@@ -141,6 +115,7 @@ public class VideoScanner {
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
             if (listener != null) {
+                ArrayList<VideoMedia> list = (ArrayList<VideoMedia>) msg.obj;
                 listener.onVideoScan(list);
             }
         }
@@ -161,8 +136,8 @@ public class VideoScanner {
      * @param context 上下文对象
      * @return
      */
-    private List<VideoMedia> scan(Context context) {
-        List<VideoMedia> videoList = new ArrayList<>();
+    private ArrayList<VideoMedia> scan(Context context) {
+        ArrayList<VideoMedia> videoList = new ArrayList<>();
         String[] thumbColumns = {MediaStore.Video.Thumbnails.DATA, MediaStore.Video.Thumbnails.VIDEO_ID};
         String[] mediaColumns = {MediaStore.Video.Media._ID, MediaStore.Video.Media.DATA, MediaStore.Video.Media.DISPLAY_NAME, MediaStore.Video.Media.TITLE, MediaStore.Video.Media.DATE_MODIFIED, MediaStore.Video.Media.DATE_ADDED, MediaStore.Video.Media.SIZE, MediaStore.Video.Media.DATE_ADDED, MediaStore.Video.Media.HEIGHT, MediaStore.Video.Media.WIDTH, MediaStore.Video.Media.DURATION};
         Cursor cursor = context.getApplicationContext().getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, mediaColumns, null, null, null);
@@ -220,17 +195,9 @@ public class VideoScanner {
     }
 
     /**
-     * 清空数据
-     */
-    public void clear() {
-        list = null;
-    }
-
-    /**
      * 销毁对象
      */
-    public void destory() {
-        list = null;
+    public void destroy() {
         handler.removeCallbacksAndMessages(null);
         handler = null;
     }
