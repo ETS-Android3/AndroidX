@@ -100,6 +100,8 @@ public class FragmentController {
             } catch (InstantiationException e) {
                 e.printStackTrace();
             }
+        }else{
+            commit(fragment,args,params,callback,containerViewId,type,addToBackStack);
         }
     }
 
