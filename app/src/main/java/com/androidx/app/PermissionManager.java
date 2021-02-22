@@ -81,7 +81,7 @@ public class PermissionManager {
     /**
      * 存储+照相机+录音权限
      */
-    public final static String STORAGE_CAMERA_RECORD_PERMISSIONS[] = new String[]{
+    public final static String PERMISSIONS_STORAGE_CAMERA_RECORD[] = new String[]{
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.CAMERA,
@@ -91,13 +91,26 @@ public class PermissionManager {
     /**
      * 存储+照相机+拨打电话+录音权限
      */
-    public final static String STORAGE_CAMERA_CALL_RECORD_PERMISSIONS[] = new String[]{
+    public final static String PERMISSIONS_STORAGE_CAMERA_RECORD_CALL[] = new String[]{
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.CAMERA,
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.CALL_PHONE,
     };
+
+    /**
+     * 定位权限
+     *
+     * @return
+     */
+    public final static String[] PERMISSIONS_LOCATION() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            return new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+        } else {
+            return new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION};
+        }
+    }
 
 
     /**

@@ -226,8 +226,8 @@ public class Debug implements View.OnClickListener {
             holder.find(TextView.class, R.id.debug_row_page_value).setText(item.page());
             holder.find(TextView.class, R.id.debug_row_time_value).setText(item.time());
             holder.find(TextView.class, R.id.debug_row_url_value).setText(item.url());
-            holder.find(TextView.class, R.id.debug_row_header_value).setText(item.requestParams().header().toString());
-            holder.find(TextView.class, R.id.debug_row_params_value).setText(item.requestParams().params().toString());
+            holder.find(TextView.class, R.id.debug_row_header_value).setText(item.requestParams().header() == null ? "" : item.requestParams().header().toString());
+            holder.find(TextView.class, R.id.debug_row_params_value).setText(item.requestParams().params() == null ? "" : item.requestParams().params().toString());
             holder.find(TextView.class, R.id.debug_row_result_value).setText(item.body());
         }
 
