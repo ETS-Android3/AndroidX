@@ -48,7 +48,7 @@ public class App extends CoreApplication {
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
 ```
 
-2.Provider配置，主要用于文件处理，图片选择。采取了Android10沙盒分区处理。
+2.Provider配置，主要用于文件处理，图片选择。采取了Android10沙盒分区处理（2.0.4以后不需要注册此配置）。
 ```
 <provider
     android:name="androidx.core.content.FileProvider"
