@@ -62,8 +62,7 @@ public class ResponseHandler extends Handler {
             String encodeBody = Encoder.encode(responseBody.body());
             cacheBody.setBody(encodeBody);
             cacheBody.setException(exception);
-            String params = Encoder.encode(responseBody.requestParams().params().toString());
-            cacheBody.setParams(responseBody.requestParams() == null || responseBody.requestParams().params() == null ? "" : params);
+            cacheBody.setParams(responseBody.requestParams() == null || responseBody.requestParams().params() == null ? "" : Encoder.encode(responseBody.requestParams().params().toString()));
             ResponseCache.insert(cacheBody);
         }
     }
