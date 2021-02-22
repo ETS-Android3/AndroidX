@@ -1,6 +1,7 @@
 package com.androidx.net;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -62,9 +63,10 @@ public class RequestParams {
      *
      * @param key
      * @param value
-     * @param max   压缩大小,kb为单位
+     * @param max     压缩大小,kb为单位
+     * @param quality 质量[0,100]
      */
-    public void add(String key, File value, int max) {
+    public void add(String key, File value, int max, int quality) {
         if (value == null) {
             return;
         }
@@ -76,19 +78,20 @@ public class RequestParams {
         }
         //压缩图片
         String path = value.getAbsolutePath();
+        String upperPath = "";
         if (!TextUtils.isEmpty(path)) {
-            path = path.toUpperCase();
+            upperPath = path.toUpperCase();
         }
         Log.e(this.getClass().getSimpleName(), "addParams value:" + path);
         Bitmap bitmap = null;
         if (ImageProvider.isImage(path)) {
             bitmap = ImageProvider.decodeBounds(path, max);
         }
-        if (path.contains(".JPG") || path.contains(".JPEG")) {
-            value = ImageProvider.decodeBitmap(CoreApplication.app, bitmap, Bitmap.CompressFormat.JPEG, max);
+        if (upperPath.contains(".JPG") || upperPath.contains(".JPEG")) {
+            value = ImageProvider.decodeBitmap(CoreApplication.app, bitmap, Bitmap.CompressFormat.JPEG, quality);
         }
-        if (path.contains(".PNG")) {
-            value = ImageProvider.decodeBitmap(CoreApplication.app, bitmap, Bitmap.CompressFormat.PNG, max);
+        if (upperPath.contains(".PNG")) {
+            value = ImageProvider.decodeBitmap(CoreApplication.app, bitmap, Bitmap.CompressFormat.PNG, quality);
         }
         files.put(key, value);
     }
@@ -101,7 +104,7 @@ public class RequestParams {
      * @param value
      */
     public void add(String key, File value) {
-        add(key, value, 1024);
+        add(key, value, 1024,100);
     }
 
     /**
