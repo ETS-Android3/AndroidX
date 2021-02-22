@@ -36,7 +36,6 @@ public abstract class CoreActivity extends AppCompatActivity implements OnHttpLi
      * 导航栏
      */
     private NavigationBar navigationBar;
-
     /**
      * 数据加载
      */
