@@ -80,7 +80,7 @@ public class FragmentController {
     /**
      * 处理Fragment
      *
-     * @param fragmentClass        Fragment类
+     * @param fragmentClass   Fragment类
      * @param args            数据
      * @param params          参数
      * @param callback        网络回调
@@ -94,14 +94,14 @@ public class FragmentController {
         if (fragment == null) {
             try {
                 fragment = (CoreFragment) fragmentClass.newInstance();
-                commit(fragment,args,params,callback,containerViewId,type,addToBackStack);
+                commit(fragment, args, params, callback, containerViewId, type, addToBackStack);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             } catch (InstantiationException e) {
                 e.printStackTrace();
             }
-        }else{
-            commit(fragment,args,params,callback,containerViewId,type,addToBackStack);
+        } else {
+            commit(fragment, args, params, callback, containerViewId, type, addToBackStack);
         }
     }
 
@@ -147,7 +147,9 @@ public class FragmentController {
                     CoreFragment lastFragment = (CoreFragment) iterator.next();
                     transaction.hide(lastFragment);
                 }
-                stackTopFragment.onPause();
+                if (stackTopFragment != null) {
+                    stackTopFragment.onPause();
+                }
                 transaction.show(fragment);
                 fragment.onResume();
             }
@@ -174,7 +176,7 @@ public class FragmentController {
     /**
      * 添加
      *
-     * @param fragment   Fragment
+     * @param fragment        Fragment
      * @param args            参数
      * @param callback        网络
      * @param containerViewId 布局id
@@ -198,7 +200,7 @@ public class FragmentController {
     /**
      * 替代
      *
-     * @param fragment   Fragment
+     * @param fragment        Fragment
      * @param args            参数
      * @param callback        网络回调
      * @param containerViewId 布局id
@@ -234,7 +236,7 @@ public class FragmentController {
     /**
      * 添加到回退栈
      *
-     * @param fragment   Fragment
+     * @param fragment        Fragment
      * @param args            参数
      * @param callback        网络回调
      * @param containerViewId 布局id
