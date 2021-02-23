@@ -83,14 +83,12 @@ public class RequestParams {
             upperPath = path.toUpperCase();
         }
         Log.e(this.getClass().getSimpleName(), "addParams value:" + path);
-        Bitmap bitmap = null;
-        if (ImageProvider.isImage(path)) {
-            bitmap = ImageProvider.decodeBounds(path, max);
-        }
         if (upperPath.contains(".JPG") || upperPath.contains(".JPEG")) {
+            Bitmap bitmap = ImageProvider.decodeBounds(path, Bitmap.CompressFormat.JPEG, max);
             value = ImageProvider.decodeBitmap(CoreApplication.app, bitmap, Bitmap.CompressFormat.JPEG, quality);
         }
         if (upperPath.contains(".PNG")) {
+            Bitmap bitmap = ImageProvider.decodeBounds(path, Bitmap.CompressFormat.PNG, max);
             value = ImageProvider.decodeBitmap(CoreApplication.app, bitmap, Bitmap.CompressFormat.PNG, quality);
         }
         files.put(key, value);
@@ -104,7 +102,7 @@ public class RequestParams {
      * @param value
      */
     public void add(String key, File value) {
-        add(key, value, 1024,100);
+        add(key, value, 1024, 100);
     }
 
     /**
