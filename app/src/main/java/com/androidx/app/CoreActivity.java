@@ -727,4 +727,5 @@ public abstract class CoreActivity extends AppCompatActivity implements OnHttpLi
     public void onRequestPermissionsFailed(int requestCode, String[] permissions, int[] grantResults) {
 
     }
+
 }
