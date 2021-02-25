@@ -521,18 +521,15 @@ public class PagerTabStrip extends HorizontalScrollView {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(tabWidth, LinearLayout.LayoutParams.MATCH_PARENT);
             //平均分
             if (tabLayoutParams == TabLayoutParams.MATCH_PARENT) {
-                tabWidth = Screen.width() / pageTitles.length;
+                tabWidth = (Screen.width() - dividerWidth*(count-1)) / pageTitles.length;
                 params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
                 tab.setPadding(0, tabPaddingVertical, 0, 0);
                 params.weight = 1;
             }
             //自适应
             if (tabLayoutParams == TabLayoutParams.WRAP_CONTENT) {
-                if (tabWidth==0){
-                    tabWidth = (int) (tab.getPaint().measureText(String.valueOf(text)) + tabPaddingHorizontal * 2.0f);
-                }
-                params = new LinearLayout.LayoutParams(tabWidth, LinearLayout.LayoutParams.MATCH_PARENT);
-                tab.setPadding(0, tabPaddingVertical, 0, tabPaddingVertical);
+                params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                tab.setPadding(tabPaddingHorizontal, tabPaddingVertical, tabPaddingHorizontal, tabPaddingVertical);
             }
             params.gravity = Gravity.CENTER;
             tab.setLayoutParams(params);
