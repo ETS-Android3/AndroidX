@@ -40,7 +40,7 @@ public class PermissionManager {
     };
 
     /**
-     * 存储+拨打电话权限
+     * 存储+电话权限
      */
     public final static String PERMISSIONS_STORAGE_CALL[] = new String[]{
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -49,7 +49,7 @@ public class PermissionManager {
     };
 
     /**
-     * 存储+录音权限
+     * 存储+录音权限+录音
      */
     public final static String PERMISSIONS_STORAGE_RECORD[] = new String[]{
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -58,13 +58,24 @@ public class PermissionManager {
     };
 
     /**
-     * 存储+照相机权限
+     * 存储+照相机+电话权限
      */
     public final static String PERMISSIONS_STORAGE_CAMERA_CALL[] = new String[]{
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.CAMERA,
             Manifest.permission.CALL_PHONE,
+    };
+
+    /**
+     * 存储+照相机+电话+震动权限
+     */
+    public final static String PERMISSIONS_STORAGE_CAMERA_CALL_VIBRATE[] = new String[]{
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA,
+            Manifest.permission.CALL_PHONE,
+            Manifest.permission.VIBRATE,
     };
 
     /**
@@ -79,6 +90,19 @@ public class PermissionManager {
     };
 
     /**
+     * 存储+照相机+拨打电话+录音+震动权限
+     */
+    public final static String PERMISSIONS_STORAGE_CAMERA_CALL_RECORD_VIBRATE[] = new String[]{
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA,
+            Manifest.permission.CALL_PHONE,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.VIBRATE,
+    };
+
+
+    /**
      * 存储+照相机+录音权限
      */
     public final static String PERMISSIONS_STORAGE_CAMERA_RECORD[] = new String[]{
@@ -89,7 +113,18 @@ public class PermissionManager {
     };
 
     /**
-     * 存储+照相机+拨打电话+录音权限
+     * 存储+照相机+拨打电话+录音+震动权限
+     */
+    public final static String PERMISSIONS_STORAGE_CAMERA_RECORD_VIBRATE[] = new String[]{
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.VIBRATE,
+    };
+
+    /**
+     * 存储+照相机+拨打电话+录音+震动权限
      */
     public final static String PERMISSIONS_STORAGE_CAMERA_RECORD_CALL[] = new String[]{
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -97,6 +132,18 @@ public class PermissionManager {
             Manifest.permission.CAMERA,
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.CALL_PHONE,
+    };
+
+    /**
+     * 存储+照相机+拨打电话+录音+震动权限
+     */
+    public final static String PERMISSIONS_STORAGE_CAMERA_RECORD_CALL_VIBRATE[] = new String[]{
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.CALL_PHONE,
+            Manifest.permission.VIBRATE,
     };
 
     /**
