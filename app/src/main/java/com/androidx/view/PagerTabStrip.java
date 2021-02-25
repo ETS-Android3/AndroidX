@@ -10,6 +10,8 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -81,7 +83,7 @@ public class PagerTabStrip extends HorizontalScrollView {
     /**
      * 标签宽度
      */
-    private int tabWidth = (int) (50 * Resources.getSystem().getDisplayMetrics().density);
+    private int tabWidth = 0;
     /**
      * 标签文字大小
      */
@@ -527,9 +529,7 @@ public class PagerTabStrip extends HorizontalScrollView {
             //自适应
             if (tabLayoutParams == TabLayoutParams.WRAP_CONTENT) {
                 if (tabWidth==0){
-                    Rect rect = new Rect();
-                    tab.getPaint().getTextBounds(String.valueOf(text),0,text.length(),rect);
-                    tabWidth = rect.width() + tabPaddingHorizontal * 2;
+                    tabWidth = (int) (tab.getPaint().measureText(String.valueOf(text)) + tabPaddingHorizontal * 2.0f);
                 }
                 params = new LinearLayout.LayoutParams(tabWidth, LinearLayout.LayoutParams.MATCH_PARENT);
                 tab.setPadding(0, tabPaddingVertical, 0, tabPaddingVertical);
