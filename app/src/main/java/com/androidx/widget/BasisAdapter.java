@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 
 import com.androidx.util.Size;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -37,7 +38,7 @@ public abstract class BasisAdapter<T> extends BaseAdapter implements ViewHolder.
      */
     private ViewHolder viewHolder;
 
-    public BasisAdapter(){
+    public BasisAdapter() {
 
     }
 
@@ -170,11 +171,28 @@ public abstract class BasisAdapter<T> extends BaseAdapter implements ViewHolder.
     }
 
     /**
+     * 设置分页数据
+     *
+     * @param page 页面
+     * @param data 数据
+     */
+    public void setPageItems(int page, List<T> data) {
+        if (page == 1) {
+            setItems(data);
+        } else {
+            addItems(data);
+        }
+    }
+
+    /**
      * 添加Item
      *
      * @param t
      */
     public void addItem(T t) {
+        if (data == null) {
+            data = new ArrayList<>();
+        }
         if (t != null) {
             data.add(t);
         }
@@ -187,9 +205,10 @@ public abstract class BasisAdapter<T> extends BaseAdapter implements ViewHolder.
      * @param items
      */
     public void addItems(List<T> items) {
-        if (data != null) {
-            data.addAll(items);
+        if (data == null) {
+            data = new ArrayList<>();
         }
+        data.addAll(items);
         notifyDataSetChanged();
     }
 
@@ -243,14 +262,14 @@ public abstract class BasisAdapter<T> extends BaseAdapter implements ViewHolder.
     @Override
     public void onItemClick(View v, int position) {
         if (onItemClickListener != null) {
-            onItemClickListener.onItemClick(this, v,getItem(position), position);
+            onItemClickListener.onItemClick(this, v, getItem(position), position);
         }
     }
 
     @Override
     public void onItemFocusChange(View v, int position, boolean hasFocus) {
         if (onItemFocusChangeListener != null) {
-            onItemFocusChangeListener.onItemFocusChange(this, v,getItem(position), position, hasFocus);
+            onItemFocusChangeListener.onItemFocusChange(this, v, getItem(position), position, hasFocus);
         }
     }
 

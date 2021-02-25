@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.androidx.util.Size;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,7 +37,7 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
      */
     private ViewHolder viewHolder;
 
-    public RecyclerAdapter(){
+    public RecyclerAdapter() {
 
     }
 
@@ -143,6 +144,19 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
         getItemCount();
     }
 
+    /**
+     * 设置分页数据
+     *
+     * @param page 页面
+     * @param data 数据
+     */
+    public void setPageItems(int page, List<T> data) {
+        if (page == 1) {
+            setItems(data);
+        } else {
+            addItems(data);
+        }
+    }
 
     /**
      * 添加Items
@@ -152,9 +166,10 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
     public void addItems(List<T> data) {
         int size = getItemCount();
         int positionStart = size == 0 ? 0 : size;
-        if (data != null) {
-            data.addAll(data);
+        if (data == null) {
+            data = new ArrayList<>();
         }
+        data.addAll(data);
         notifyItemRangeInserted(positionStart, getItemCount());
     }
 
@@ -164,6 +179,9 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
      * @param t
      */
     public void addItem(T t) {
+        if (data == null) {
+            data = new ArrayList<>();
+        }
         if (t != null) {
             data.add(t);
         }
