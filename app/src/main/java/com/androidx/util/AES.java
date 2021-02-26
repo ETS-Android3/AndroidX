@@ -12,6 +12,7 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class AES {
 
+
     /**
      * KEY值
      */
