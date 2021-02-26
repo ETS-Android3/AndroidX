@@ -1,5 +1,7 @@
 package com.androidx.util;
 
+import android.content.Context;
+
 import com.androidx.app.CoreApplication;
 import com.androidx.content.DataStorage;
 
@@ -16,9 +18,14 @@ public class UseCache {
     public static final String TOKEN = "CACHE_TOKEN";
 
     /**
-     * 基础
+     * url
      */
     public static final String URL = "CACHE_URL";
+
+    /**
+     * 登录状态
+     */
+    public static final String LOGIN = "STATUS_LOGIN";
 
     /**
      * 设置Token
@@ -67,6 +74,48 @@ public class UseCache {
             return url;
         }
         return url() + url;
+    }
+
+    /**
+     * 设置登录
+     *
+     * @param context 上下文
+     * @param login   是否登录
+     */
+    public static void login(Context context, boolean login) {
+        DataStorage.with(context).put(LOGIN, login);
+    }
+
+    /**
+     * 是否登录
+     *
+     * @param context 上下文
+     * @return
+     */
+    public static boolean isLogin(Context context) {
+        return DataStorage.with(context).getBoolean(LOGIN, false);
+    }
+
+    /**
+     * 设置用户
+     *
+     * @param context 上下文
+     * @param obj     对象
+     */
+    public static void user(Context context, Object obj) {
+        DataStorage.with(context).put(obj);
+    }
+
+    /**
+     * 获取用户
+     *
+     * @param context 上下文
+     * @param cls     类
+     * @param <T>     对象
+     * @return
+     */
+    public static <T> T user(Context context, Class<T> cls) {
+        return DataStorage.with(context).getObject(cls);
     }
 
 }

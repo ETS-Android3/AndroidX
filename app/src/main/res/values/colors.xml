@@ -36,10 +36,10 @@
     <color name="colorButtonUnpressed">#FFFFFF</color>
     <color name="colorButtonPressed">#F9F9F9</color>
     <!--提示框颜色-->
-    <color name="colorCenterToastText">@color/colorPrimary</color>
-    <color name="colorCenterToastBackground">#FFFFFF</color>
-    <color name="colorBottomToastBackground">#FFFFFF</color>
-    <color name="colorBottomToastText">@color/colorPrimary</color>
+    <color name="colorCenterToastText">@color/colorWhite</color>
+    <color name="colorCenterToastBackground">@color/colorPrimary</color>
+    <color name="colorBottomToastBackground">@color/colorPrimary</color>
+    <color name="colorBottomToastText">@color/colorWhite</color>
     <!--调试颜色-->
     <color name="colorDebugButton">#EEEEEE</color>
     <color name="colorDebugBackground">#3C3F41</color>

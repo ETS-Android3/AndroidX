@@ -197,6 +197,7 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
         if (getItemCount() > 0) {
             data.remove(position);
             notifyItemRemoved(position);
+            notifyItemRangeChanged(position,getItemCount()-position);
         }
     }
 
@@ -212,7 +213,7 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
                     data.remove(i);
                 }
             }
-            notifyItemRangeRemoved(positionStart, itemCount);
+            notifyItemRangeChanged(positionStart, itemCount);
         }
     }
 
