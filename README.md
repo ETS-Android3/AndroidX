@@ -17,7 +17,7 @@ allprojects {
 2./app/build.grade
 ```
 dependencies {
-	implementation 'com.github.RelinRan:AndroidX:2.0.5'
+	implementation 'com.github.RelinRan:AndroidX:2.0.6'
 }
 ```
 
