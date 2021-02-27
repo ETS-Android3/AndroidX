@@ -233,6 +233,7 @@ public class FlowListView extends ViewGroup {
             isRegisterDataSetObserver = true;
         }
         this.baseAdapter = adapter;
+        notifyDataRefresh();
     }
 
 
