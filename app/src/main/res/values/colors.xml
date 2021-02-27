@@ -21,7 +21,7 @@
     <color name="colorNavigationBackground">@color/colorPrimary</color>
     <color name="colorNavigationBarDivider">#FFFFFF</color>
     <!--加载-->
-    <color name="colorLoadingBackground">#80000000</color>
+    <color name="colorLoadingBackground">#F8F8F8</color>
     <color name="colorLoadingStreak">#0EB692</color>
     <color name="colorLoadingText">#0EB692</color>
     <!--头部-->
