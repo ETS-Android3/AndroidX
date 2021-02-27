@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.androidx.R;
 import com.androidx.dialog.CoreDialog;
+import com.androidx.json.Json;
 import com.androidx.net.Http;
 import com.androidx.net.ResponseBody;
 import com.androidx.text.Time;
@@ -228,7 +229,7 @@ public class Debug implements View.OnClickListener {
             holder.find(TextView.class, R.id.debug_row_url_value).setText(item.url());
             holder.find(TextView.class, R.id.debug_row_header_value).setText(item.requestParams().header() == null ? "" : item.requestParams().header().toString());
             holder.find(TextView.class, R.id.debug_row_params_value).setText(item.requestParams().params() == null ? "" : item.requestParams().params().toString());
-            holder.find(TextView.class, R.id.debug_row_result_value).setText(item.body());
+            holder.find(TextView.class, R.id.debug_row_result_value).setText(Json.format(item.body()));
         }
 
     }
