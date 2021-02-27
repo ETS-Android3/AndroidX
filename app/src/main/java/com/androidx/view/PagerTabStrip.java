@@ -530,6 +530,7 @@ public class PagerTabStrip extends HorizontalScrollView {
             if (tabLayoutParams == TabLayoutParams.WRAP_CONTENT) {
                 params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
                 tab.setPadding(tabPaddingHorizontal, tabPaddingVertical, tabPaddingHorizontal, tabPaddingVertical);
+                tabWidth = (int) (tab.getPaint().measureText(text+"")+tabPaddingHorizontal*2);
             }
             params.gravity = Gravity.CENTER;
             tab.setLayoutParams(params);
