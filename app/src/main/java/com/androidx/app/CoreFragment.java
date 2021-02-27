@@ -285,7 +285,7 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
      * @param layoutResId
      */
     protected void setLoadingView(int layoutResId) {
-        FrameLayout parent = findViewById(android.R.id.content);
+        FrameLayout parent = rootView.findViewById(R.id.content);
         loading = new Loading(getContext(), parent, layoutResId);
     }
 
@@ -295,7 +295,7 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
      * @param loadingView
      */
     protected void setLoadingView(View loadingView) {
-        FrameLayout parent = findViewById(android.R.id.content);
+        FrameLayout parent = rootView.findViewById(R.id.content);
         loading = new Loading(getContext(), parent, loadingView);
     }
 
