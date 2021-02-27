@@ -10,7 +10,7 @@ import com.androidx.content.DataStorage;
  * Describe:常用缓存
  * Date:2020/5/25 11:48
  */
-public class UseCache {
+public class CommonCache {
 
     /**
      * Token
@@ -32,7 +32,7 @@ public class UseCache {
      *
      * @param value
      */
-    public static void token(String value) {
+    public static void setToken(String value) {
         DataStorage.with(CoreApplication.app).put(TOKEN, value);
     }
 
@@ -41,7 +41,7 @@ public class UseCache {
      *
      * @return
      */
-    public static String token() {
+    public static String getToken() {
         return DataStorage.with(CoreApplication.app).getString(TOKEN, "");
     }
 
@@ -50,7 +50,7 @@ public class UseCache {
      *
      * @param value
      */
-    public static void url(String value) {
+    public static void setUrl(String value) {
         DataStorage.with(CoreApplication.app).put(URL, value);
     }
 
@@ -59,7 +59,7 @@ public class UseCache {
      *
      * @return
      */
-    public static String url() {
+    public static String getUrl() {
         return DataStorage.with(CoreApplication.app).getString(URL, "");
     }
 
@@ -73,7 +73,7 @@ public class UseCache {
         if (url != null && url.startsWith("http")) {
             return url;
         }
-        return url() + url;
+        return getUrl() + url;
     }
 
     /**
@@ -82,7 +82,7 @@ public class UseCache {
      * @param context 上下文
      * @param login   是否登录
      */
-    public static void login(Context context, boolean login) {
+    public static void setLogin(Context context, boolean login) {
         DataStorage.with(context).put(LOGIN, login);
     }
 
@@ -102,7 +102,7 @@ public class UseCache {
      * @param context 上下文
      * @param obj     对象
      */
-    public static void user(Context context, Object obj) {
+    public static void setObject(Context context, Object obj) {
         DataStorage.with(context).put(obj);
     }
 
@@ -114,7 +114,7 @@ public class UseCache {
      * @param <T>     对象
      * @return
      */
-    public static <T> T user(Context context, Class<T> cls) {
+    public static <T> T getObject(Context context, Class<T> cls) {
         return DataStorage.with(context).getObject(cls);
     }
 
