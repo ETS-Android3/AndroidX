@@ -193,6 +193,7 @@ public class BannerPager extends FrameLayout implements ViewPager.OnPageChangeLi
     }
 
     protected void initAdapter(BannerAdapter adapter) {
+        adapter.setLoop(isLoop());
         adapter.setOnDataSetChangeListener(this);
         pager.setAdapter(adapter);
         pager.addOnPageChangeListener(this);
