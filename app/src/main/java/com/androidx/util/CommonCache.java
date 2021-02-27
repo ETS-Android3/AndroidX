@@ -79,43 +79,39 @@ public class CommonCache {
     /**
      * 设置登录
      *
-     * @param context 上下文
      * @param login   是否登录
      */
-    public static void setLogin(Context context, boolean login) {
-        DataStorage.with(context).put(LOGIN, login);
+    public static void setLogin(boolean login) {
+        DataStorage.with(CoreApplication.app).put(LOGIN, login);
     }
 
     /**
      * 是否登录
      *
-     * @param context 上下文
      * @return
      */
-    public static boolean isLogin(Context context) {
-        return DataStorage.with(context).getBoolean(LOGIN, false);
+    public static boolean isLogin() {
+        return DataStorage.with(CoreApplication.app).getBoolean(LOGIN, false);
     }
 
     /**
-     * 设置用户
+     * 设置实体类
      *
-     * @param context 上下文
      * @param obj     对象
      */
-    public static void setObject(Context context, Object obj) {
-        DataStorage.with(context).put(obj);
+    public static void setEntity(Object obj) {
+        DataStorage.with(CoreApplication.app).put(obj);
     }
 
     /**
-     * 获取用户
+     * 获取体类
      *
-     * @param context 上下文
      * @param cls     类
      * @param <T>     对象
      * @return
      */
-    public static <T> T getObject(Context context, Class<T> cls) {
-        return DataStorage.with(context).getObject(cls);
+    public static <T> T getEntity(Class<T> cls) {
+        return DataStorage.with(CoreApplication.app).getObject(cls);
     }
 
 }

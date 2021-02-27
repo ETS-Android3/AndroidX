@@ -923,32 +923,48 @@ DataStorage.with(context).put("username","xxxx");
 String username = DataStorage.with(context).getString("username","");
 ```
 
-## UseCache
+## CommonCache
 常用缓存,主要用户登录页面或者主页存储token和文件前缀地址。
 
 1.存token
 ```
-UseCache.token("xxx");
+CommonCache.setToken("xxx");
 ```
 
 2.取token
 ```
-String token = UseCache.token();
+String token = CommonCache.getToken();
 ```
 
 3.存url
 ```
-UseCache.url("xxx");
+CommonCache.setUrl("xxx");
 ```
 4.取url
 ```
-String url = UseCache.url();
+String url = CommonCache.getUrl();
 ```
 
 5.拼接完整url
 ```
 String endUrl = "xxx";
-String completeUrl = UseCache.joinUrl(endUrl);
+String completeUrl = CommonCache.spliceUrl(endUrl);
+```
+6.设置登录状态
+```
+CommonCache.setLogin(true);
+```
+7.获取登录状态
+```
+boolean login = CommonCache.isLogin();
+```
+8.设置实体
+```
+CommonCache.setEntity(xxx);
+```
+9.获取实体
+```
+CommonCache.getEntity(xxx.class);
 ```
 
 ## Time
