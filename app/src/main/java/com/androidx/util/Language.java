@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.fonts.Font;
 import android.os.Build;
 import android.os.LocaleList;
 import android.text.TextUtils;
