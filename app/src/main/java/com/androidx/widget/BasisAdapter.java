@@ -270,6 +270,7 @@ public abstract class BasisAdapter<T> extends BaseAdapter implements ViewHolder.
         }
     }
 
+
     /**
      * Item点击事件
      */
