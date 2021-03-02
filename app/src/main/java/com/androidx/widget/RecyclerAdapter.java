@@ -165,7 +165,7 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
      */
     public void addItems(List<T> data) {
         int size = data == null ? 0 : data.size();
-        int positionStart = size == 0 ? 0 : size;
+        int positionStart = getItemCount() == 0 ? 0 : getItemCount();
         getItems().addAll(data);
         notifyItemRangeInserted(positionStart, size);
     }
