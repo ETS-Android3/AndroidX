@@ -331,13 +331,11 @@ public class ImageProvider {
     /**
      * Bitmap解析成文件
      *
-     * @param context    上下文对象
      * @param bitmap     位图
      * @param outPutPath 输出路径
      * @return
      */
-    public static File decodeBitmap(Context context, Bitmap bitmap, String outPutPath) {
-        File outFile = buildFile(context);
+    public static File decodeBitmap(Bitmap bitmap, String outPutPath) {
         return decodeBitmap(bitmap, Bitmap.CompressFormat.JPEG, 100, outPutPath);
     }
 

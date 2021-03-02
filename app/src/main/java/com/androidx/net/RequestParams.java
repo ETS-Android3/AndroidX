@@ -85,11 +85,15 @@ public class RequestParams {
         Log.e(this.getClass().getSimpleName(), "addParams value:" + path);
         if (upperPath.contains(".JPG") || upperPath.contains(".JPEG")) {
             Bitmap bitmap = ImageProvider.decodeBounds(path, Bitmap.CompressFormat.JPEG, max);
-            value = ImageProvider.decodeBitmap(CoreApplication.app, bitmap, Bitmap.CompressFormat.JPEG, quality);
+            if (bitmap != null) {
+                value = ImageProvider.decodeBitmap(CoreApplication.app, bitmap, Bitmap.CompressFormat.JPEG, quality);
+            }
         }
         if (upperPath.contains(".PNG")) {
             Bitmap bitmap = ImageProvider.decodeBounds(path, Bitmap.CompressFormat.PNG, max);
-            value = ImageProvider.decodeBitmap(CoreApplication.app, bitmap, Bitmap.CompressFormat.PNG, quality);
+            if (bitmap != null) {
+                value = ImageProvider.decodeBitmap(CoreApplication.app, bitmap, Bitmap.CompressFormat.PNG, quality);
+            }
         }
         files.put(key, value);
     }

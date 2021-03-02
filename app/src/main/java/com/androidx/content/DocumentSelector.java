@@ -251,7 +251,7 @@ public class DocumentSelector {
             if (requestCode == IntentProvider.REQUEST_CAPTURE) {
                 String path = outPutFile.getAbsolutePath();
                 Bitmap rotateBitmap = ImageProvider.rotate(path, ImageProvider.angle(path));
-                ImageProvider.decodeBitmap(context, rotateBitmap, path);
+                ImageProvider.decodeBitmap(rotateBitmap, path);
                 File file = new File(path);
                 resultUri = UriProvider.insertMediaStoreImage(context, file);
                 builder.data = outPutUri;
@@ -340,7 +340,7 @@ public class DocumentSelector {
         /**
          * 缓存文件夹名
          */
-        private String dictionary = "DocumentSelector";
+        private String dictionary = UriProvider.DIRECTORY_PICTURE;
         /**
          * 输入Uri
          */
