@@ -164,10 +164,10 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
      * @param data
      */
     public void addItems(List<T> data) {
-        int size = getItemCount();
+        int size = data == null ? 0 : data.size();
         int positionStart = size == 0 ? 0 : size;
         getItems().addAll(data);
-        notifyItemRangeInserted(positionStart, getItemCount()-size);
+        notifyItemRangeInserted(positionStart, size);
     }
 
     /**
@@ -191,7 +191,7 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
         if (getItemCount() > 0) {
             getItems().remove(position);
             notifyItemRemoved(position);
-            notifyItemRangeChanged(position,getItemCount()-position);
+            notifyItemRangeChanged(position, getItemCount() - position);
         }
     }
 
@@ -229,7 +229,7 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
      * @return
      */
     public List<T> getItems() {
-        if (getItems() == null) {
+        if (data == null) {
             data = new ArrayList<>();
         }
         return data;
@@ -242,7 +242,7 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
      * @return
      */
     public T getItem(int position) {
-        if (getItemCount()==0) {
+        if (getItemCount() == 0) {
             return null;
         }
         return data.get(position);
