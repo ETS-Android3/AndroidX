@@ -166,11 +166,8 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
     public void addItems(List<T> data) {
         int size = getItemCount();
         int positionStart = size == 0 ? 0 : size;
-        if (data == null) {
-            data = new ArrayList<>();
-        }
-        data.addAll(data);
-        notifyItemRangeInserted(positionStart, getItemCount());
+        getItems().addAll(data);
+        notifyItemRangeInserted(positionStart, getItemCount()-size);
     }
 
     /**
@@ -179,11 +176,8 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
      * @param t
      */
     public void addItem(T t) {
-        if (data == null) {
-            data = new ArrayList<>();
-        }
         if (t != null) {
-            data.add(t);
+            getItems().add(t);
         }
         notifyItemInserted(getItemCount() - 1);
     }
@@ -195,7 +189,7 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
      */
     public void removeItem(int position) {
         if (getItemCount() > 0) {
-            data.remove(position);
+            getItems().remove(position);
             notifyItemRemoved(position);
             notifyItemRangeChanged(position,getItemCount()-position);
         }
@@ -210,7 +204,7 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
         if (getItemCount() > 0) {
             for (int i = 0; i < getItemCount() && itemCount <= getItemCount(); i++) {
                 if (i >= positionStart && i < itemCount) {
-                    data.remove(i);
+                    getItems().remove(i);
                 }
             }
             notifyItemRangeChanged(positionStart, itemCount);
@@ -224,7 +218,7 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
      * @param toPosition   新位置
      */
     public void moveItem(int fromPosition, int toPosition) {
-        data.add(toPosition, data.remove(fromPosition));
+        getItems().add(toPosition, getItems().remove(fromPosition));
         notifyItemMoved(fromPosition, toPosition);
         notifyItemRangeChanged(Math.min(fromPosition, toPosition), Math.abs(fromPosition - toPosition) + 1);
     }
@@ -235,6 +229,9 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
      * @return
      */
     public List<T> getItems() {
+        if (getItems() == null) {
+            data = new ArrayList<>();
+        }
         return data;
     }
 
@@ -245,7 +242,7 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
      * @return
      */
     public T getItem(int position) {
-        if (data == null) {
+        if (getItemCount()==0) {
             return null;
         }
         return data.get(position);

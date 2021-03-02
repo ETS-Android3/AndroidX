@@ -142,6 +142,9 @@ public abstract class BasisAdapter<T> extends BaseAdapter implements ViewHolder.
      * @return
      */
     public List<T> getItems() {
+        if (data == null) {
+            data = new ArrayList<>();
+        }
         return data;
     }
 
@@ -190,11 +193,8 @@ public abstract class BasisAdapter<T> extends BaseAdapter implements ViewHolder.
      * @param t
      */
     public void addItem(T t) {
-        if (data == null) {
-            data = new ArrayList<>();
-        }
         if (t != null) {
-            data.add(t);
+            getItems().add(t);
         }
         notifyDataSetChanged();
     }
@@ -205,10 +205,7 @@ public abstract class BasisAdapter<T> extends BaseAdapter implements ViewHolder.
      * @param items
      */
     public void addItems(List<T> items) {
-        if (data == null) {
-            data = new ArrayList<>();
-        }
-        data.addAll(items);
+        getItems().addAll(items);
         notifyDataSetChanged();
     }
 
@@ -219,7 +216,7 @@ public abstract class BasisAdapter<T> extends BaseAdapter implements ViewHolder.
      */
     public void removeItem(int position) {
         if (getCount() > 0 && position < getCount()) {
-            data.remove(position);
+            getItems().remove(position);
         }
         notifyDataSetChanged();
     }
@@ -233,7 +230,7 @@ public abstract class BasisAdapter<T> extends BaseAdapter implements ViewHolder.
     public void removeItems(int positionStart, int itemCount) {
         for (int i = 0; i < getCount(); i++) {
             if (i >= positionStart && i < itemCount) {
-                data.remove(i);
+                getItems().remove(i);
             }
         }
         notifyDataSetChanged();
@@ -250,7 +247,7 @@ public abstract class BasisAdapter<T> extends BaseAdapter implements ViewHolder.
 
     @Override
     public T getItem(int position) {
-        return data.get(position);
+        return getItems().get(position);
     }
 
     @Override
