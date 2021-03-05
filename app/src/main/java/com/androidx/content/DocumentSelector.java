@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import java.io.File;
@@ -246,7 +245,7 @@ public class DocumentSelector {
      * @param resultCode  结果码
      * @param data        数据
      */
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode,Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == IntentProvider.REQUEST_CAPTURE) {
                 String path = outPutFile.getAbsolutePath();
@@ -271,14 +270,12 @@ public class DocumentSelector {
                 resultUri = data.getData();
                 builder.data = resultUri;
                 String path = UriProvider.getData(context, resultUri);
-                path = UriProvider.insertExternalCacheDir(context, dictionary, resultUri, path);
                 Log.i(TAG, "->onActivityResult REQUEST_PICK resultUri = " + resultUri + " , path = " + path);
                 handleUriPath(resultUri, path);
             }
             if (requestCode == IntentProvider.REQUEST_GET_CONTENT) {
                 resultUri = data.getData();
                 String path = UriProvider.getPath(context, resultUri);
-                path = UriProvider.insertExternalCacheDir(context, dictionary, resultUri, path);
                 Log.i(TAG, "->onActivityResult REQUEST_GET_CONTENT resultUri = " + resultUri + " , path = " + path);
                 builder.data = UriProvider.buildProviderUri(context, new File(path), authority);
                 handleUriPath(builder.data, path);

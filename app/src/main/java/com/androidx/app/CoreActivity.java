@@ -456,7 +456,7 @@ public abstract class CoreActivity extends AppCompatActivity implements OnHttpLi
         if (options != null) {
             intent.putExtras(options);
         }
-        startActivity(intent);
+        startActivity(intent,options);
     }
 
     /**
@@ -549,7 +549,7 @@ public abstract class CoreActivity extends AppCompatActivity implements OnHttpLi
      * 添加Fragment
      *
      * @param fragment 类名
-     * @param args          参数
+     * @param args     参数
      */
     protected void addFragment(CoreFragment fragment, Bundle args) {
         getFragmentController().add(fragment, args, null, this, getContainerViewId());
@@ -569,7 +569,7 @@ public abstract class CoreActivity extends AppCompatActivity implements OnHttpLi
      * 添加Fragment
      *
      * @param fragment 类名
-     * @param params        参数
+     * @param params   参数
      */
     protected void addFragment(CoreFragment fragment, Object params) {
         getFragmentController().add(fragment, null, params, this, getContainerViewId());
@@ -590,8 +590,8 @@ public abstract class CoreActivity extends AppCompatActivity implements OnHttpLi
      * 添加Fragment
      *
      * @param fragment 类名
-     * @param args          参数
-     * @param params        参数
+     * @param args     参数
+     * @param params   参数
      */
     protected void addFragment(CoreFragment fragment, Bundle args, Object params) {
         getFragmentController().add(fragment, args, params, this, getContainerViewId());
@@ -621,7 +621,7 @@ public abstract class CoreActivity extends AppCompatActivity implements OnHttpLi
      * 替换Fragment
      *
      * @param fragment 类名
-     * @param args          参数
+     * @param args     参数
      */
     protected void replaceFragment(CoreFragment fragment, Bundle args) {
         getFragmentController().replace(fragment, args, null, this, getContainerViewId());
@@ -641,7 +641,7 @@ public abstract class CoreActivity extends AppCompatActivity implements OnHttpLi
      * 替换Fragment
      *
      * @param fragment 类名
-     * @param params        参数
+     * @param params   参数
      */
     protected void replaceFragment(CoreFragment fragment, Object params) {
         getFragmentController().replace(fragment, null, params, this, getContainerViewId());
@@ -662,8 +662,8 @@ public abstract class CoreActivity extends AppCompatActivity implements OnHttpLi
      * 替换Fragment
      *
      * @param fragment 类名
-     * @param args          参数
-     * @param params        参数
+     * @param args     参数
+     * @param params   参数
      */
     protected void replaceFragment(CoreFragment fragment, Bundle args, Object params) {
         getFragmentController().replace(fragment, args, params, this, getContainerViewId());
