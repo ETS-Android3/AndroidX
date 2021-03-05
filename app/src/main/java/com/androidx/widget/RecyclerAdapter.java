@@ -245,6 +245,9 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
         if (getItemCount() == 0) {
             return null;
         }
+        if (data == null) {
+            return null;
+        }
         return data.get(position);
     }
 

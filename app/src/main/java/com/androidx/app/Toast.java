@@ -60,7 +60,7 @@ public class Toast {
     /**
      * 偏移Y
      */
-    private int yOffset = 100;
+    private int yOffset = 200;
     /**
      * 水平间距
      */
@@ -267,7 +267,7 @@ public class Toast {
         }
         if (gravity == Gravity.BOTTOM) {
             xOffset = 0;
-            yOffset = 100;
+            yOffset = 200;
             verticalMargin = 0;
         }
     }
