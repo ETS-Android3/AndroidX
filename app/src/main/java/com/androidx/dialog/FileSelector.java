@@ -305,7 +305,7 @@ public class FileSelector implements View.OnClickListener, BasisAdapter.OnItemCl
         /**
          * 取消文字
          */
-        private String cancelText = "取消";
+        private String cancelText;
         /**
          * 取消文字颜色
          */
