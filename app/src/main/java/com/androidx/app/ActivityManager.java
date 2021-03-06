@@ -17,7 +17,6 @@ import java.util.Stack;
  */
 public class ActivityManager {
 
-
     /**
      * 页面栈
      */
