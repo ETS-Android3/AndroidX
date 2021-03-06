@@ -423,6 +423,7 @@ public class VideoRecordAty extends CoreActivity implements SurfaceHolder.Callba
         mediaRecorder.setOrientationHint(cameraId == Camera.CameraInfo.CAMERA_FACING_BACK ? 90 : 270);//90 270
         if (videoFolder == null) {
             videoFolder = getExternalCacheDir().getAbsolutePath();
+            params.setVideoFolder(videoFolder);
         }
         File dir = new File(videoFolder + "/Videos");
         if (!dir.exists()) {
@@ -432,6 +433,7 @@ public class VideoRecordAty extends CoreActivity implements SurfaceHolder.Callba
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMDDHHmmss");
             String name = "VIDEO_" + format.format(new Date()) + ".mp4";
             videoPath = dir + "/" + name;
+            params.setVideoPath(videoPath);
         }
         //设置输出文件的路径
         mediaRecorder.setOutputFile(videoPath);
