@@ -228,6 +228,7 @@ public class VideoRecordAty extends CoreActivity implements SurfaceHolder.Callba
     }
 
     /**
+     *
      * 初始化摄像头
      *
      * @param cameraId eg for Camera.CameraInfo.CAMERA_FACING_BACK
