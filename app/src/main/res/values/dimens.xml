@@ -9,6 +9,7 @@
     <dimen name="toast_center_view_width">90dp</dimen>
     <dimen name="toast_center_view_height">90dp</dimen>
     <dimen name="toast_center_view_text_size">14sp</dimen>
+    <dimen name="toast_offset_y">60dp</dimen>
     <!--刷新-->
     <dimen name="swipe_loading_width">45dp</dimen>
     <dimen name="swipe_loading_height">45dp</dimen>

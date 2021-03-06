@@ -60,7 +60,7 @@ public class Toast {
     /**
      * 偏移Y
      */
-    private int yOffset = 200;
+    private int yOffset = 0;
     /**
      * 水平间距
      */
@@ -267,7 +267,7 @@ public class Toast {
         }
         if (gravity == Gravity.BOTTOM) {
             xOffset = 0;
-            yOffset = 200;
+            yOffset = yOffset==0?context.getResources().getDimensionPixelOffset(R.dimen.toast_offset_y):yOffset;
             verticalMargin = 0;
         }
     }
