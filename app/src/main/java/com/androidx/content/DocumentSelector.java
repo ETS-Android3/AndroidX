@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
 import android.util.Log;
 
 import androidx.fragment.app.Fragment;
@@ -270,12 +272,18 @@ public class DocumentSelector {
                 resultUri = data.getData();
                 builder.data = resultUri;
                 String path = UriProvider.getData(context, resultUri);
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                   path = UriProvider.insertExternalCacheDir(context, dictionary,resultUri,path);
+                }
                 Log.i(TAG, "->onActivityResult REQUEST_PICK resultUri = " + resultUri + " , path = " + path);
                 handleUriPath(resultUri, path);
             }
             if (requestCode == IntentProvider.REQUEST_GET_CONTENT) {
                 resultUri = data.getData();
                 String path = UriProvider.getPath(context, resultUri);
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                    path = UriProvider.insertExternalCacheDir(context, dictionary,resultUri,path);
+                }
                 Log.i(TAG, "->onActivityResult REQUEST_GET_CONTENT resultUri = " + resultUri + " , path = " + path);
                 builder.data = UriProvider.buildProviderUri(context, new File(path), authority);
                 handleUriPath(builder.data, path);
