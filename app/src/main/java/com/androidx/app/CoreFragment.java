@@ -594,7 +594,7 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
         if (options != null) {
             intent.putExtras(options);
         }
-        startActivity(intent,options);
+        startActivity(intent);
     }
 
     /**

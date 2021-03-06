@@ -456,7 +456,7 @@ public abstract class CoreActivity extends AppCompatActivity implements OnHttpLi
         if (options != null) {
             intent.putExtras(options);
         }
-        startActivity(intent,options);
+        startActivity(intent);
     }
 
     /**
