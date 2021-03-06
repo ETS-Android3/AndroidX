@@ -89,7 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"></Space>
 
-        <com.androidx.view.CircleProgressButton
+        <com.androidx.view.CircleTimerView
             android:id="@+id/android_btn_start"
             android:layout_width="60dp"
             android:layout_height="60dp" />
