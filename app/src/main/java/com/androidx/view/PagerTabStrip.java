@@ -521,7 +521,7 @@ public class PagerTabStrip extends HorizontalScrollView {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(tabWidth, LinearLayout.LayoutParams.MATCH_PARENT);
             //平均分
             if (tabLayoutParams == TabLayoutParams.MATCH_PARENT) {
-                tabWidth = (Screen.width() - dividerWidth*(count-1)) / pageTitles.length;
+                tabWidth = (Screen.width() - dividerWidth * (count - 1)) / pageTitles.length;
                 params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
                 tab.setPadding(0, tabPaddingVertical, 0, 0);
                 params.weight = 1;
@@ -530,7 +530,7 @@ public class PagerTabStrip extends HorizontalScrollView {
             if (tabLayoutParams == TabLayoutParams.WRAP_CONTENT) {
                 params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
                 tab.setPadding(tabPaddingHorizontal, tabPaddingVertical, tabPaddingHorizontal, tabPaddingVertical);
-                tabWidth = (int) (tab.getPaint().measureText(text+"")+tabPaddingHorizontal*2);
+                tabWidth = (int) (tab.getPaint().measureText(text + "") + tabPaddingHorizontal * 2);
             }
             params.gravity = Gravity.CENTER;
             tab.setLayoutParams(params);
@@ -1299,5 +1299,35 @@ public class PagerTabStrip extends HorizontalScrollView {
      */
     public void setDataSetObserver(ViewPagerDataSetObserver dataSetObserver) {
         this.dataSetObserver = dataSetObserver;
+    }
+
+    /**
+     * 设置下划线左边内间距
+     *
+     * @param underlinePaddingLeft
+     */
+    public void setUnderlinePaddingLeft(float underlinePaddingLeft) {
+        this.underlinePaddingLeft = underlinePaddingLeft;
+        requestLayout();
+    }
+
+    /**
+     * 设置右边内间距
+     *
+     * @param underlinePaddingRight
+     */
+    public void setUnderlinePaddingRight(float underlinePaddingRight) {
+        this.underlinePaddingRight = underlinePaddingRight;
+        requestLayout();
+    }
+
+    /**
+     * 设置下划线圆角
+     *
+     * @param underlineRadius
+     */
+    public void setUnderlineRadius(float underlineRadius) {
+        this.underlineRadius = underlineRadius;
+        requestLayout();
     }
 }
