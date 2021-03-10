@@ -209,13 +209,13 @@ public class DateSelector {
 
         private int titleBarCancelTextColor = Color.parseColor("#454545");
 
-        private int titleBarConfirmTextColor = Color.parseColor("#72C16F");
+        private int titleBarConfirmTextColor = Color.parseColor("#2962B5");
 
         private int titleBarTextSize = 16;
 
         private int dividerColor = Color.parseColor("#CDCDCD");
 
-        private int selectedColor = Color.parseColor("#72C16F");
+        private int selectedColor = Color.parseColor("#2962B5");
 
         private int unselectedColor = Color.parseColor("#AEAEAE");
 
