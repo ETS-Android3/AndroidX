@@ -29,6 +29,7 @@ public class Null {
         return false;
     }
 
+
     /**
      * 判断是否为空
      *
@@ -55,17 +56,19 @@ public class Null {
      * @return
      */
     public static boolean isNull(String content) {
-        if (content == null) {
-            return true;
-        }
-        if (content.length() == 0) {
-            return true;
-        }
-        if (content.equals("null")) {
-            return true;
-        }
-        return false;
+        return content == null || content.length() == 0 || content.toLowerCase().equals("null");
     }
+
+    /**
+     * 是否不为空
+     *
+     * @param content 内容
+     * @return
+     */
+    public static boolean isUnNull(String content) {
+        return !isNull(content);
+    }
+
 
     /**
      * 获取控件值
@@ -78,10 +81,7 @@ public class Null {
             return "";
         }
         String content = textView.getText().toString();
-        if (content.equals("null")) {
-            return "";
-        }
-        if (content.length() == 0) {
+        if (content.length() == 0 || content.toLowerCase().equals("null")) {
             return "";
         }
         return textView.getText().toString();
@@ -98,13 +98,10 @@ public class Null {
             return "";
         }
         String content = editText.getText().toString();
-        if (content.equals("null")) {
+        if (content.length() == 0 || content.toLowerCase().equals("null")) {
             return "";
         }
-        if (content.length() == 0) {
-            return "";
-        }
-        return editText.getText().toString();
+        return "";
     }
 
     /**
@@ -117,10 +114,7 @@ public class Null {
         if (content == null) {
             return "";
         }
-        if (content.length() == 0) {
-            return "";
-        }
-        if (content.equals("null")) {
+        if (content.length() == 0 || content.toLowerCase().equals("null")) {
             return "";
         }
         return content;
