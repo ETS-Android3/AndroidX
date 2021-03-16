@@ -60,7 +60,7 @@ public class Toast {
     /**
      * 偏移Y
      */
-    private int yOffset = 200;
+    private int yOffset = -1;
     /**
      * 水平间距
      */
@@ -267,7 +267,7 @@ public class Toast {
         }
         if (gravity == Gravity.BOTTOM) {
             xOffset = 0;
-            yOffset = 200;
+            yOffset = yOffset == -1 ? context.getResources().getDimensionPixelOffset(R.dimen.toast_bottom_y_offset) : yOffset;
             verticalMargin = 0;
         }
     }
@@ -420,9 +420,10 @@ public class Toast {
 
     /**
      * 设置信息
+     *
      * @param message 信息
      */
-    public void setMessage(String message){
+    public void setMessage(String message) {
         if (textView != null) {
             textView.setText(message);
         }

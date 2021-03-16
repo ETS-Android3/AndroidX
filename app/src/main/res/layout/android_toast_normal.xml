@@ -17,6 +17,7 @@
         android:paddingRight="25dp"
         android:paddingTop="6dp"
         android:text="操作成功"
+        android:alpha="0.8"
         android:textColor="@color/colorBottomToastText"
         android:textSize="14sp"
         android:visibility="visible" />
