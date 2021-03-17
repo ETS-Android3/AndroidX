@@ -6,11 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.androidx.annotation.ViewUtils;
+import com.androidx.app.CoreActivity;
+import com.androidx.net.OnHttpListener;
+import com.androidx.net.ResponseBody;
 
 /**
  * 基础对话框
  */
-public abstract class BaseDialog {
+public abstract class BaseDialog implements OnHttpListener {
 
     /**
      * 上下文对象
@@ -130,6 +133,7 @@ public abstract class BaseDialog {
 
     /**
      * 获取对话框对象
+     *
      * @return
      */
     public CoreDialog getDialog() {
@@ -138,6 +142,7 @@ public abstract class BaseDialog {
 
     /**
      * 获取内容布局
+     *
      * @return
      */
     public View getContentView() {
@@ -159,6 +164,29 @@ public abstract class BaseDialog {
     public void dismiss() {
         if (dialog != null) {
             dialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onHttpSucceed(ResponseBody responseBody) {
+        addResponseBody(responseBody);
+    }
+
+    @Override
+    public void onHttpFailure(ResponseBody responseBody) {
+        addResponseBody(responseBody);
+    }
+
+    /**
+     * 添加日志显示数据
+     *
+     * @param responseBody
+     */
+    private void addResponseBody(ResponseBody responseBody) {
+        CoreActivity activity = (CoreActivity) getContext();
+        if (activity != null) {
+            responseBody.page(getClass().getCanonicalName());
+            activity.getDebug().addResponseBody(responseBody);
         }
     }
 

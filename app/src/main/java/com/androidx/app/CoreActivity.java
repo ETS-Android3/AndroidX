@@ -30,7 +30,7 @@ import com.androidx.widget.SwipeLayout;
  */
 public abstract class CoreActivity extends AppCompatActivity implements OnHttpListener,
         SwipeLayout.OnSwipeRefreshListener, SwipeLayout.OnSwipeLoadListener,
-        PermissionManager.OnRequestPermissionsListener, FragmentHttpCallback {
+        PermissionManager.OnRequestPermissionsListener, OnFragmentRequestListener {
 
     /**
      * 导航栏
@@ -255,7 +255,7 @@ public abstract class CoreActivity extends AppCompatActivity implements OnHttpLi
      *
      * @param message 信息
      */
-    protected void showToast(String message) {
+    public void showToast(String message) {
         showToast(Toast.Type.NORMAL, 0, Gravity.BOTTOM, message, -1, -1);
     }
 
@@ -265,7 +265,7 @@ public abstract class CoreActivity extends AppCompatActivity implements OnHttpLi
      * @param gravity 位置
      * @param message 信息
      */
-    protected void showToast(int gravity, String message) {
+    public void showToast(int gravity, String message) {
         showToast(Toast.Type.NORMAL, 0, gravity, message, -1, -1);
     }
 
@@ -275,7 +275,7 @@ public abstract class CoreActivity extends AppCompatActivity implements OnHttpLi
      * @param status  状态
      * @param message 信息
      */
-    protected void showStatus(int status, String message) {
+    public void showStatus(int status, String message) {
         showToast(Toast.Type.STATUS, status, Gravity.CENTER, message, -1, -1);
     }
 
@@ -289,7 +289,7 @@ public abstract class CoreActivity extends AppCompatActivity implements OnHttpLi
      * @param gravity 位置
      * @param message 信息
      */
-    protected void showStatus(int status, int gravity, String message) {
+    public void showStatus(int status, int gravity, String message) {
         showToast(Toast.Type.STATUS, status, gravity, message, -1, -1);
     }
 
@@ -308,7 +308,7 @@ public abstract class CoreActivity extends AppCompatActivity implements OnHttpLi
      * @param textColor       文字颜色
      * @param backgroundResId 背景资源
      */
-    protected void showToast(int type, int status, int gravity, String message, @ColorInt int textColor, @DrawableRes int backgroundResId) {
+    public void showToast(int type, int status, int gravity, String message, @ColorInt int textColor, @DrawableRes int backgroundResId) {
         Toast toast = new Toast(this, type);
         toast.setGravity(gravity);
         toast.setStatus(status);
@@ -675,7 +675,7 @@ public abstract class CoreActivity extends AppCompatActivity implements OnHttpLi
      * @param responseBody
      */
     @Override
-    public void onFragmentHttpFailure(ResponseBody responseBody) {
+    public void onFragmentRequestFailure(ResponseBody responseBody) {
         debug.addResponseBody(responseBody);
     }
 
@@ -685,7 +685,7 @@ public abstract class CoreActivity extends AppCompatActivity implements OnHttpLi
      * @param responseBody
      */
     @Override
-    public void onFragmentHttpSucceed(ResponseBody responseBody) {
+    public void onFragmentRequestSucceed(ResponseBody responseBody) {
         debug.addResponseBody(responseBody);
     }
 
