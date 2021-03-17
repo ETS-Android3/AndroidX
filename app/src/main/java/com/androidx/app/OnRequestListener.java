@@ -2,20 +2,20 @@ package com.androidx.app;
 
 import com.androidx.net.ResponseBody;
 
-public interface OnFragmentRequestListener {
+public interface OnRequestListener {
 
     /**
      * Fragment请求失败
      *
      * @param responseBody
      */
-    void onFragmentRequestFailure(ResponseBody responseBody);
+    void onRequestFailure(ResponseBody responseBody);
 
     /**
      * Fragment请求成功
      *
      * @param responseBody
      */
-    void onFragmentRequestSucceed(ResponseBody responseBody);
+    void onRequestSucceed(ResponseBody responseBody);
 
 }

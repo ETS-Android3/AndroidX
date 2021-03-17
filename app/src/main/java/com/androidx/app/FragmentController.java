@@ -88,7 +88,7 @@ public class FragmentController {
      * @param type            类型
      * @param addToBackStack  添加到回退栈
      */
-    public void commit(Class fragmentClass, Bundle args, Object params, OnFragmentRequestListener callback, int containerViewId, Type type, boolean addToBackStack) {
+    public void commit(Class fragmentClass, Bundle args, Object params, OnRequestListener callback, int containerViewId, Type type, boolean addToBackStack) {
         String tag = getTag(fragmentClass);
         CoreFragment fragment = (CoreFragment) getFragmentManager().findFragmentByTag(tag);
         if (fragment == null) {
@@ -116,7 +116,7 @@ public class FragmentController {
      * @param type                      类型
      * @param addToBackStack            添加到回退栈
      */
-    public void commit(CoreFragment fragment, Bundle args, Object params, OnFragmentRequestListener requestListener, int containerViewId, Type type, boolean addToBackStack) {
+    public void commit(CoreFragment fragment, Bundle args, Object params, OnRequestListener requestListener, int containerViewId, Type type, boolean addToBackStack) {
         if (getFragmentManager() == null) {
             new RuntimeException("Commit failed, activity or fragment is null.").printStackTrace();
             return;
@@ -126,7 +126,7 @@ public class FragmentController {
             String tag = getTag(fragmentClass);
             fragment.setArguments(args);
             fragment.setParameters(params);
-            fragment.setOnFragmentRequestListener(requestListener);
+            fragment.addRequestListener(requestListener);
             if (stackTopFragment != null) {
                 stackTopFragment.onBeforeProcessing();
             }
@@ -169,7 +169,7 @@ public class FragmentController {
      * @param callback        网络
      * @param containerViewId 布局id
      */
-    public void add(Class<?> fragmentClass, Bundle args, Object params, OnFragmentRequestListener callback, int containerViewId) {
+    public void add(Class<?> fragmentClass, Bundle args, Object params, OnRequestListener callback, int containerViewId) {
         commit(fragmentClass, args, params, callback, containerViewId, Type.ADD, false);
     }
 
@@ -181,7 +181,7 @@ public class FragmentController {
      * @param callback        网络
      * @param containerViewId 布局id
      */
-    public void add(CoreFragment fragment, Bundle args, Object params, OnFragmentRequestListener callback, int containerViewId) {
+    public void add(CoreFragment fragment, Bundle args, Object params, OnRequestListener callback, int containerViewId) {
         commit(fragment, args, params, callback, containerViewId, Type.ADD, false);
     }
 
@@ -193,7 +193,7 @@ public class FragmentController {
      * @param callback        网络回调
      * @param containerViewId 布局id
      */
-    public void replace(Class<?> fragmentClass, Bundle args, Object params, OnFragmentRequestListener callback, int containerViewId) {
+    public void replace(Class<?> fragmentClass, Bundle args, Object params, OnRequestListener callback, int containerViewId) {
         commit(fragmentClass, args, params, callback, containerViewId, Type.REPLACE, false);
     }
 
@@ -205,7 +205,7 @@ public class FragmentController {
      * @param callback        网络回调
      * @param containerViewId 布局id
      */
-    public void replace(CoreFragment fragment, Bundle args, Object params, OnFragmentRequestListener callback, int containerViewId) {
+    public void replace(CoreFragment fragment, Bundle args, Object params, OnRequestListener callback, int containerViewId) {
         commit(fragment, args, params, callback, containerViewId, Type.REPLACE, false);
     }
 
@@ -229,7 +229,7 @@ public class FragmentController {
      * @param callback        网络回调
      * @param containerViewId 布局id
      */
-    public void addToBackStack(Class<?> fragmentClass, Bundle args, Object params, OnFragmentRequestListener callback, int containerViewId) {
+    public void addToBackStack(Class<?> fragmentClass, Bundle args, Object params, OnRequestListener callback, int containerViewId) {
         commit(fragmentClass, args, params, callback, containerViewId, Type.ADD, true);
     }
 
@@ -241,7 +241,7 @@ public class FragmentController {
      * @param callback        网络回调
      * @param containerViewId 布局id
      */
-    public void addToBackStack(CoreFragment fragment, Bundle args, Object params, OnFragmentRequestListener callback, int containerViewId) {
+    public void addToBackStack(CoreFragment fragment, Bundle args, Object params, OnRequestListener callback, int containerViewId) {
         commit(fragment, args, params, callback, containerViewId, Type.ADD, true);
     }
 

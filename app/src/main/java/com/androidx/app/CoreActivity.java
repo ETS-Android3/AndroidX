@@ -30,7 +30,7 @@ import com.androidx.widget.SwipeLayout;
  */
 public abstract class CoreActivity extends AppCompatActivity implements OnHttpListener,
         SwipeLayout.OnSwipeRefreshListener, SwipeLayout.OnSwipeLoadListener,
-        PermissionManager.OnRequestPermissionsListener, OnFragmentRequestListener {
+        PermissionManager.OnRequestPermissionsListener, OnRequestListener {
 
     /**
      * 导航栏
@@ -675,7 +675,7 @@ public abstract class CoreActivity extends AppCompatActivity implements OnHttpLi
      * @param responseBody
      */
     @Override
-    public void onFragmentRequestFailure(ResponseBody responseBody) {
+    public void onRequestFailure(ResponseBody responseBody) {
         debug.addResponseBody(responseBody);
     }
 
@@ -685,7 +685,7 @@ public abstract class CoreActivity extends AppCompatActivity implements OnHttpLi
      * @param responseBody
      */
     @Override
-    public void onFragmentRequestSucceed(ResponseBody responseBody) {
+    public void onRequestSucceed(ResponseBody responseBody) {
         debug.addResponseBody(responseBody);
     }
 
