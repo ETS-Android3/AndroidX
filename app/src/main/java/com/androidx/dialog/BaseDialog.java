@@ -28,6 +28,8 @@ public abstract class BaseDialog implements OnHttpListener {
      */
     private CoreDialog.Builder builder;
 
+
+
     public BaseDialog(Context context) {
         this.context = context;
         builder = new CoreDialog.Builder(context);
