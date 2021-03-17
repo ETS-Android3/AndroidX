@@ -126,6 +126,16 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
     }
 
     /**
+     * 设置Fragment网络回调
+     * @param fragment 页面
+     */
+    public void addRequestListener(CoreFragment fragment) {
+        if (fragment!=null){
+            fragment.addRequestListener(getRequestListener());
+        }
+    }
+
+    /**
      * 获取请求监听
      *
      * @return
@@ -133,6 +143,8 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
     public OnRequestListener getRequestListener() {
         return onRequestListener;
     }
+
+
 
     /**
      * 设置参数
