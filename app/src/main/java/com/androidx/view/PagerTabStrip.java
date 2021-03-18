@@ -445,6 +445,7 @@ public class PagerTabStrip extends HorizontalScrollView {
         }, 50);
     }
 
+
     /**
      * 标签父级
      *
