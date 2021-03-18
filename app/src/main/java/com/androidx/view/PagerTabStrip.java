@@ -438,7 +438,9 @@ public class PagerTabStrip extends HorizontalScrollView {
             @Override
             public void run() {
                 View view = tabLinear.getChildAt(position);
-                smoothScrollTo((int) view.getX(), 0);
+                if (view != null) {
+                    smoothScrollTo((int) view.getX(), 0);
+                }
             }
         }, 50);
     }
@@ -614,7 +616,6 @@ public class PagerTabStrip extends HorizontalScrollView {
 
         lineFrame.setGravity(Gravity.BOTTOM);
         lineFrame.addView(lineParent, layoutParams);
-
         return lineFrame;
     }
 
@@ -629,7 +630,6 @@ public class PagerTabStrip extends HorizontalScrollView {
 //        setTabUnderlineWidth(underlineView, underlineHeight, position);
         if (underlineView.getParent() != null) {
             parent.removeView(underlineView);
-            ;
         }
         if (underlineView.getParent() == null) {
             parent.addView(underlineView);
@@ -1308,7 +1308,7 @@ public class PagerTabStrip extends HorizontalScrollView {
      */
     public void setUnderlinePaddingLeft(float underlinePaddingLeft) {
         this.underlinePaddingLeft = underlinePaddingLeft;
-        requestLayout();
+        notifyDataSetChanged();
     }
 
     /**
@@ -1318,7 +1318,7 @@ public class PagerTabStrip extends HorizontalScrollView {
      */
     public void setUnderlinePaddingRight(float underlinePaddingRight) {
         this.underlinePaddingRight = underlinePaddingRight;
-        requestLayout();
+        notifyDataSetChanged();
     }
 
     /**
@@ -1328,6 +1328,6 @@ public class PagerTabStrip extends HorizontalScrollView {
      */
     public void setUnderlineRadius(float underlineRadius) {
         this.underlineRadius = underlineRadius;
-        requestLayout();
+        notifyDataSetChanged();
     }
 }

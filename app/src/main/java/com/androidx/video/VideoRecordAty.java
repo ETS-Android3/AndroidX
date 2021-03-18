@@ -406,7 +406,7 @@ public class VideoRecordAty extends CoreActivity implements SurfaceHolder.Callba
             }
         });
         // 设置音频采集方式
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         //设置视频的采集方式
         mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
         //设置文件的输出格式
