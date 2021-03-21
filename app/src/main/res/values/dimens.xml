@@ -8,6 +8,8 @@
     <!--提示框-->
     <dimen name="toast_center_view_width">90dp</dimen>
     <dimen name="toast_center_view_height">90dp</dimen>
+    <dimen name="toast_bottom_y_offset">130dp</dimen>
+    <dimen name="toast_background_radius">5dp</dimen>
     <dimen name="toast_center_view_text_size">14sp</dimen>
     <dimen name="toast_offset_y">60dp</dimen>
     <!--刷新-->

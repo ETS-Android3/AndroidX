@@ -243,6 +243,7 @@ public abstract class SwipeLayout extends FrameLayout {
 
     /**
      * 获取头部View
+     *
      * @return
      */
     public View getHeaderView() {
@@ -260,6 +261,7 @@ public abstract class SwipeLayout extends FrameLayout {
 
     /**
      * 获取脚部View
+     *
      * @return
      */
     public View getFooterView() {
@@ -453,8 +455,8 @@ public abstract class SwipeLayout extends FrameLayout {
             }
 
             top += (int) loadMoveY + (int) loadRemainY;
-            right = left + child.getMeasuredWidth()-childParams.rightMargin;
-            bottom = top + child.getMeasuredHeight() -childParams.bottomMargin;
+            right = left + child.getMeasuredWidth() - childParams.rightMargin;
+            bottom = top + child.getMeasuredHeight() - childParams.bottomMargin;
             child.layout(left, top, right, bottom);
         }
         //脚部
@@ -523,7 +525,7 @@ public abstract class SwipeLayout extends FrameLayout {
                     if (isTransfinite) {
                         isLoading = true;
 //                        loadRemainY = loadable ? (loadMoveY > footerView.getMeasuredHeight() ? -loadMoveY : -footerView.getMeasuredHeight()) : 0;
-                        loadRemainY = loadable ?  -footerView.getMeasuredHeight() : 0;
+                        loadRemainY = loadable ? -footerView.getMeasuredHeight() : 0;
                         refreshRemainY = -headerHeight;
                         loadMoveY = 0;
                         requestLayout();
