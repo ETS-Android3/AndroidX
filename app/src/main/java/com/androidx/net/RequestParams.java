@@ -106,7 +106,7 @@ public class RequestParams {
      * @param value
      */
     public void add(String key, File value) {
-        add(key, value, 1024, 100);
+        add(key, value, 512, 100);
     }
 
     /**

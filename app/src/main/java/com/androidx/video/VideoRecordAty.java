@@ -195,6 +195,7 @@ public class VideoRecordAty extends CoreActivity implements SurfaceHolder.Callba
                 e.printStackTrace();
             }
         }
+        showVideoTime(duration, tv_time);
         stopVideoTimer();
     }
 
