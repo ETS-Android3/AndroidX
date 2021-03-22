@@ -43,6 +43,7 @@ import java.util.TimerTask;
  */
 public class PagerTabStrip extends HorizontalScrollView {
 
+
     public static final String TAG = PagerTabStrip.class.getSimpleName();
     /**
      * 标签父级的父级
