@@ -375,7 +375,7 @@ public abstract class SwipeLayout extends FrameLayout {
             recyclerView.setOnTouchListener(new OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    if (isRecyclerViewScrollBottom) {
+                    if (isRecyclerViewScrollBottom||isRecyclerViewScrollTop) {
                         return onTouchEvent(event);
                     }
                     return false;
@@ -553,7 +553,7 @@ public abstract class SwipeLayout extends FrameLayout {
                 if (isLoading || isRefreshing) {
                     isRefreshingRelease = false;
                     isLoadingRelease = false;
-                    super.onTouchEvent(event);
+                    return false;
                 }
                 float moveY = event.getY() - downY;
                 if (Math.abs(moveY) < 50) {
