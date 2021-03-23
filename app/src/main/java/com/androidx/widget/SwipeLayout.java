@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.androidx.R;
+import com.androidx.util.Log;
 import com.androidx.view.MeasureListView;
 
 
@@ -143,7 +144,7 @@ public abstract class SwipeLayout extends FrameLayout {
     /**
      * 延迟时间
      */
-    private int delayDuration = 200;
+    private int delayDuration = 500;
     /**
      * 内容类型-列表
      */
@@ -363,12 +364,23 @@ public abstract class SwipeLayout extends FrameLayout {
     }
 
     private class RecyclerViewOnScrollListener extends RecyclerView.OnScrollListener {
+
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
             //检查向上滚动为负，检查向下滚动为正。
             isRecyclerViewScrollTop = !recyclerView.canScrollVertically(-1);
             isRecyclerViewScrollBottom = !recyclerView.canScrollVertically(1);
+            Log.i(TAG, "->RecyclerViewOnScrollListener isRecyclerViewScrollTop=" + isRecyclerViewScrollTop + ",isRecyclerViewScrollBottom=" + isRecyclerViewScrollBottom);
+            recyclerView.setOnTouchListener(new OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (isRecyclerViewScrollBottom) {
+                        return onTouchEvent(event);
+                    }
+                    return false;
+                }
+            });
         }
     }
 
@@ -537,10 +549,11 @@ public abstract class SwipeLayout extends FrameLayout {
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
+                Log.i(TAG, "->isLoading=" + isLoading + ",isRefreshing=" + isRefreshing);
                 if (isLoading || isRefreshing) {
                     isRefreshingRelease = false;
                     isLoadingRelease = false;
-                    break;
+                    super.onTouchEvent(event);
                 }
                 float moveY = event.getY() - downY;
                 if (Math.abs(moveY) < 50) {
@@ -563,6 +576,7 @@ public abstract class SwipeLayout extends FrameLayout {
                     isLoadingRelease = false;
                     isAbsListViewScrollBottom = false;
                 }
+                Log.i(TAG, "->loadable=" + loadable + ",isRefreshing=" + isRefreshing);
                 //上滑
                 if (moveY < 0 && loadable && !isRefreshing) {
                     isTransfinite = Math.abs(moveY) >= footerHeight;
@@ -578,7 +592,7 @@ public abstract class SwipeLayout extends FrameLayout {
                 if (isRefreshingRelease || isLoadingRelease) {
                     requestLayout();
                 }
-                break;
+                return true;
         }
         return super.onTouchEvent(event);
     }
@@ -749,6 +763,7 @@ public abstract class SwipeLayout extends FrameLayout {
             }
         });
         translateAnimator.setDuration(translateDuration);
+        translateAnimator.setStartDelay(delayDuration);
         return translateAnimator;
     }
 
