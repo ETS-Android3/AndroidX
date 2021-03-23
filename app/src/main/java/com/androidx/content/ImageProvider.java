@@ -464,6 +464,7 @@ public class ImageProvider {
         int height = options.outHeight;
         int inSampleSize = Math.min(width / outWidth, height / outHeight);
         options.inJustDecodeBounds = false;
+        options.inPreferredConfig = Bitmap.Config.RGB_565;
         options.inSampleSize = inSampleSize;
         options.inPurgeable = true;
         Log.i(TAG, "->buildOptions outWidth = " + outWidth + ",outHeight = " + outHeight + ",inSampleSize = " + inSampleSize + ",pathName = " + pathName);

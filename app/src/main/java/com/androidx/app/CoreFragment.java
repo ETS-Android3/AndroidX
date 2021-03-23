@@ -31,7 +31,7 @@ import com.androidx.widget.SwipeLayout;
  */
 public abstract class CoreFragment extends Fragment implements OnHttpListener,
         SwipeLayout.OnSwipeRefreshListener, SwipeLayout.OnSwipeLoadListener,
-        PermissionManager.OnRequestPermissionsListener, FragmentHttpCallback {
+        PermissionManager.OnRequestPermissionsListener {
 
     /**
      * 数据加载
@@ -72,7 +72,7 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
     /**
      * Fragment回调
      */
-    private FragmentHttpCallback fragmentHttpCallback;
+    private OnRequestListener onRequestListener;
 
 
     @Nullable
@@ -119,11 +119,32 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
     /**
      * 设置Fragment网络回调
      *
-     * @param fragmentHttpCallback
+     * @param onRequestListener
      */
-    public void setFragmentHttpCallback(FragmentHttpCallback fragmentHttpCallback) {
-        this.fragmentHttpCallback = fragmentHttpCallback;
+    public void addRequestListener(OnRequestListener onRequestListener) {
+        this.onRequestListener = onRequestListener;
     }
+
+    /**
+     * 设置Fragment网络回调
+     * @param fragment 页面
+     */
+    public void addRequestListener(CoreFragment fragment) {
+        if (fragment!=null){
+            fragment.addRequestListener(getRequestListener());
+        }
+    }
+
+    /**
+     * 获取请求监听
+     *
+     * @return
+     */
+    public OnRequestListener getRequestListener() {
+        return onRequestListener;
+    }
+
+
 
     /**
      * 设置参数
@@ -380,7 +401,7 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
      *
      * @param message 信息
      */
-    protected void showToast(String message) {
+    public void showToast(String message) {
         showToast(Toast.Type.NORMAL, 0, Gravity.BOTTOM, message, -1, -1);
     }
 
@@ -390,7 +411,7 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
      * @param gravity 位置
      * @param message 信息
      */
-    protected void showToast(int gravity, String message) {
+    public void showToast(int gravity, String message) {
         showToast(Toast.Type.NORMAL, 0, gravity, message, -1, -1);
     }
 
@@ -400,7 +421,7 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
      * @param status  状态
      * @param message 信息
      */
-    protected void showStatus(int status, String message) {
+    public void showStatus(int status, String message) {
         showToast(Toast.Type.STATUS, status, Gravity.CENTER, message, -1, -1);
     }
 
@@ -414,7 +435,7 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
      * @param gravity 位置
      * @param message 信息
      */
-    protected void showStatus(int status, int gravity, String message) {
+    public void showStatus(int status, int gravity, String message) {
         showToast(Toast.Type.STATUS, status, gravity, message, -1, -1);
     }
 
@@ -433,7 +454,7 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
      * @param textColor       文字颜色
      * @param backgroundResId 背景资源
      */
-    protected void showToast(int type, int status, int gravity, String message, @ColorInt int textColor, @DrawableRes int backgroundResId) {
+    public void showToast(int type, int status, int gravity, String message, @ColorInt int textColor, @DrawableRes int backgroundResId) {
         if (getContext() == null) {
             return;
         }
@@ -482,9 +503,9 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
             return;
         }
         dismissLoading();
-        if (fragmentHttpCallback != null) {
+        if (onRequestListener != null) {
             responseBody.page(getClass().getCanonicalName());
-            fragmentHttpCallback.onFragmentHttpSucceed(responseBody);
+            onRequestListener.onRequestSucceed(responseBody);
         }
     }
 
@@ -494,9 +515,9 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
             return;
         }
         dismissLoading();
-        if (fragmentHttpCallback != null) {
+        if (onRequestListener != null) {
             responseBody.page(getClass().getCanonicalName());
-            fragmentHttpCallback.onFragmentHttpFailure(responseBody);
+            onRequestListener.onRequestFailure(responseBody);
         }
     }
 
@@ -674,7 +695,7 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
      * @param args          参数
      */
     protected void addFragment(Class fragmentClass, Bundle args) {
-        getFragmentController().add(fragmentClass, args, null, fragmentHttpCallback, getContainerViewId());
+        getFragmentController().add(fragmentClass, args, null, onRequestListener, getContainerViewId());
     }
 
     /**
@@ -684,7 +705,7 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
      * @param args     参数
      */
     protected void addFragment(CoreFragment fragment, Bundle args) {
-        getFragmentController().add(fragment, args, null, fragmentHttpCallback, getContainerViewId());
+        getFragmentController().add(fragment, args, null, onRequestListener, getContainerViewId());
     }
 
     /**
@@ -694,7 +715,7 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
      * @param params        参数
      */
     protected void addFragment(Class fragmentClass, Object params) {
-        getFragmentController().add(fragmentClass, null, params, fragmentHttpCallback, getContainerViewId());
+        getFragmentController().add(fragmentClass, null, params, onRequestListener, getContainerViewId());
     }
 
     /**
@@ -704,7 +725,7 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
      * @param params   参数
      */
     protected void addFragment(CoreFragment fragment, Object params) {
-        getFragmentController().add(fragment, null, params, fragmentHttpCallback, getContainerViewId());
+        getFragmentController().add(fragment, null, params, onRequestListener, getContainerViewId());
     }
 
     /**
@@ -715,7 +736,7 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
      * @param params        参数
      */
     protected void addFragment(Class fragmentClass, Bundle args, Object params) {
-        getFragmentController().add(fragmentClass, args, params, fragmentHttpCallback, getContainerViewId());
+        getFragmentController().add(fragmentClass, args, params, onRequestListener, getContainerViewId());
     }
 
     /**
@@ -726,7 +747,8 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
      * @param params   参数
      */
     protected void addFragment(CoreFragment fragment, Bundle args, Object params) {
-        getFragmentController().add(fragment, args, params, fragmentHttpCallback, getContainerViewId());
+        fragment.setFragmentController(fragmentController);
+        getFragmentController().add(fragment, args, params, onRequestListener, getContainerViewId());
     }
 
 
@@ -736,7 +758,7 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
      * @param fragmentClass 类名
      */
     protected void replaceFragment(Class fragmentClass) {
-        getFragmentController().replace(fragmentClass, null, null, this, getContainerViewId());
+        getFragmentController().replace(fragmentClass, null, null, onRequestListener, getContainerViewId());
     }
 
     /**
@@ -746,7 +768,7 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
      * @param args          参数
      */
     protected void replaceFragment(Class fragmentClass, Bundle args) {
-        getFragmentController().replace(fragmentClass, args, null, fragmentHttpCallback, getContainerViewId());
+        getFragmentController().replace(fragmentClass, args, null, onRequestListener, getContainerViewId());
     }
 
     /**
@@ -756,7 +778,7 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
      * @param args     参数
      */
     protected void replaceFragment(CoreFragment fragment, Bundle args) {
-        getFragmentController().replace(fragment, args, null, fragmentHttpCallback, getContainerViewId());
+        getFragmentController().replace(fragment, args, null, onRequestListener, getContainerViewId());
     }
 
     /**
@@ -766,7 +788,7 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
      * @param params        参数
      */
     protected void replaceFragment(Class fragmentClass, Object params) {
-        getFragmentController().replace(fragmentClass, null, params, fragmentHttpCallback, getContainerViewId());
+        getFragmentController().replace(fragmentClass, null, params, onRequestListener, getContainerViewId());
     }
 
     /**
@@ -776,7 +798,7 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
      * @param params   参数
      */
     protected void replaceFragment(CoreFragment fragment, Object params) {
-        getFragmentController().replace(fragment, null, params, fragmentHttpCallback, getContainerViewId());
+        getFragmentController().replace(fragment, null, params, onRequestListener, getContainerViewId());
     }
 
     /**
@@ -787,7 +809,7 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
      * @param params        参数
      */
     protected void replaceFragment(Class fragmentClass, Bundle args, Object params) {
-        getFragmentController().replace(fragmentClass, args, params, fragmentHttpCallback, getContainerViewId());
+        getFragmentController().replace(fragmentClass, args, params, onRequestListener, getContainerViewId());
     }
 
     /**
@@ -798,33 +820,7 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
      * @param params   参数
      */
     protected void replaceFragment(CoreFragment fragment, Bundle args, Object params) {
-        getFragmentController().replace(fragment, args, params, fragmentHttpCallback, getContainerViewId());
-    }
-
-    /**
-     * Fragment网络失败
-     *
-     * @param responseBody
-     */
-    @Override
-    public void onFragmentHttpFailure(ResponseBody responseBody) {
-        if (fragmentHttpCallback != null) {
-            responseBody.page(getClass().getCanonicalName());
-            fragmentHttpCallback.onFragmentHttpFailure(responseBody);
-        }
-    }
-
-    /**
-     * Fragment成功
-     *
-     * @param responseBody
-     */
-    @Override
-    public void onFragmentHttpSucceed(ResponseBody responseBody) {
-        if (fragmentHttpCallback != null) {
-            responseBody.page(getClass().getCanonicalName());
-            fragmentHttpCallback.onFragmentHttpSucceed(responseBody);
-        }
+        getFragmentController().replace(fragment, args, params, onRequestListener, getContainerViewId());
     }
 
     /**
