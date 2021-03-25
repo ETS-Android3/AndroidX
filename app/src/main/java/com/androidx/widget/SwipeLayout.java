@@ -22,7 +22,6 @@ import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.androidx.R;
-import com.androidx.util.Log;
 
 
 /**
@@ -533,7 +532,6 @@ public abstract class SwipeLayout extends FrameLayout {
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
-                Log.i(TAG, "->isLoading=" + isLoading + ",isRefreshing=" + isRefreshing);
                 if (isLoading || isRefreshing) {
                     isRefreshingRelease = false;
                     isLoadingRelease = false;
@@ -560,7 +558,6 @@ public abstract class SwipeLayout extends FrameLayout {
                     isLoadingRelease = false;
                     isAbsListViewScrollBottom = false;
                 }
-                Log.i(TAG, "->loadable=" + loadable + ",isRefreshing=" + isRefreshing);
                 //上滑
                 if (moveY < 0 && loadable && !isRefreshing) {
                     isTransfinite = Math.abs(moveY) >= footerHeight;
@@ -727,7 +724,6 @@ public abstract class SwipeLayout extends FrameLayout {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                Log.i(TAG, "->createTranslateAnimator onAnimationEnd type=" + type);
                 isTransfinite = false;
                 if (type == REFRESH) {
                     isRefreshing = false;
