@@ -607,7 +607,7 @@ androidx:indicatorUnSelected="@drawable/android_indicator_unselected"
 androidx:isAutoPlay="true"
 ```
 
-## PagerTabStrip
+## PagerTabStrip/PagerTab(2.0.7才支持该控件)
 ViewPager顶部Tab,也可单独使用为Tab.
 ```
 <com.androidx.view.PagerTabStrip
