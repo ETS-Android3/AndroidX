@@ -32,6 +32,7 @@ public abstract class CoreActivity extends AppCompatActivity implements OnHttpLi
         SwipeLayout.OnSwipeRefreshListener, SwipeLayout.OnSwipeLoadListener,
         PermissionManager.OnRequestPermissionsListener, OnRequestListener {
 
+    
     /**
      * 导航栏
      */

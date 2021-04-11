@@ -287,7 +287,7 @@
     </declare-styleable>
 
     <!--页面标签-->
-    <declare-styleable name="PagerTabStrip">
+    <declare-styleable name="PagerTab">
         <!--选中位置-->
         <attr name="position" format="integer"></attr>
         <!--标签布局-->
@@ -315,6 +315,10 @@
         <attr name="dividerWidth" format="dimension|reference"></attr>
         <!--标签垂直间距-->
         <attr name="dividerPaddingVertical" format="dimension|reference"></attr>
+        <!--标签左边间距-->
+        <attr name="tabPaddingLeft" format="dimension|reference"></attr>
+        <!--标签右边间距-->
+        <attr name="tabPaddingRight" format="dimension|reference"></attr>
         <!--标签布局方式-->
         <attr name="underlineLayout" format="enum">
             <enum name="match_parent" value="-1"/>
