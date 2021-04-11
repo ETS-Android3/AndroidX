@@ -3,6 +3,7 @@ package com.androidx.app;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.RelativeLayout;
 import androidx.annotation.DrawableRes;
 
 import com.androidx.R;
+import com.androidx.util.Log;
 import com.androidx.view.LoadingView;
 
 /**
@@ -21,6 +23,8 @@ import com.androidx.view.LoadingView;
  * Date:2020/12/14 21:52
  */
 public class Loading {
+
+    public final String TAG = Loading.class.getSimpleName();
 
     /**
      * 上方
@@ -53,15 +57,15 @@ public class Loading {
     /**
      * 消失延迟时间
      */
-    private long delayMillis = 200;
+    private long delayMillis = 0;
     /**
      * 动画持续时间
      */
-    private long duration = 500;
+    private long duration = 200;
     /**
      * 顶部显示上部分间距
      */
-    private int loadingTopMargin = 25;
+    private int loadingTopMargin = -1;
     /**
      * 显示
      */
@@ -220,7 +224,7 @@ public class Loading {
     }
 
     /**
-     * 显示
+     * 显示顶部Loading
      */
     public void show() {
         show(TOP);
@@ -248,7 +252,9 @@ public class Loading {
      * @param location 位置{@link Loading#TOP} OR {@link Loading#CENTER}
      */
     public void show(int location) {
-        showing = true;
+        if (isShowing()) {
+            return;
+        }
         this.location = location;
         if (location == Loading.TOP) {
             loading.setScaleX(1.0F);
@@ -264,11 +270,15 @@ public class Loading {
             params = buildCenterInParentParams(loading);
         }
         if (location == Loading.TOP) {
+            if (loadingTopMargin == -1) {
+                loadingTopMargin = context.getResources().getDimensionPixelOffset(R.dimen.loading_margin_top);
+            }
             params = buildHorizontalCenterLayoutParams(loading, loadingTopMargin);
         }
         setLoadingLayoutParams(params);
         if (loading != null) {
             loading.start();
+            showing = true;
         }
     }
 
@@ -276,13 +286,14 @@ public class Loading {
      * 隐藏
      */
     public void dismiss() {
-        showing = false;
-        if (location == Loading.CENTER) {
-            startAnimator(loading, 1, 0, ANIMATOR_SCALE);
-        }
-        if (location == Loading.TOP) {
-            float y = loadingY + loading.getMeasuredHeight() + loadingTopMargin;
-            startAnimator(loading, 1, 0, ANIMATOR_SCALE);
+        if (isShowing()) {
+            if (location == Loading.CENTER) {
+                startAnimator(loading, 1, 0, ANIMATOR_SCALE);
+            }
+            if (location == Loading.TOP) {
+                float y = loadingY + loading.getMeasuredHeight() + loadingTopMargin;
+                startAnimator(loading, 1, 0, ANIMATOR_SCALE);
+            }
         }
     }
 
@@ -322,15 +333,19 @@ public class Loading {
      */
     private void startAnimator(final View view, float start, float end, final int animatorType) {
         this.animatorType = animatorType;
-        if (animator != null && animator.isStarted() && animator.isRunning()) {
-            animator.removeAllUpdateListeners();
-            animator = null;
+        if (animator == null) {
+            animator = ValueAnimator.ofFloat(start, end);
         }
-        animator = ValueAnimator.ofFloat(start, end);
+        animator.setStartDelay(delayMillis);
+        animator.setDuration(duration);
+        if (animator != null && animator.isStarted() && animator.isRunning()) {
+            return;
+        }
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float value = (float) animation.getAnimatedValue();
+                Log.i(TAG, "->onAnimationUpdate value=" + value);
                 if (animatorType == ANIMATOR_SCALE) {
                     view.setScaleX(value);
                     view.setScaleY(value);
@@ -348,7 +363,9 @@ public class Loading {
 
             @Override
             public void onAnimationEnd(Animator animation) {
+                Log.i(TAG, "->onAnimationEnd");
                 onDismissAnimationEnd();
+                showing = false;
             }
 
             @Override
@@ -362,8 +379,7 @@ public class Loading {
             }
 
         });
-        animator.setStartDelay(delayMillis);
-        animator.setDuration(duration);
+
         animator.start();
     }
 

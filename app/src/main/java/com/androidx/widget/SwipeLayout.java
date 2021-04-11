@@ -19,12 +19,9 @@ import android.widget.ScrollView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.androidx.R;
-import com.androidx.util.Log;
-import com.androidx.view.MeasureListView;
 
 
 /**
@@ -371,16 +368,6 @@ public abstract class SwipeLayout extends FrameLayout {
             //检查向上滚动为负，检查向下滚动为正。
             isRecyclerViewScrollTop = !recyclerView.canScrollVertically(-1);
             isRecyclerViewScrollBottom = !recyclerView.canScrollVertically(1);
-            Log.i(TAG, "->RecyclerViewOnScrollListener isRecyclerViewScrollTop=" + isRecyclerViewScrollTop + ",isRecyclerViewScrollBottom=" + isRecyclerViewScrollBottom);
-            recyclerView.setOnTouchListener(new OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (isRecyclerViewScrollBottom) {
-                        return onTouchEvent(event);
-                    }
-                    return false;
-                }
-            });
         }
     }
 
@@ -519,12 +506,11 @@ public abstract class SwipeLayout extends FrameLayout {
                     }
                     if (isTransfinite) {
                         isRefreshing = true;
-//                        refreshRemainY = refreshMoveY < headerHeight ? refreshMoveY : headerHeight;
                         refreshRemainY = headerHeight;
                         refreshMoveY = 0;
                         requestLayout();
                     } else {
-                        createTranslateAnimator(refreshMoveY, 0, REFRESH).start();
+                        createTranslateAnimator(refreshMoveY, 0, REFRESH, 0).start();
                     }
                     return true;
                 }
@@ -536,24 +522,20 @@ public abstract class SwipeLayout extends FrameLayout {
                     }
                     if (isTransfinite) {
                         isLoading = true;
-//                        loadRemainY = loadable ? (loadMoveY > footerView.getMeasuredHeight() ? -loadMoveY : -footerView.getMeasuredHeight()) : 0;
                         loadRemainY = loadable ? -footerView.getMeasuredHeight() : 0;
-                        refreshRemainY = -headerHeight;
                         loadMoveY = 0;
                         requestLayout();
                     } else {
-//                        createScaleAnimator(footerView, LOADING).start();
-                        createTranslateAnimator(loadMoveY, 0, LOADING).start();
+                        createTranslateAnimator(loadMoveY, 0, LOADING, 0).start();
                     }
                     return true;
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
-                Log.i(TAG, "->isLoading=" + isLoading + ",isRefreshing=" + isRefreshing);
                 if (isLoading || isRefreshing) {
                     isRefreshingRelease = false;
                     isLoadingRelease = false;
-                    super.onTouchEvent(event);
+                    return false;
                 }
                 float moveY = event.getY() - downY;
                 if (Math.abs(moveY) < 50) {
@@ -576,7 +558,6 @@ public abstract class SwipeLayout extends FrameLayout {
                     isLoadingRelease = false;
                     isAbsListViewScrollBottom = false;
                 }
-                Log.i(TAG, "->loadable=" + loadable + ",isRefreshing=" + isRefreshing);
                 //上滑
                 if (moveY < 0 && loadable && !isRefreshing) {
                     isTransfinite = Math.abs(moveY) >= footerHeight;
@@ -632,9 +613,6 @@ public abstract class SwipeLayout extends FrameLayout {
      */
     public void setOnSwipeRefreshListener(OnSwipeRefreshListener refreshListener) {
         this.refreshListener = refreshListener;
-        if (isRefreshing) {
-            setRefreshing(isRefreshing);
-        }
     }
 
     /**
@@ -654,9 +632,15 @@ public abstract class SwipeLayout extends FrameLayout {
      */
     public void setOnSwipeLoadListener(OnSwipeLoadListener loadListener) {
         this.loadListener = loadListener;
-        if (isLoading) {
-            setLoading(isLoading);
-        }
+    }
+
+    /**
+     * 是否正在刷新
+     *
+     * @return
+     */
+    public boolean isRefreshing() {
+        return isRefreshing;
     }
 
     /**
@@ -666,7 +650,7 @@ public abstract class SwipeLayout extends FrameLayout {
      */
     public void setRefreshing(boolean isRefreshing) {
         if (!isRefreshing) {
-            if (!this.isRefreshing) {
+            if (!isRefreshing()) {
                 return;
             }
             createScaleAnimator(headerView, REFRESH).start();
@@ -684,17 +668,25 @@ public abstract class SwipeLayout extends FrameLayout {
     }
 
     /**
+     * 是否正在加载
+     *
+     * @return
+     */
+    public boolean isLoading() {
+        return isLoading;
+    }
+
+    /**
      * 设置正在加载
      *
      * @param isLoading 是否开始加载
      */
     public void setLoading(boolean isLoading) {
         if (!isLoading) {
-            if (!this.isLoading) {
+            if (!isLoading()) {
                 return;
             }
-//            createScaleAnimator(footerView, LOADING).start();
-            createTranslateAnimator(0, footerHeight, LOADING).start();
+            createTranslateAnimator(0, footerHeight, LOADING, delayDuration).start();
         } else {
             if (!loadable) {
                 return;
@@ -714,9 +706,10 @@ public abstract class SwipeLayout extends FrameLayout {
      * @param startValue 开始值
      * @param endValue   结束值
      * @param type       类型{@link #REFRESH} or {@link #LOADING}
+     * @param startDelay 开始延迟时间
      * @return
      */
-    private synchronized ValueAnimator createTranslateAnimator(final float startValue, final float endValue, final int type) {
+    private ValueAnimator createTranslateAnimator(final float startValue, final float endValue, final int type, long startDelay) {
         if (translateAnimator != null && translateAnimator.isStarted() && translateAnimator.isRunning()) {
             translateAnimator.removeAllUpdateListeners();
             translateAnimator = null;
@@ -731,22 +724,22 @@ public abstract class SwipeLayout extends FrameLayout {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                refreshRemainY = 0;
-                loadRemainY = 0;
-                refreshMoveY = 0;
-                loadMoveY = 0;
-                requestLayout();
-                isRefreshing = false;
-                isLoading = false;
                 isTransfinite = false;
-                onHeaderAnimationStop();
-                onFooterAnimationStop();
                 if (type == REFRESH) {
+                    isRefreshing = false;
+                    refreshRemainY = 0;
+                    refreshMoveY = 0;
                     isRefreshingRelease = true;
+                    onHeaderAnimationStop();
                 }
                 if (type == LOADING) {
+                    isLoading = false;
+                    loadRemainY = 0;
+                    loadMoveY = 0;
                     isLoadingRelease = true;
+                    onFooterAnimationStop();
                 }
+                requestLayout();
             }
         });
         translateAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -763,7 +756,7 @@ public abstract class SwipeLayout extends FrameLayout {
             }
         });
         translateAnimator.setDuration(translateDuration);
-        translateAnimator.setStartDelay(delayDuration);
+        translateAnimator.setStartDelay(startDelay);
         return translateAnimator;
     }
 
@@ -796,22 +789,22 @@ public abstract class SwipeLayout extends FrameLayout {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                refreshRemainY = 0;
-                loadRemainY = 0;
-                refreshMoveY = 0;
-                loadMoveY = 0;
-                requestLayout();
-                isRefreshing = false;
-                isLoading = false;
                 isTransfinite = false;
-                onHeaderAnimationStop();
-                onFooterAnimationStop();
                 if (type == REFRESH) {
+                    isRefreshing = false;
+                    refreshRemainY = 0;
+                    refreshMoveY = 0;
+                    onHeaderAnimationStop();
                     isRefreshingRelease = true;
                 }
                 if (type == LOADING) {
+                    isLoading = false;
+                    loadRemainY = 0;
+                    loadMoveY = 0;
                     isLoadingRelease = true;
+                    onFooterAnimationStop();
                 }
+                requestLayout();
             }
 
             @Override
@@ -886,16 +879,6 @@ public abstract class SwipeLayout extends FrameLayout {
             return isAbsListViewScrollBottom && (isRefreshingRelease || isLoadingRelease);
         }
         if (recyclerView != null) {
-            LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-            if (layoutManager.getInitialPrefetchItemCount() == 0) {
-                return false;
-            }
-            layoutManager.findLastCompletelyVisibleItemPosition();
-            int lastPosition = layoutManager.findLastCompletelyVisibleItemPosition();
-            int count = layoutManager.getItemCount();
-            if (lastPosition != layoutManager.getItemCount() - 1) {
-                return false;
-            }
             return isRecyclerViewScrollBottom && (isRefreshingRelease || isLoadingRelease);
         }
         return true;

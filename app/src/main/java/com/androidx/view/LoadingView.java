@@ -250,7 +250,7 @@ public class LoadingView extends View {
         height = heightSpecSize;
         int sideSpecSize = widthSpecSize >= heightSpecSize ? heightSpecSize : widthSpecSize;
         if (widthSpecMode == MeasureSpec.AT_MOST && heightSpecMode == MeasureSpec.AT_MOST) {
-            sideSpecSize = (int) dpToPx(65);
+            sideSpecSize = getResources().getDimensionPixelSize(R.dimen.loading_size);
             width = widthSpecSize;
             height = sideSpecSize;
         }
