@@ -195,9 +195,9 @@ public class PagerTabStrip extends HorizontalScrollView {
         setFillViewport(true);
         setWillNotDraw(false);
         //xml参数
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.PagerTabStrip);
-        position = typedArray.getInt(R.styleable.PagerTabStrip_position, position);
-        tabItems = typedArray.getTextArray(R.styleable.PagerTabStrip_tabItems);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.PagerTab);
+        position = typedArray.getInt(R.styleable.PagerTab_position, position);
+        tabItems = typedArray.getTextArray(R.styleable.PagerTab_tabItems);
         if (tabItems != null) {
             pageTitle = tabItems;
         } else {
@@ -207,14 +207,14 @@ public class PagerTabStrip extends HorizontalScrollView {
                 pageTitle[i] = "item";
             }
         }
-        tabLayoutParams = typedArray.getInt(R.styleable.PagerTabStrip_tabLayout, tabLayoutParams);
-        tabUnderlineParams = typedArray.getInt(R.styleable.PagerTabStrip_underlineLayout, tabUnderlineParams);
-        tabPaddingHorizontal = typedArray.getDimensionPixelOffset(R.styleable.PagerTabStrip_tabPaddingHorizontal, tabPaddingHorizontal);
-        tabPaddingVertical = typedArray.getDimensionPixelOffset(R.styleable.PagerTabStrip_tabPaddingVertical, tabPaddingVertical);
-        tabWidth = typedArray.getDimensionPixelOffset(R.styleable.PagerTabStrip_tabWidth, tabWidth);
-        textSize = typedArray.getDimensionPixelOffset(R.styleable.PagerTabStrip_tabTextSize, textSize);
-        textSelectSize = typedArray.getDimensionPixelSize(R.styleable.PagerTabStrip_tabTextSelectSize, textSelectSize);
-        textColorStateList = typedArray.getColorStateList(R.styleable.PagerTabStrip_tabTextColor);
+        tabLayoutParams = typedArray.getInt(R.styleable.PagerTab_tabLayout, tabLayoutParams);
+        tabUnderlineParams = typedArray.getInt(R.styleable.PagerTab_underlineLayout, tabUnderlineParams);
+        tabPaddingHorizontal = typedArray.getDimensionPixelOffset(R.styleable.PagerTab_tabPaddingHorizontal, tabPaddingHorizontal);
+        tabPaddingVertical = typedArray.getDimensionPixelOffset(R.styleable.PagerTab_tabPaddingVertical, tabPaddingVertical);
+        tabWidth = typedArray.getDimensionPixelOffset(R.styleable.PagerTab_tabWidth, tabWidth);
+        textSize = typedArray.getDimensionPixelOffset(R.styleable.PagerTab_tabTextSize, textSize);
+        textSelectSize = typedArray.getDimensionPixelSize(R.styleable.PagerTab_tabTextSelectSize, textSelectSize);
+        textColorStateList = typedArray.getColorStateList(R.styleable.PagerTab_tabTextColor);
         if (textColorStateList == null) {
             int normalColor = typedArray.getResources().getColor(R.color.colorPagerTabStripText);
             int selectColor = typedArray.getResources().getColor(R.color.colorPagerTabStripSelectedText);
@@ -222,13 +222,13 @@ public class PagerTabStrip extends HorizontalScrollView {
         }
         textColor = textColorStateList.getColorForState(new int[]{android.R.attr.state_empty}, typedArray.getResources().getColor(R.color.colorPagerTabStripText));
         textSelectedColor = textColorStateList.getColorForState(new int[]{android.R.attr.state_checked}, typedArray.getResources().getColor(R.color.colorPagerTabStripSelectedText));
-        dividerColor = typedArray.getColor(R.styleable.PagerTabStrip_dividerColor, dividerColor);
-        dividerWidth = typedArray.getDimensionPixelOffset(R.styleable.PagerTabStrip_dividerWidth, dividerWidth);
-        dividerPaddingVertical = typedArray.getDimensionPixelOffset(R.styleable.PagerTabStrip_dividerPaddingVertical, dividerPaddingVertical);
-        underlineColor = typedArray.getColor(R.styleable.PagerTabStrip_underlineColor, underlineColor);
-        underlineColor = typedArray.getColor(R.styleable.PagerTabStrip_underlineColor, underlineColor);
-        underlineRadius = typedArray.getDimension(R.styleable.PagerTabStrip_underlineRadius, underlineRadius);
-        underlineDrawable = typedArray.getDrawable(R.styleable.PagerTabStrip_underlineResId);
+        dividerColor = typedArray.getColor(R.styleable.PagerTab_dividerColor, dividerColor);
+        dividerWidth = typedArray.getDimensionPixelOffset(R.styleable.PagerTab_dividerWidth, dividerWidth);
+        dividerPaddingVertical = typedArray.getDimensionPixelOffset(R.styleable.PagerTab_dividerPaddingVertical, dividerPaddingVertical);
+        underlineColor = typedArray.getColor(R.styleable.PagerTab_underlineColor, underlineColor);
+        underlineColor = typedArray.getColor(R.styleable.PagerTab_underlineColor, underlineColor);
+        underlineRadius = typedArray.getDimension(R.styleable.PagerTab_underlineRadius, underlineRadius);
+        underlineDrawable = typedArray.getDrawable(R.styleable.PagerTab_underlineResId);
         if (underlineDrawable == null) {
             underlineDrawable = createShape(GradientDrawable.RECTANGLE,
                     0, underlineColor,
@@ -236,10 +236,10 @@ public class PagerTabStrip extends HorizontalScrollView {
                     0, 0,
                     0, 0);
         }
-        underlineHeight = typedArray.getDimensionPixelOffset(R.styleable.PagerTabStrip_underlineHeight, underlineHeight);
-        underlinePaddingLeft = typedArray.getDimension(R.styleable.PagerTabStrip_underlinePaddingLeft, underlinePaddingLeft);
-        underlinePaddingRight = typedArray.getDimension(R.styleable.PagerTabStrip_underlinePaddingRight, underlinePaddingRight);
-        duration = typedArray.getInt(R.styleable.PagerTabStrip_underlineDuration, duration);
+        underlineHeight = typedArray.getDimensionPixelOffset(R.styleable.PagerTab_underlineHeight, underlineHeight);
+        underlinePaddingLeft = typedArray.getDimension(R.styleable.PagerTab_underlinePaddingLeft, underlinePaddingLeft);
+        underlinePaddingRight = typedArray.getDimension(R.styleable.PagerTab_underlinePaddingRight, underlinePaddingRight);
+        duration = typedArray.getInt(R.styleable.PagerTab_underlineDuration, duration);
         typedArray.recycle();
         //初始化父级和容器
         addTabFrame(getContext());

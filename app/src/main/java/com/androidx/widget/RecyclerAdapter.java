@@ -154,7 +154,9 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
         if (page == 1) {
             setItems(data);
         } else {
-            addItems(data);
+            List<T> list  = getItems();
+            list.addAll(data);
+            setItems(list);
         }
     }
 
