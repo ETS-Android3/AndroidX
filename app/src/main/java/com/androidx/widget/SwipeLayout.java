@@ -19,6 +19,7 @@ import android.widget.ScrollView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.androidx.R;
@@ -137,11 +138,11 @@ public abstract class SwipeLayout extends FrameLayout {
     /**
      * 移动时间
      */
-    private int translateDuration = 500;
+    private int translateDuration = 200;
     /**
      * 延迟时间
      */
-    private int delayDuration = 500;
+    private int delayDuration = 200;
     /**
      * 内容类型-列表
      */
@@ -879,6 +880,12 @@ public abstract class SwipeLayout extends FrameLayout {
             return isAbsListViewScrollBottom && (isRefreshingRelease || isLoadingRelease);
         }
         if (recyclerView != null) {
+            if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
+                LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                if (manager.findLastCompletelyVisibleItemPosition() != recyclerView.getAdapter().getItemCount() - 1) {
+                    isRecyclerViewScrollBottom = false;
+                }
+            }
             return isRecyclerViewScrollBottom && (isRefreshingRelease || isLoadingRelease);
         }
         return true;

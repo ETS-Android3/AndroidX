@@ -141,7 +141,6 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
         if (notify) {
             notifyDataSetChanged();
         }
-        getItemCount();
     }
 
     /**
@@ -154,9 +153,7 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
         if (page == 1) {
             setItems(data);
         } else {
-            List<T> list  = getItems();
-            list.addAll(data);
-            setItems(list);
+            addItems(data);
         }
     }
 
