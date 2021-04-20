@@ -97,8 +97,8 @@ public class OkHttp implements Request {
                 String getUrl = "";
                 StringBuffer requestUrl = new StringBuffer();
                 requestUrl.append(url);
-                requestUrl.append("?");
                 if (params != null && params.params() != null) {
+                    requestUrl.append("?");
                     TreeMap<String, String> stringParams = params.params();
                     for (String key : stringParams.keySet()) {
                         String value = stringParams.get(key);
