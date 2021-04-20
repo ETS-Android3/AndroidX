@@ -129,7 +129,7 @@ public class OkHttp implements Request {
                 } else {
                     requestBuilder.cacheControl(CacheControl.FORCE_NETWORK);
                 }
-                String tag = params.tag();
+                String tag = params == null ? url+"" : params.tag();
                 okhttp3.Request request = requestBuilder.tag(TextUtils.isEmpty(tag) ? url : tag).build();
                 //请求加入调度
                 Call call = okHttpClient.newCall(request);
@@ -197,7 +197,7 @@ public class OkHttp implements Request {
                     requestBuilder.url(url);
                     requestBuilder.cacheControl(CacheControl.FORCE_NETWORK);
                     requestBuilder.post(requestBody);//传参数、文件或者混合
-                    String tag = params.tag();
+                    String tag = params == null ? url+"" : params.tag();
                     okhttp3.Request request = requestBuilder.tag(TextUtils.isEmpty(tag) ? url : tag).build();
                     Call call = okHttpClient.newCall(request);
                     call.enqueue(new OnOkHttpListener(handler, params, url, listener));
