@@ -94,7 +94,7 @@ public class OkHttp implements Request {
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
-                String getUrl = "";
+                String getUrl = url;
                 StringBuffer requestUrl = new StringBuffer();
                 requestUrl.append(url);
                 if (params != null && params.params() != null) {
