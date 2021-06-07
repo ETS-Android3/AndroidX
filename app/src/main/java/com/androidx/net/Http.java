@@ -144,7 +144,7 @@ public  class Http {
      *
      * @param tag 标识
      */
-    public static void cancel(String tag) {
+    public static void cancel(Class tag) {
         request().cancel(tag);
     }
 

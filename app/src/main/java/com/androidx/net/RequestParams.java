@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.androidx.app.CoreApplication;
 import com.androidx.content.ImageProvider;
+import com.androidx.text.Time;
 
 import java.io.File;
 import java.util.TreeMap;
@@ -35,12 +36,35 @@ public class RequestParams {
      */
     private String body;
     /**
-     * 标识
+     * 页面
      */
-    private String tag;
+    private String tag = "";
+
 
     public RequestParams() {
 
+    }
+
+    public RequestParams(Class tag) {
+        this.tag = tag.getSimpleName() + ":" + Time.now("yyyyMMddHHmmss");
+    }
+
+    /**
+     * 获取标识
+     *
+     * @return
+     */
+    public String tag() {
+        return tag;
+    }
+
+    /**
+     * 获取标识前缀
+     *
+     * @return
+     */
+    public String tagPrefix() {
+        return tag.split(":")[0];
     }
 
     /**
@@ -174,27 +198,6 @@ public class RequestParams {
      */
     public String body() {
         return body;
-    }
-
-    /**
-     * 获取标识
-     *
-     * @return
-     */
-    public String tag() {
-        if (tag == null) {
-            tag = String.valueOf(System.currentTimeMillis());
-        }
-        return tag;
-    }
-
-    /**
-     * 添加标识
-     *
-     * @param tag
-     */
-    public void tag(String tag) {
-        this.tag = tag;
     }
 
 }

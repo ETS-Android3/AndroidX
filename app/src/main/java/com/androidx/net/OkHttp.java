@@ -67,17 +67,18 @@ public class OkHttp implements Request {
     }
 
     @Override
-    public void cancel(String tag) {
+    public void cancel(Class tag) {
         if (okHttpClient != null) {
             List<Call> calls = okHttpClient.dispatcher().runningCalls();
             for (Call call : calls) {
-                if (tag.equals(call.request().tag())) {
+                String prefix = tag.getSimpleName();
+                String requestTag = (String) call.request().tag();
+                if (requestTag.startsWith(prefix)) {
                     call.cancel();
                 }
             }
         }
     }
-
 
     /**
      * Get请求方式

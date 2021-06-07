@@ -89,7 +89,7 @@ public class DataStorage {
     public void put(String key, String value) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
         editor.putString(key, value);
-        editor.commit();
+        editor.apply();
     }
 
     /**
@@ -101,7 +101,7 @@ public class DataStorage {
     public void put(String key, int value) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
         editor.putInt(key, value);
-        editor.commit();
+        editor.apply();
     }
 
     /**
@@ -113,7 +113,7 @@ public class DataStorage {
     public void put(String key, long value) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
         editor.putLong(key, value);
-        editor.commit();
+        editor.apply();
     }
 
     /**
@@ -125,7 +125,7 @@ public class DataStorage {
     public void put(String key, boolean value) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
         editor.putBoolean(key, value);
-        editor.commit();
+        editor.apply();
     }
 
     /**
@@ -137,7 +137,7 @@ public class DataStorage {
     public void put(String key, float value) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
         editor.putFloat(key, value);
-        editor.commit();
+        editor.apply();
     }
 
     /**
@@ -149,7 +149,7 @@ public class DataStorage {
     public void put(String key, Set<String> value) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
         editor.putStringSet(key, value);
-        editor.commit();
+        editor.apply();
     }
 
     /**
@@ -162,7 +162,7 @@ public class DataStorage {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
         String mapString = Json.parseMap(value);
         editor.putString(key, Encoder.encode(mapString));
-        editor.commit();
+        editor.apply();
     }
 
     /**
@@ -175,7 +175,7 @@ public class DataStorage {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
         String mapListString = Json.parseMapList(value);
         editor.putString(key, Encoder.encode(mapListString));
-        editor.commit();
+        editor.apply();
     }
 
     /**

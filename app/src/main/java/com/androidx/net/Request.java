@@ -7,13 +7,12 @@ package com.androidx.net;
  */
 public interface Request {
 
-
     /**
      * 取消请求
      *
      * @param tag 标识
      */
-    void cancel(String tag);
+    void cancel(Class tag);
 
     /**
      * Get请求

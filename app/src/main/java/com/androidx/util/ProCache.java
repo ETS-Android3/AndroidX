@@ -1,7 +1,5 @@
 package com.androidx.util;
 
-import android.content.Context;
-
 import com.androidx.app.CoreApplication;
 import com.androidx.content.DataStorage;
 
@@ -10,7 +8,7 @@ import com.androidx.content.DataStorage;
  * Describe:常用缓存
  * Date:2020/5/25 11:48
  */
-public class CommonCache {
+public class ProCache {
 
     /**
      * Token
@@ -32,7 +30,7 @@ public class CommonCache {
      *
      * @param value
      */
-    public static void setToken(String value) {
+    public static void token(String value) {
         DataStorage.with(CoreApplication.app).put(TOKEN, value);
     }
 
@@ -41,7 +39,7 @@ public class CommonCache {
      *
      * @return
      */
-    public static String getToken() {
+    public static String token() {
         return DataStorage.with(CoreApplication.app).getString(TOKEN, "");
     }
 
@@ -50,7 +48,7 @@ public class CommonCache {
      *
      * @param value
      */
-    public static void setUrl(String value) {
+    public static void url(String value) {
         DataStorage.with(CoreApplication.app).put(URL, value);
     }
 
@@ -59,7 +57,7 @@ public class CommonCache {
      *
      * @return
      */
-    public static String getUrl() {
+    public static String url() {
         return DataStorage.with(CoreApplication.app).getString(URL, "");
     }
 
@@ -69,11 +67,11 @@ public class CommonCache {
      * @param url
      * @return
      */
-    public static String spliceUrl(String url) {
+    public static String urlSplice(String url) {
         if (url != null && url.startsWith("http")) {
             return url;
         }
-        return getUrl() + url;
+        return url() + url;
     }
 
     /**
@@ -81,7 +79,7 @@ public class CommonCache {
      *
      * @param login   是否登录
      */
-    public static void setLogin(boolean login) {
+    public static void login(boolean login) {
         DataStorage.with(CoreApplication.app).put(LOGIN, login);
     }
 
@@ -99,7 +97,7 @@ public class CommonCache {
      *
      * @param obj     对象
      */
-    public static void setEntity(Object obj) {
+    public static void entity(Object obj) {
         DataStorage.with(CoreApplication.app).put(obj);
     }
 
@@ -110,7 +108,7 @@ public class CommonCache {
      * @param <T>     对象
      * @return
      */
-    public static <T> T getEntity(Class<T> cls) {
+    public static <T> T entity(Class<T> cls) {
         return DataStorage.with(CoreApplication.app).getObject(cls);
     }
 

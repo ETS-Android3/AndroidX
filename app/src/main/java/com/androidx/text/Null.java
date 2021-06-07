@@ -29,7 +29,6 @@ public class Null {
         return false;
     }
 
-
     /**
      * 判断是否为空
      *
@@ -65,10 +64,9 @@ public class Null {
      * @param content 内容
      * @return
      */
-    public static boolean isUnNull(String content) {
+    public static boolean isNotNull(String content) {
         return !isNull(content);
     }
-
 
     /**
      * 获取控件值
