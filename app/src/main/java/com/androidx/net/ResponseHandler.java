@@ -56,7 +56,7 @@ public class ResponseHandler extends Handler {
     private void insertCache(ResponseBody responseBody) {
         if (Http.options().isCache()) {
             String exception = responseBody.code() != ResponseCode.OK ? ResponseException.NOT_OK : "";
-            ResponseCacheBody cacheBody = new ResponseCacheBody();
+            ResponseTable cacheBody = new ResponseTable();
             cacheBody.setUrl(responseBody.url());
             cacheBody.setCode(String.valueOf(responseBody.code()));
             String encodeBody = Encoder.encode(responseBody.body());

@@ -7,6 +7,7 @@ package com.androidx.net;
  */
 public interface Request {
 
+
     /**
      * 取消请求
      *
@@ -31,5 +32,24 @@ public interface Request {
      * @param listener 回调
      */
     void post(String url, RequestParams params, OnHttpListener listener);
+
+
+    /**
+     * Put请求
+     *
+     * @param url      地址
+     * @param params   参数
+     * @param listener 回调
+     */
+    void put(String url, RequestParams params, OnHttpListener listener);
+
+    /**
+     * Delete请求
+     *
+     * @param url      地址
+     * @param params   参数
+     * @param listener 回调
+     */
+    void delete(String url, RequestParams params, OnHttpListener listener);
 
 }

@@ -1,21 +1,12 @@
-package com.androidx.net.ok;
+package com.androidx.net;
 
 import android.text.TextUtils;
 
 import com.androidx.app.CoreApplication;
 import com.androidx.io.Mime;
 import com.androidx.json.Json;
-import com.androidx.net.Header;
-import com.androidx.net.Http;
-import com.androidx.net.Network;
-import com.androidx.net.OnHttpListener;
-import com.androidx.net.Request;
-import com.androidx.net.RequestOptions;
-import com.androidx.net.RequestParams;
-import com.androidx.net.ResponseHandler;
-import com.androidx.net.ResponseHelper;
-import com.androidx.net.ssl.HttpsHostnameVerifier;
 import com.androidx.text.Null;
+import com.androidx.util.Log;
 
 import java.io.File;
 import java.util.Collections;
@@ -44,6 +35,10 @@ public class OkHttp implements Request {
      * 日志参数
      */
     public static String TAG = OkHttp.class.getSimpleName();
+    public static final int GET = 0;
+    public static final int POST = 1;
+    public static final int PUT = 2;
+    public static final int DELETE = 3;
     /**
      * Http异步请求数据处理
      */
@@ -56,8 +51,11 @@ public class OkHttp implements Request {
      * 配置参数
      */
     protected RequestOptions options;
-
+    /**
+     * 客户端
+     */
     private OkHttpClient okHttpClient;
+
 
     public OkHttp() {
         options = Http.options();
@@ -130,7 +128,7 @@ public class OkHttp implements Request {
                 } else {
                     requestBuilder.cacheControl(CacheControl.FORCE_NETWORK);
                 }
-                String tag = params == null ? url+"" : params.tag();
+                String tag = params == null ? url + "" : params.tag();
                 okhttp3.Request request = requestBuilder.tag(TextUtils.isEmpty(tag) ? url : tag).build();
                 //请求加入调度
                 Call call = okHttpClient.newCall(request);
@@ -147,6 +145,42 @@ public class OkHttp implements Request {
      */
     @Override
     public void post(final String url, final RequestParams params, final OnHttpListener listener) {
+        request(POST, url, params, listener);
+    }
+
+    /**
+     * Put请求
+     *
+     * @param url      地址
+     * @param params   参数
+     * @param listener 回调
+     */
+    @Override
+    public void put(String url, RequestParams params, OnHttpListener listener) {
+        request(PUT, url, params, listener);
+    }
+
+    /**
+     * Delete请求
+     *
+     * @param url      地址
+     * @param params   参数
+     * @param listener 回调
+     */
+    @Override
+    public void delete(String url, RequestParams params, OnHttpListener listener) {
+        request(DELETE, url, params, listener);
+    }
+
+    /**
+     * 请求数据
+     *
+     * @param method   方法
+     * @param url      接口
+     * @param params   参数
+     * @param listener 回调
+     */
+    public void request(final int method, final String url, final RequestParams params, final OnHttpListener listener) {
         if (!ResponseHelper.isPassNetworkAndCacheCheck(handler, options, url, params, listener)) {
             return;
         }
@@ -155,10 +189,8 @@ public class OkHttp implements Request {
             public void run() {
                 String contentType = params.header().get(Header.CONTENT_TYPE);
                 if (contentType.equals(Header.CONTENT_JSON) || contentType.equals(Header.CONTENT_STRING)) {
-                    jsonRequest(url, params, listener);
+                    jsonRequest(method, url, params, listener);
                 } else {
-                    //创建okHttpClient对象
-//                    okhttp3.OkHttpClient okHttpClient = buildOkHttpClient(options);
                     MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder();
                     multipartBodyBuilder.setType(MultipartBody.FORM);
                     multipartBodyBuilder.addFormDataPart("", "");
@@ -198,7 +230,7 @@ public class OkHttp implements Request {
                     requestBuilder.url(url);
                     requestBuilder.cacheControl(CacheControl.FORCE_NETWORK);
                     requestBuilder.post(requestBody);//传参数、文件或者混合
-                    String tag = params == null ? url+"" : params.tag();
+                    String tag = params == null ? url + "" : params.tag();
                     okhttp3.Request request = requestBuilder.tag(TextUtils.isEmpty(tag) ? url : tag).build();
                     Call call = okHttpClient.newCall(request);
                     call.enqueue(new OnOkHttpListener(handler, params, url, listener));
@@ -207,16 +239,15 @@ public class OkHttp implements Request {
         });
     }
 
-
     /**
      * Json内容请求
      *
+     * @param method
      * @param url
      * @param params
      * @param listener
      */
-    private void jsonRequest(String url, RequestParams params, OnHttpListener listener) {
-//        OkHttpClient okHttpClient = buildOkHttpClient(options);
+    private void jsonRequest(int method, String url, RequestParams params, OnHttpListener listener) {
         String contentType = params.header().get(Header.CONTENT_TYPE);
         MediaType mediaType = MediaType.parse(Header.MEDIA_JSON);
         if (contentType.equals(Header.CONTENT_JSON)) {
@@ -246,6 +277,15 @@ public class OkHttp implements Request {
         }
         String tag = params.tag();
         okhttp3.Request request = requestBuilder.url(url).post(body).tag(TextUtils.isEmpty(tag) ? url : tag).build();
+        if (method == POST) {
+            request = requestBuilder.url(url).post(body).tag(TextUtils.isEmpty(tag) ? url : tag).build();
+        }
+        if (method == PUT) {
+            request = requestBuilder.url(url).put(body).tag(TextUtils.isEmpty(tag) ? url : tag).build();
+        }
+        if (method == DELETE) {
+            request = requestBuilder.url(url).delete(body).tag(TextUtils.isEmpty(tag) ? url : tag).build();
+        }
         Call call = okHttpClient.newCall(request);
         call.enqueue(new OnOkHttpListener(handler, params, url, listener));
     }
@@ -264,9 +304,12 @@ public class OkHttp implements Request {
         okBuilder.connectionPool(new ConnectionPool(options.maxIdleConnections(), options.keepAliveDuration(), TimeUnit.SECONDS));
         okBuilder.cookieJar(new OkCookieJar());
         okBuilder.dispatcher(new Dispatcher());
+        if (options.interceptor() != null) {
+            okBuilder.addInterceptor(options.interceptor());
+        }
         okBuilder.retryOnConnectionFailure(false);
         //Https证书配置
-        okBuilder.sslSocketFactory(options.cert().getSSLSocketFactory());
+        okBuilder.sslSocketFactory(options.cert().getSSLSocketFactory(), new HttpsX509TrustManager());
         okBuilder.hostnameVerifier(new HttpsHostnameVerifier());
         return okBuilder.build();
     }

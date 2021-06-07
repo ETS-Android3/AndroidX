@@ -1,4 +1,4 @@
-package com.androidx.net.ok;
+package com.androidx.net;
 
 import com.androidx.app.CoreApplication;
 import com.androidx.content.DataStorage;

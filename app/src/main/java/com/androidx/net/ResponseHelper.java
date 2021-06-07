@@ -174,10 +174,10 @@ public class ResponseHelper {
      */
     public static ResponseBody selectCache(String url, RequestParams params, OnHttpListener listener) {
         String paramsEncode = Encoder.encode(params.params().toString());
-        List<ResponseCacheBody> cacheBodies = ResponseCache.query(url, params.params() == null ? "" :paramsEncode);
+        List<ResponseTable> cacheBodies = ResponseCache.query(url, params.params() == null ? "" :paramsEncode);
         ResponseBody response;
         if (Size.of(cacheBodies) != 0) {
-            ResponseCacheBody cacheBody = cacheBodies.get(0);
+            ResponseTable cacheBody = cacheBodies.get(0);
             response = new ResponseBody();
             response.setCache(true);
             response.url(url);

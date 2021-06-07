@@ -2,10 +2,10 @@ package com.androidx.net;
 
 import android.content.Context;
 
-import com.androidx.net.ssl.Certificate;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import okhttp3.Interceptor;
 
 /**
  * Author: Relin
@@ -15,21 +15,9 @@ import java.util.concurrent.Executors;
 public class RequestOptions {
 
     /**
-     * OkHttp
-     */
-    public final static int OK_HTTP = 1;
-    /**
-     * HttpURLConnection
-     */
-    public final static int HUC_HTTP = 2;
-    /**
      * 上下文对象
      */
     private Context context;
-    /**
-     * 网络请求类
-     */
-    private int type = OK_HTTP;
     /**
      * 线程数量
      */
@@ -98,7 +86,14 @@ public class RequestOptions {
      * 保活时常，单位秒
      */
     private long keepAliveDuration = 10;
-
+    /**
+     * 拦截器
+     */
+    private Interceptor interceptor;
+    /**
+     * 失败是否尝试重连
+     */
+    private boolean retryOnConnectionFailure = true;
 
     public RequestOptions(Context context) {
         this.context = context;
@@ -106,15 +101,6 @@ public class RequestOptions {
 
     public Context context() {
         return context;
-    }
-
-    public int type() {
-        return type;
-    }
-
-    public RequestOptions type(int type) {
-        this.type = type;
-        return this;
     }
 
     public int threadNum() {
@@ -273,11 +259,28 @@ public class RequestOptions {
         return this;
     }
 
+    public Interceptor interceptor() {
+        return interceptor;
+    }
+
+    public RequestOptions interceptor(Interceptor interceptor) {
+        this.interceptor = interceptor;
+        return this;
+    }
+
+    public boolean isRetryOnConnectionFailure() {
+        return retryOnConnectionFailure;
+    }
+
+    public RequestOptions retryOnConnectionFailure(boolean retryOnConnectionFailure) {
+        this.retryOnConnectionFailure = retryOnConnectionFailure;
+        return this;
+    }
+
     @Override
     public String toString() {
         return "RequestOptions{" +
                 "context=" + context +
-                ", type=" + type +
                 ", threadNum=" + threadNum +
                 ", threadPool=" + threadPool +
                 ", handler=" + handler +
@@ -295,6 +298,8 @@ public class RequestOptions {
                 ", uploadMaxSize=" + uploadMaxSize +
                 ", maxIdleConnections=" + maxIdleConnections +
                 ", keepAliveDuration=" + keepAliveDuration +
+                ", interceptor=" + interceptor +
+                ", retryOnConnectionFailure=" + retryOnConnectionFailure +
                 '}';
     }
 }

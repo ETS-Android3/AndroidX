@@ -8,7 +8,7 @@ import android.text.TextUtils;
 
 import com.androidx.content.IOProvider;
 import com.androidx.net.Http;
-import com.androidx.net.ssl.HttpsHostnameVerifier;
+import com.androidx.net.HttpsHostnameVerifier;
 
 import java.io.File;
 import java.io.IOException;

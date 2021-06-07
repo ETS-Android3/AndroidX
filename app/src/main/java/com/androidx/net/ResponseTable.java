@@ -1,11 +1,26 @@
 package com.androidx.net;
 
-public class ResponseCacheBody {
+public class ResponseTable {
 
+    /**
+     * 请求码
+     */
     private String code;
+    /**
+     * 请求url
+     */
     private String url;
+    /**
+     * 参数
+     */
     private String params;
+    /**
+     * 结果
+     */
     private String body;
+    /**
+     * 异常
+     */
     private String exception;
 
     public String getUrl() {

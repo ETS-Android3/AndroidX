@@ -1,7 +1,5 @@
 package com.androidx.net;
 
-import com.androidx.net.huc.HucHttp;
-import com.androidx.net.ok.OkHttp;
 import com.androidx.os.Build;
 import com.androidx.sqlite.SQLite;
 import com.androidx.util.Log;
@@ -47,13 +45,8 @@ public  class Http {
      */
     public static void init(RequestOptions options) {
         config = options;
-        if (config.type() == RequestOptions.OK_HTTP) {
-            request = new OkHttp();
-        }
-        if (config.type() == RequestOptions.HUC_HTTP) {
-            request = new HucHttp();
-        }
-        SQLite.with(options.context()).createTable(ResponseCacheBody.class);
+        request = new OkHttp();
+        SQLite.with(config.context()).createTable(ResponseTable.class);
     }
 
     /**
@@ -114,6 +107,36 @@ public  class Http {
             return;
         }
         request().post(url, params, listener);
+    }
+
+    /**
+     * Put请求
+     *
+     * @param url      地址
+     * @param params   参数
+     * @param listener 监听
+     */
+    public static void put(String url, RequestParams params, OnHttpListener listener) {
+        if (!isInit()) {
+            Log.e(TAG, NOT_INIT, MSG_NOT_INIT);
+            return;
+        }
+        request().put(url, params, listener);
+    }
+
+    /**
+     * Delete请求
+     *
+     * @param url      地址
+     * @param params   参数
+     * @param listener 监听
+     */
+    public static void delete(String url, RequestParams params, OnHttpListener listener) {
+        if (!isInit()) {
+            Log.e(TAG, NOT_INIT, MSG_NOT_INIT);
+            return;
+        }
+        request().delete(url, params, listener);
     }
 
     /**

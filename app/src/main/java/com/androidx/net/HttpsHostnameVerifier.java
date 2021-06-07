@@ -1,4 +1,4 @@
-package com.androidx.net.ssl;
+package com.androidx.net;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;

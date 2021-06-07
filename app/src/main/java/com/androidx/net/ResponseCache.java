@@ -24,12 +24,12 @@ public class ResponseCache {
      *
      * @param body
      */
-    public static void insert(ResponseCacheBody body) {
+    public static void insert(ResponseTable body) {
         if (!Http.isInit()) {
             Log.e(TAG, Http. NOT_INIT, Http.MSG_NOT_INIT);
             return;
         }
-        List<ResponseCacheBody> bodies = query(body.getUrl(), body.getParams());
+        List<ResponseTable> bodies = query(body.getUrl(), body.getParams());
         int size = Size.of(bodies);
         if (size == 0) {
             SQLite.with(CoreApplication.app).insert(body);
@@ -43,7 +43,7 @@ public class ResponseCache {
      *
      * @param body
      */
-    public static void update(ResponseCacheBody body) {
+    public static void update(ResponseTable body) {
         if (!Http.isInit()) {
             Log.e(TAG, Http. NOT_INIT, Http.MSG_NOT_INIT);
             return;
@@ -58,12 +58,12 @@ public class ResponseCache {
      * @param params 参数
      * @return
      */
-    public static List<ResponseCacheBody> query(String url, String params) {
+    public static List<ResponseTable> query(String url, String params) {
         if (!Http.isInit()) {
             Log.e(TAG, Http. NOT_INIT, Http.MSG_NOT_INIT);
             return null;
         }
-        List<ResponseCacheBody> items = SQLite.with(CoreApplication.app).query(ResponseCacheBody.class, "select * from " + ResponseCacheBody.class.getSimpleName() + " where params = \'" + params + "\' and url = \'" + url + "\'");
+        List<ResponseTable> items = SQLite.with(CoreApplication.app).query(ResponseTable.class, "select * from " + ResponseTable.class.getSimpleName() + " where params = \'" + params + "\' and url = \'" + url + "\'");
         return items;
     }
 
@@ -75,7 +75,7 @@ public class ResponseCache {
             Log.e(TAG, Http. NOT_INIT, Http.MSG_NOT_INIT);
             return;
         }
-        SQLite.with(CoreApplication.app).deleteTable(ResponseCacheBody.class.getSimpleName());
+        SQLite.with(CoreApplication.app).deleteTable(ResponseTable.class.getSimpleName());
     }
 
 }

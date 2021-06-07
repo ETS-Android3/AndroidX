@@ -1,4 +1,4 @@
-package com.androidx.net.ssl;
+package com.androidx.net;
 
 import java.io.IOException;
 import java.io.InputStream;
