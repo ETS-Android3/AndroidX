@@ -35,7 +35,6 @@ public class CoreApplication extends Application {
         options.debug(debug);
         options.cache(true);
         options.contentType(Header.CONTENT_JSON);
-        options.type(RequestOptions.OK_HTTP);
         Http.init(options);
     }
 
