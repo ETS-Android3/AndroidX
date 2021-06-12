@@ -14,7 +14,6 @@ allprojects {
 	}
 }
 ```
-
 2./app/build.grade
 ```
 dependencies {
