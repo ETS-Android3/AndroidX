@@ -453,10 +453,9 @@ public abstract class SwipeLayout extends FrameLayout {
                     top = getMeasuredHeight() - getPaddingTop() - childParams.topMargin - child.getMeasuredHeight();
                 }
             }
-
             top += (int) loadMoveY + (int) loadRemainY;
-            right = left + child.getMeasuredWidth() - childParams.rightMargin;
-            bottom = top + child.getMeasuredHeight() - childParams.bottomMargin;
+            right = left + child.getMeasuredWidth();
+            bottom = top + child.getMeasuredHeight();
             child.layout(left, top, right, bottom);
         }
         //脚部
