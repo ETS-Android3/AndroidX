@@ -363,12 +363,22 @@ public abstract class SwipeLayout extends FrameLayout {
 
     private class RecyclerViewOnScrollListener extends RecyclerView.OnScrollListener {
 
+
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
             //检查向上滚动为负，检查向下滚动为正。
             isRecyclerViewScrollTop = !recyclerView.canScrollVertically(-1);
             isRecyclerViewScrollBottom = !recyclerView.canScrollVertically(1);
+            recyclerView.setOnTouchListener(new OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (isRecyclerViewScrollBottom) {
+                        return onTouchEvent(event);
+                    }
+                    return false;
+                }
+            });
         }
     }
 
