@@ -106,6 +106,9 @@ public class SwipeRequestLayout extends SwipeLayout {
         footer = new LoadingView(context);
         LayoutParams footerParams = new LayoutParams(footerLoadingWidth, footerLoadingHeight);
         footer.setLayoutParams(footerParams);
+        footer.setStreakWidth(dpToPx(1));
+        footer.setStreakSpace(dpToPx(5));
+        footer.setUnitAngle(90/3F);
         footer.setBackgroundResource(R.drawable.android_swipe_footer_loading_background);
         footer.setStreakColor(getResources().getColor(R.color.colorSwipeFooterLoadingStreak));
         footer.setTextColor(getResources().getColor(R.color.colorSwipeFooterLoadingText));

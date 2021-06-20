@@ -128,6 +128,7 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
         setItems(data, true);
     }
 
+
     /**
      * 设置数据
      *
@@ -164,9 +165,11 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
      */
     public void addItems(List<T> data) {
         int size = data == null ? 0 : data.size();
-        int positionStart = getItemCount() == 0 ? 0 : getItemCount();
-        getItems().addAll(data);
-        notifyItemRangeInserted(positionStart, size);
+        if (size > 0) {
+            int positionStart = getItemCount() - 1;
+            getItems().addAll(data);
+            notifyItemRangeInserted(positionStart + 1, size);
+        }
     }
 
     /**

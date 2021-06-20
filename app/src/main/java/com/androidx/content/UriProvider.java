@@ -16,6 +16,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
+import androidx.documentfile.provider.DocumentFile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -378,17 +379,15 @@ public class UriProvider {
      *
      * @param context 上下文对象
      * @param dirName 文件夹名称
-     * @param srcPath 资源真实路径
      * @return
      */
-    public static String insertExternalCacheDir(Context context, String dirName, Uri srcUri, String srcPath) {
-        File sourceFile = new File(srcPath);
-        String name = sourceFile.getName();
+    public static String insertExternalCacheDir(Context context, String dirName, Uri srcUri) {
+        DocumentFile documentFile = DocumentFile.fromSingleUri(context, srcUri);
         File directory = new File(context.getExternalCacheDir(), dirName);
         if (!directory.exists()) {
             directory.mkdirs();
         }
-        File outFile = buildFile(directory, name);
+        File outFile = buildFile(directory, documentFile.getName());
         copy(context, srcUri, outFile.getAbsolutePath());
         return outFile.getAbsolutePath();
     }
@@ -619,6 +618,8 @@ public class UriProvider {
                     contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
                 } else if ("audio".equals(type)) {
                     contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                } else if ("document".equals(type)) {
+                    return UriProvider.insertExternalCacheDir(context, UriProvider.DIRECTORY_DOCUMENT, uri);
                 }
                 final String selection = "_id=?";
                 final String[] selectionArgs = new String[]{split[1]};

@@ -359,7 +359,7 @@ public class LoadingView extends View {
         }
         int wh[] = measureText(textPaint, text);
         if (orientation == HORIZONTAL) {
-            canvas.drawText(text, centerX + streakSpace + streakLength + streakSpace, centerY + wh[1] / 2, textPaint);
+            canvas.drawText(text, centerX + streakSpace + streakLength + streakSpace, centerY + wh[1] / 2-3, textPaint);
         }
         if (orientation == VERTICAL) {
             canvas.drawText(text, centerX - wh[0] / 2, centerY + streakSpace + streakLength + streakSpace + wh[1], textPaint);

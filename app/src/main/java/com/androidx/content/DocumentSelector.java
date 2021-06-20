@@ -273,7 +273,7 @@ public class DocumentSelector {
                 builder.data = resultUri;
                 String path = UriProvider.getData(context, resultUri);
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                   path = UriProvider.insertExternalCacheDir(context, dictionary,resultUri,path);
+                   path = UriProvider.insertExternalCacheDir(context, dictionary,resultUri);
                 }
                 Log.i(TAG, "->onActivityResult REQUEST_PICK resultUri = " + resultUri + " , path = " + path);
                 handleUriPath(resultUri, path);
@@ -282,7 +282,7 @@ public class DocumentSelector {
                 resultUri = data.getData();
                 String path = UriProvider.getPath(context, resultUri);
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                    path = UriProvider.insertExternalCacheDir(context, dictionary,resultUri,path);
+                    path = UriProvider.insertExternalCacheDir(context, dictionary,resultUri);
                 }
                 Log.i(TAG, "->onActivityResult REQUEST_GET_CONTENT resultUri = " + resultUri + " , path = " + path);
                 builder.data = UriProvider.buildProviderUri(context, new File(path), authority);

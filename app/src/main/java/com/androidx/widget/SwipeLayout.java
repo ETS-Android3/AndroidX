@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.androidx.R;
+import com.androidx.util.Log;
 
 
 /**
@@ -142,7 +143,7 @@ public abstract class SwipeLayout extends FrameLayout {
     /**
      * 延迟时间
      */
-    private int delayDuration = 200;
+    private int delayDuration = 1000;
     /**
      * 内容类型-列表
      */
@@ -370,15 +371,6 @@ public abstract class SwipeLayout extends FrameLayout {
             //检查向上滚动为负，检查向下滚动为正。
             isRecyclerViewScrollTop = !recyclerView.canScrollVertically(-1);
             isRecyclerViewScrollBottom = !recyclerView.canScrollVertically(1);
-            recyclerView.setOnTouchListener(new OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (isRecyclerViewScrollBottom) {
-                        return onTouchEvent(event);
-                    }
-                    return false;
-                }
-            });
         }
     }
 
@@ -490,7 +482,7 @@ public abstract class SwipeLayout extends FrameLayout {
             case MotionEvent.ACTION_MOVE:
                 float moveX = event.getX() - downX;
                 float moveY = event.getY() - downY;
-                if (Math.abs(moveY) < Math.abs(moveX)) {
+                if (Math.abs(moveY) <= Math.abs(moveX)||Math.abs(moveY)<10||Math.abs(moveX)<10) {
                     return super.onInterceptTouchEvent(event);
                 }
                 if (moveY > 0 && refreshable) {
