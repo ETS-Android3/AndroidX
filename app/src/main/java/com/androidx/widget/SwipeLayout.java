@@ -669,6 +669,7 @@ public abstract class SwipeLayout extends FrameLayout {
         this.isRefreshing = isRefreshing;
     }
 
+
     /**
      * 是否正在加载
      *
