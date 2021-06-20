@@ -345,7 +345,7 @@ public class DocumentSelector {
         /**
          * 缓存文件夹名
          */
-        private String dictionary = UriProvider.DIRECTORY_PICTURE;
+        private String dictionary = UriProvider.DIRECTORY_DOCUMENT;
         /**
          * 输入Uri
          */
