@@ -6,9 +6,13 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import java.io.File;
@@ -240,6 +244,9 @@ public class DocumentSelector {
         UriProvider.delete(context, uri);
     }
 
+    private long useTime = 0;
+
+
     /**
      * 图片操作返回处理
      *
@@ -247,8 +254,44 @@ public class DocumentSelector {
      * @param resultCode  结果码
      * @param data        数据
      */
-    public void onActivityResult(int requestCode, int resultCode,Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        new ResultThread(requestCode, resultCode, data).start();
+    }
+
+    /**
+     * 结果线程处理
+     */
+    private class ResultThread extends Thread {
+
+        private int requestCode;
+        private int resultCode;
+        private Intent data;
+
+        public ResultThread(int requestCode, int resultCode, Intent data) {
+            this.requestCode = requestCode;
+            this.resultCode = resultCode;
+            this.data = data;
+        }
+
+        @Override
+        public void run() {
+            super.run();
+            handleActivityResult(requestCode, resultCode, data);
+        }
+
+    }
+
+
+    /**
+     * 图片操作返回处理
+     *
+     * @param requestCode 请求码
+     * @param resultCode  结果码
+     * @param data        数据
+     */
+    protected void handleActivityResult(int requestCode, int resultCode, Intent data) {
+        useTime = System.currentTimeMillis();
+        if (resultCode != Activity.RESULT_CANCELED) {
             if (requestCode == IntentProvider.REQUEST_CAPTURE) {
                 String path = outPutFile.getAbsolutePath();
                 Bitmap rotateBitmap = ImageProvider.rotate(path, ImageProvider.angle(path));
@@ -257,7 +300,7 @@ public class DocumentSelector {
                 resultUri = UriProvider.insertMediaStoreImage(context, file);
                 builder.data = outPutUri;
                 Log.i(TAG, "->onActivityResult REQUEST_CAPTURE resultUri = " + resultUri + " , path = " + path);
-                handleUriPath(resultUri, path);
+                sendResultMessage(resultUri, path);
             }
             if (requestCode == IntentProvider.REQUEST_CROP) {
                 String path = outPutFile.getAbsolutePath();
@@ -268,27 +311,28 @@ public class DocumentSelector {
                     listener.onDocumentSelect(this, resultUri, path);
                 }
             }
-            if (requestCode == IntentProvider.REQUEST_PICK) {
+            if (requestCode == IntentProvider.REQUEST_PICK && data != null) {
                 resultUri = data.getData();
                 builder.data = resultUri;
                 String path = UriProvider.getData(context, resultUri);
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                   path = UriProvider.insertExternalCacheDir(context, dictionary,resultUri);
+                    path = UriProvider.insertExternalCacheDir(context, dictionary, resultUri);
                 }
                 Log.i(TAG, "->onActivityResult REQUEST_PICK resultUri = " + resultUri + " , path = " + path);
-                handleUriPath(resultUri, path);
+                sendResultMessage(resultUri, path);
             }
-            if (requestCode == IntentProvider.REQUEST_GET_CONTENT) {
+            if (requestCode == IntentProvider.REQUEST_GET_CONTENT && data != null) {
                 resultUri = data.getData();
                 String path = UriProvider.getPath(context, resultUri);
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                    path = UriProvider.insertExternalCacheDir(context, dictionary,resultUri);
+                    path = UriProvider.insertExternalCacheDir(context, dictionary, resultUri);
                 }
                 Log.i(TAG, "->onActivityResult REQUEST_GET_CONTENT resultUri = " + resultUri + " , path = " + path);
                 builder.data = UriProvider.buildProviderUri(context, new File(path), authority);
-                handleUriPath(builder.data, path);
+                sendResultMessage(builder.data, path);
             }
         }
+        Log.i(TAG, "->onActivityResult useTime = " + (System.currentTimeMillis() - useTime) + "ms");
     }
 
 
@@ -298,19 +342,43 @@ public class DocumentSelector {
      * @param uri  Uri
      * @param path 路径
      */
-    private void handleUriPath(Uri uri, String path) {
-        if (IOProvider.isImage(path)) {
-            if (crop) {
-                builder.mode(DocumentSelector.MODE_IMAGE_CROP);
-                builder.build();
+    private void sendResultMessage(Uri uri, String path) {
+        ResultHandler handle = new ResultHandler(Looper.getMainLooper());
+        Message message = handle.obtainMessage();
+        Bundle bundle = new Bundle();
+        bundle.putString("path", path);
+        bundle.putParcelable("uri", uri);
+        message.setData(bundle);
+        handle.sendMessage(message);
+    }
+
+    /**
+     * 结果线程处理
+     */
+    private class ResultHandler extends Handler {
+
+        public ResultHandler(@NonNull Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            Uri uri = msg.getData().getParcelable("uri");
+            String path = msg.getData().getString("path");
+            if (IOProvider.isImage(path)) {
+                if (crop) {
+                    builder.mode(DocumentSelector.MODE_IMAGE_CROP);
+                    builder.build();
+                } else {
+                    if (listener != null) {
+                        listener.onDocumentSelect(DocumentSelector.this, uri, path);
+                    }
+                }
             } else {
                 if (listener != null) {
-                    listener.onDocumentSelect(this, uri, path);
+                    listener.onDocumentSelect(DocumentSelector.this, uri, path);
                 }
-            }
-        } else {
-            if (listener != null) {
-                listener.onDocumentSelect(this, uri, path);
             }
         }
     }
@@ -593,7 +661,10 @@ public class DocumentSelector {
             return this;
         }
 
-        public DocumentSelector build() {
+        /**
+         * 初始化参数
+         */
+        public void initParams() {
             if (mineType == null) {
                 if (mode == MODE_GET_DOCUMENT) {
                     mineType = "*/*";
@@ -622,6 +693,10 @@ public class DocumentSelector {
                 File file = UriProvider.buildFile(context(), dictionary, name);
                 outPutUri = UriProvider.buildFileUri(file);
             }
+        }
+
+        public DocumentSelector build() {
+            initParams();
             return new DocumentSelector(this);
         }
 
