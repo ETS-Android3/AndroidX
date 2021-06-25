@@ -387,7 +387,7 @@ public class DocumentSelector {
         /**
          * 剪切参数 - 是否返回数据
          */
-        private boolean returnData = false;
+        private boolean returnData = true;
         /**
          * 剪切参数 - 圆角剪切（部分机型支持）
          */
