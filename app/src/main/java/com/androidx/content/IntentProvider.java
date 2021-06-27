@@ -27,19 +27,19 @@ public class IntentProvider {
     /**
      * 选择器
      */
-    public final static int REQUEST_PICK = 10;
+    public final static int REQUEST_PICK = 18899;
     /**
      * 拍照
      */
-    public final static int REQUEST_CAPTURE = 11;
+    public final static int REQUEST_CAPTURE = 17788;
     /**
      * 剪切
      */
-    public final static int REQUEST_CROP = 12;
+    public final static int REQUEST_CROP = 16677;
     /**
      * 选择文件
      */
-    public final static int REQUEST_GET_CONTENT = 13;
+    public final static int REQUEST_GET_CONTENT = 16655;
 
     /**
      * 打开选择器

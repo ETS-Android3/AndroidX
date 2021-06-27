@@ -4,7 +4,7 @@ import android.net.Uri;
 
 /**
  * Author: Relin
- * Describe:
+ * Describe:文件选择监听
  * Date:2020/11/23 23:22
  */
 public interface OnDocumentSelectListener {
@@ -16,6 +16,6 @@ public interface OnDocumentSelectListener {
      * @param uri      系统Uri
      * @param path     真实文件路径
      */
-    void onDocumentSelect(DocumentSelector selector, Uri uri, String path);
+    void onDocumentSelectSucceed(DocumentSelector selector, Uri uri, String path);
 
 }

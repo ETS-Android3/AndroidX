@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -634,7 +635,11 @@ public class UriProvider {
                 if (isMttExternalStorageDocument(uri)) {
                     String qqBrowser = "content://" + authority + "/QQBrowser/";
                     if (uriString.startsWith(qqBrowser)) {
-                        return URLDecoder.decode(uriString).replace(qqBrowser, Environment.getExternalStorageDirectory().getAbsolutePath() + "/");
+                        try {
+                            return URLDecoder.decode(uriString,"UTF-8").replace(qqBrowser, Environment.getExternalStorageDirectory().getAbsolutePath() + "/");
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
                 return getData(context, uri, null, null);

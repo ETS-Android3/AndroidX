@@ -22,7 +22,7 @@ import java.io.File;
  * Describe:文档选择器
  * Date:2020/11/21 18:44
  */
-public class DocumentSelector {
+public class DocumentSelector implements OnImageCompressListener {
 
     public final static String TAG = DocumentSelector.class.getSimpleName();
     /**
@@ -126,16 +126,44 @@ public class DocumentSelector {
      */
     public final Uri data;
     /**
+     * 是否压缩
+     */
+    public final boolean compress;
+    /**
+     * 限制大小,单位kb
+     */
+    public final int compressSize;
+    /**
+     * 压缩宽度
+     */
+    public final int compressWidth;
+    /**
+     * 压缩高度
+     */
+    public final int compressHeight;
+    /**
      * 文件选择监听
      */
-    public final OnDocumentSelectListener listener;
-
+    public final OnDocumentSelectListener documentSelectListener;
+    /**
+     * 图片压缩监听
+     */
+    private final OnImageCompressListener imageCompressListener;
     /**
      * 结果Uri
      */
     private Uri resultUri;
+    /**
+     * 消息传递的Uri
+     */
+    private Uri messageUri;
+    /**
+     * 消息传递路径
+     */
+    private String messagePath;
 
     public DocumentSelector(Builder builder) {
+        initBuilder(builder);
         this.builder = builder;
         this.activity = builder.activity;
         this.fragment = builder.fragment;
@@ -157,14 +185,53 @@ public class DocumentSelector {
         this.circleCrop = builder.circleCrop;
         this.noFaceDetection = builder.noFaceDetection;
         this.data = builder.data;
-        this.listener = builder.listener;
-        build();
+        this.compress = builder.compress;
+        this.compressSize = builder.compressSize;
+        this.compressWidth = builder.compressWidth;
+        this.compressHeight = builder.compressHeight;
+        this.documentSelectListener = builder.documentSelectListener;
+        this.imageCompressListener = builder.imageCompressListener;
+        start();
     }
 
     /**
      * 构建文件选择器
      */
-    private void build() {
+    private void initBuilder(Builder builder) {
+        if (builder.mineType() == null) {
+            if (builder.mode() == MODE_GET_DOCUMENT) {
+                builder.mineType("*/*");
+            }
+            if (builder.mode() == MODE_PICK_IMAGE) {
+                builder.mineType("image/*");
+            }
+            if (builder.mode() == MODE_IMAGE_CAPTURE || builder.mode() == MODE_IMAGE_CROP) {
+                builder.mineType("image/jpeg");
+            }
+        }
+        if (builder.authority() == null || builder.authority.length() == 0) {
+            builder.authority(builder.context().getApplicationContext().getPackageName() + ".fileprovider");
+        }
+        if (builder.outPutName == null || builder.outPutName.length() == 0) {
+            builder.outPutName(UriProvider.buildImageName());
+        }
+        if (builder.outPutFile == null) {
+            builder.outPutFile(UriProvider.buildFile(builder.context(), builder.dictionary, builder.outPutName));
+        }
+        if (builder.outPutUri == null && builder.mode != MODE_IMAGE_CROP) {
+            builder.outPutUri(UriProvider.buildProviderUri(builder.context(), builder.outPutFile, builder.authority));
+        }
+        if (builder.outPutUri == null && builder.mode == MODE_IMAGE_CROP) {
+            String name = UriProvider.buildImageName();
+            File file = UriProvider.buildFile(builder.context(), builder.dictionary, name);
+            builder.outPutUri(UriProvider.buildFileUri(file));
+        }
+    }
+
+    /**
+     * 开始选择
+     */
+    public void start() {
         if (mode == MODE_PICK_IMAGE) {
             if (activity != null) {
                 IntentProvider.pick(activity, mineType);
@@ -258,6 +325,7 @@ public class DocumentSelector {
         new ResultThread(requestCode, resultCode, data).start();
     }
 
+
     /**
      * 结果线程处理
      */
@@ -281,7 +349,6 @@ public class DocumentSelector {
 
     }
 
-
     /**
      * 图片操作返回处理
      *
@@ -300,56 +367,92 @@ public class DocumentSelector {
                 resultUri = UriProvider.insertMediaStoreImage(context, file);
                 builder.data = outPutUri;
                 Log.i(TAG, "->onActivityResult REQUEST_CAPTURE resultUri = " + resultUri + " , path = " + path);
-                sendResultMessage(resultUri, path);
+                sendResultMessage(resultUri, path, compress);
             }
             if (requestCode == IntentProvider.REQUEST_CROP) {
                 String path = outPutFile.getAbsolutePath();
                 File file = new File(path);
                 resultUri = UriProvider.insertMediaStoreImage(context, file);
                 Log.i(TAG, "->onActivityResult REQUEST_CROP resultUri = " + resultUri + " , path = " + path);
-                if (listener != null) {
-                    listener.onDocumentSelect(this, resultUri, path);
-                }
+                sendResultMessage(resultUri, path, compress);
             }
             if (requestCode == IntentProvider.REQUEST_PICK && data != null) {
                 resultUri = data.getData();
                 builder.data = resultUri;
-                String path = UriProvider.getData(context, resultUri);
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                String path;
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {//9.0
                     path = UriProvider.insertExternalCacheDir(context, dictionary, resultUri);
+                } else {
+                    path = UriProvider.getData(context, resultUri);
                 }
                 Log.i(TAG, "->onActivityResult REQUEST_PICK resultUri = " + resultUri + " , path = " + path);
-                sendResultMessage(resultUri, path);
+                sendResultMessage(resultUri, path, compress);
             }
             if (requestCode == IntentProvider.REQUEST_GET_CONTENT && data != null) {
                 resultUri = data.getData();
-                String path = UriProvider.getPath(context, resultUri);
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                String path;
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {//9.0
                     path = UriProvider.insertExternalCacheDir(context, dictionary, resultUri);
+                } else {
+                    path = UriProvider.getPath(context, resultUri);
                 }
-                Log.i(TAG, "->onActivityResult REQUEST_GET_CONTENT resultUri = " + resultUri + " , path = " + path);
                 builder.data = UriProvider.buildProviderUri(context, new File(path), authority);
-                sendResultMessage(builder.data, path);
+                Log.i(TAG, "->onActivityResult REQUEST_GET_CONTENT resultUri = " + resultUri + " , path = " + path);
+                sendResultMessage(builder.data, path, compress);
             }
         }
         Log.i(TAG, "->onActivityResult useTime = " + (System.currentTimeMillis() - useTime) + "ms");
     }
 
+    /**
+     * 压缩文件
+     *
+     * @param path 路径
+     */
+    private void compress(String path) {
+        ImageCompressor compressor = new ImageCompressor(context, new File(path), ImageProvider.buildFile(context).getAbsolutePath(), this);
+        compressor.width(compressWidth);
+        compressor.height(compressHeight);
+        compressor.max(compressSize);
+        compressor.start();
+    }
+
+    @Override
+    public void onImageCompressStart(ImageCompressor compressor) {
+        if (imageCompressListener != null) {
+            imageCompressListener.onImageCompressStart(compressor);
+        }
+    }
+
+    @Override
+    public void onImageCompressSucceed(ImageCompressor compressor, File file) {
+        if (imageCompressListener != null) {
+            imageCompressListener.onImageCompressSucceed(compressor,file);
+        }
+        sendResultMessage(messageUri, file.getAbsolutePath(), false);
+    }
 
     /**
      * 处理Uri和路径
      *
-     * @param uri  Uri
-     * @param path 路径
+     * @param uri      Uri
+     * @param path     路径
+     * @param compress 是否压缩
      */
-    private void sendResultMessage(Uri uri, String path) {
-        ResultHandler handle = new ResultHandler(Looper.getMainLooper());
-        Message message = handle.obtainMessage();
-        Bundle bundle = new Bundle();
-        bundle.putString("path", path);
-        bundle.putParcelable("uri", uri);
-        message.setData(bundle);
-        handle.sendMessage(message);
+    private void sendResultMessage(Uri uri, String path, boolean compress) {
+        messageUri = uri;
+        messagePath = path;
+        if (compress) {
+            compress(path);
+        } else {
+            ResultHandler handle = new ResultHandler(Looper.getMainLooper());
+            Message message = handle.obtainMessage();
+            Bundle bundle = new Bundle();
+            bundle.putString("path", path);
+            bundle.putParcelable("uri", uri);
+            message.setData(bundle);
+            handle.sendMessage(message);
+        }
     }
 
     /**
@@ -366,18 +469,19 @@ public class DocumentSelector {
             super.handleMessage(msg);
             Uri uri = msg.getData().getParcelable("uri");
             String path = msg.getData().getString("path");
+
             if (IOProvider.isImage(path)) {
                 if (crop) {
                     builder.mode(DocumentSelector.MODE_IMAGE_CROP);
                     builder.build();
                 } else {
-                    if (listener != null) {
-                        listener.onDocumentSelect(DocumentSelector.this, uri, path);
+                    if (documentSelectListener != null) {
+                        documentSelectListener.onDocumentSelectSucceed(DocumentSelector.this, uri, path);
                     }
                 }
             } else {
-                if (listener != null) {
-                    listener.onDocumentSelect(DocumentSelector.this, uri, path);
+                if (documentSelectListener != null) {
+                    documentSelectListener.onDocumentSelectSucceed(DocumentSelector.this, uri, path);
                 }
             }
         }
@@ -469,9 +573,29 @@ public class DocumentSelector {
          */
         private Uri data;
         /**
+         * 是否压缩
+         */
+        private boolean compress;
+        /**
+         * 限制大小,单位kb
+         */
+        private int compressSize = -1;
+        /**
+         * 压缩宽度
+         */
+        private int compressWidth = -1;
+        /**
+         * 压缩高度
+         */
+        private int compressHeight = -1;
+        /**
          * 文件选择监听
          */
-        private OnDocumentSelectListener listener;
+        private OnDocumentSelectListener documentSelectListener;
+        /**
+         * 图片压缩监听
+         */
+        private OnImageCompressListener imageCompressListener;
 
 
         public Builder(Activity activity) {
@@ -652,51 +776,61 @@ public class DocumentSelector {
             return this;
         }
 
-        public OnDocumentSelectListener listener() {
-            return listener;
+        public boolean isCompress() {
+            return compress;
         }
 
-        public Builder listener(OnDocumentSelectListener listener) {
-            this.listener = listener;
+        public Builder compress(boolean compress) {
+            this.compress = compress;
             return this;
         }
 
-        /**
-         * 初始化参数
-         */
-        public void initParams() {
-            if (mineType == null) {
-                if (mode == MODE_GET_DOCUMENT) {
-                    mineType = "*/*";
-                }
-                if (mode == MODE_PICK_IMAGE) {
-                    mineType = "image/*";
-                }
-                if (mode == MODE_IMAGE_CAPTURE || mode == MODE_IMAGE_CROP) {
-                    mineType = "image/jpeg";
-                }
-            }
-            if (authority == null || authority.length() == 0) {
-                authority = context().getApplicationContext().getPackageName() + ".fileprovider";
-            }
-            if (outPutName == null || outPutName.length() == 0) {
-                outPutName = UriProvider.buildImageName();
-            }
-            if (outPutFile == null) {
-                outPutFile = UriProvider.buildFile(context(), dictionary, outPutName);
-            }
-            if (outPutUri == null && mode != MODE_IMAGE_CROP) {
-                outPutUri = UriProvider.buildProviderUri(context(), outPutFile, authority);
-            }
-            if (outPutUri == null && mode == MODE_IMAGE_CROP) {
-                String name = UriProvider.buildImageName();
-                File file = UriProvider.buildFile(context(), dictionary, name);
-                outPutUri = UriProvider.buildFileUri(file);
-            }
+        public int compressSize() {
+            return compressSize;
+        }
+
+        public Builder compressSize(int compressSize) {
+            this.compressSize = compressSize;
+            return this;
+        }
+
+        public int compressWidth() {
+            return compressWidth;
+        }
+
+        public Builder compressWidth(int compressWidth) {
+            this.compressWidth = compressWidth;
+            return this;
+        }
+
+        public int compressHeight() {
+            return compressHeight;
+        }
+
+        public Builder compressHeight(int compressHeight) {
+            this.compressHeight = compressHeight;
+            return this;
+        }
+
+        public OnDocumentSelectListener documentSelectListener() {
+            return documentSelectListener;
+        }
+
+        public Builder documentSelectListener(OnDocumentSelectListener documentSelectListener) {
+            this.documentSelectListener = documentSelectListener;
+            return this;
+        }
+
+        public OnImageCompressListener imageCompressListener() {
+            return imageCompressListener;
+        }
+
+        public Builder imageCompressListener(OnImageCompressListener imageCompressListener) {
+            this.imageCompressListener = imageCompressListener;
+            return this;
         }
 
         public DocumentSelector build() {
-            initParams();
             return new DocumentSelector(this);
         }
 
