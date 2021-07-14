@@ -295,7 +295,7 @@ public class ImageProvider {
      * @param max          限制大小,压缩到<=max,单位KB
      * @return
      */
-    public static void compressAsync(Context context, Bitmap bitmap, String outPutPath, Bitmap.CompressFormat format, int targetWidth, int targetHeight, int max, ImageCompressor.OnBitmapEncodeListener listener) {
+    public static void compressAsync(Context context, Bitmap bitmap, String outPutPath, Bitmap.CompressFormat format, int targetWidth, int targetHeight, int max, OnImageCompressListener listener) {
         ImageCompressor compressor = new ImageCompressor(context, bitmap, outPutPath, listener);
         compressor.format(format);
         compressor.width(targetWidth);

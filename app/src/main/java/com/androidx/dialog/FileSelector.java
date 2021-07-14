@@ -129,7 +129,7 @@ public class FileSelector implements View.OnClickListener, BasisAdapter.OnItemCl
         } else {
             selectorBuilder = builder.selector();
         }
-        selectorBuilder.listener(onDocumentSelectListener);
+        selectorBuilder.documentSelectListener(onDocumentSelectListener);
         CoreDialog.Builder coreBuilder = new CoreDialog.Builder(builder.context());
         coreBuilder.themeResId(CoreDialog.THEME_TRANSLUCENT);
         coreBuilder.width(LinearLayout.LayoutParams.MATCH_PARENT);
@@ -224,7 +224,7 @@ public class FileSelector implements View.OnClickListener, BasisAdapter.OnItemCl
         }
 
         @Override
-        public int getItemLayoutResId(int viewType) {
+        protected int getItemLayoutResId(int viewType) {
             return R.layout.android_item_document_selector;
         }
 
@@ -305,7 +305,7 @@ public class FileSelector implements View.OnClickListener, BasisAdapter.OnItemCl
         /**
          * 取消文字
          */
-        private String cancelText;
+        private String cancelText = "取消";
         /**
          * 取消文字颜色
          */
@@ -321,7 +321,7 @@ public class FileSelector implements View.OnClickListener, BasisAdapter.OnItemCl
         /**
          * 文档选择监听
          */
-        private OnDocumentSelectListener documentSelectListener;
+        private OnDocumentSelectListener listener;
 
         public Builder(AppCompatActivity activity) {
             this.activity = activity;
@@ -461,12 +461,12 @@ public class FileSelector implements View.OnClickListener, BasisAdapter.OnItemCl
         }
 
         public Builder documentSelectListener(OnDocumentSelectListener documentSelectListener) {
-            this.documentSelectListener = documentSelectListener;
+            this.listener = documentSelectListener;
             return this;
         }
 
         public OnDocumentSelectListener documentSelectListener() {
-            return documentSelectListener;
+            return listener;
         }
 
         public FileSelector build() {
