@@ -23,6 +23,7 @@ public class CoreApplication extends Application {
     public void onCreate() {
         super.onCreate();
         app = this;
+        initHttp(false);
     }
 
     /**

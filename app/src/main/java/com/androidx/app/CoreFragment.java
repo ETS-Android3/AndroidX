@@ -375,15 +375,17 @@ public abstract class CoreFragment extends Fragment implements OnHttpListener,
     /**
      * 显示loading
      *
-     * @param location 位置 <br/>
-     *                 上方：{@link Loading#TOP} <br/>
-     *                 中间：{@link Loading#CENTER}
+     * @param location    位置 <br/>
+     *                    上方：{@link Loading#TOP} <br/>
+     *                    中间：{@link Loading#CENTER}
+     * @param orientation 方向
+     * @param text        文字
      */
-    public void showLoading(int location) {
+    public void showLoading(int location, int orientation, String text) {
         if (loading == null) {
             return;
         }
-        loading.show(location);
+        loading.show(location, orientation, text);
     }
 
     /**

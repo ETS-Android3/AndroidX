@@ -125,21 +125,9 @@ public class DocumentSelector implements OnImageCompressListener {
      * 需要剪切图像Uri
      */
     public final Uri data;
-    /**
-     * 是否压缩
-     */
     public final boolean compress;
-    /**
-     * 限制大小,单位kb
-     */
     public final int compressSize;
-    /**
-     * 压缩宽度
-     */
     public final int compressWidth;
-    /**
-     * 压缩高度
-     */
     public final int compressHeight;
     /**
      * 文件选择监听
@@ -161,6 +149,7 @@ public class DocumentSelector implements OnImageCompressListener {
      * 消息传递路径
      */
     private String messagePath;
+    private long useTime;
 
     public DocumentSelector(Builder builder) {
         initBuilder(builder);
@@ -311,9 +300,6 @@ public class DocumentSelector implements OnImageCompressListener {
         UriProvider.delete(context, uri);
     }
 
-    private long useTime = 0;
-
-
     /**
      * 图片操作返回处理
      *
@@ -323,6 +309,16 @@ public class DocumentSelector implements OnImageCompressListener {
      */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         new ResultThread(requestCode, resultCode, data).start();
+    }
+
+    @Override
+    public void onImageCompressStart(ImageCompressor compressor) {
+
+    }
+
+    @Override
+    public void onImageCompressSucceed(ImageCompressor compressor, File file) {
+
     }
 
 
@@ -417,20 +413,6 @@ public class DocumentSelector implements OnImageCompressListener {
         compressor.start();
     }
 
-    @Override
-    public void onImageCompressStart(ImageCompressor compressor) {
-        if (imageCompressListener != null) {
-            imageCompressListener.onImageCompressStart(compressor);
-        }
-    }
-
-    @Override
-    public void onImageCompressSucceed(ImageCompressor compressor, File file) {
-        if (imageCompressListener != null) {
-            imageCompressListener.onImageCompressSucceed(compressor,file);
-        }
-        sendResultMessage(messageUri, file.getAbsolutePath(), false);
-    }
 
     /**
      * 处理Uri和路径

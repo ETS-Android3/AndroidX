@@ -6,7 +6,9 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.database.DataSetObserver;
 import android.graphics.Color;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
@@ -35,7 +38,7 @@ public abstract class SwipeLayout extends FrameLayout {
     /**
      * 调试模式
      */
-    public static boolean DEBUG = true;
+    public static boolean DEBUG = false;
     /**
      * 日志标识
      */
@@ -143,7 +146,7 @@ public abstract class SwipeLayout extends FrameLayout {
     /**
      * 延迟时间
      */
-    private int delayDuration = 1000;
+    private int delayDuration = 500;
     /**
      * 内容类型-列表
      */
@@ -156,8 +159,14 @@ public abstract class SwipeLayout extends FrameLayout {
      * 内容类型-RecyclerView
      */
     private RecyclerView recyclerView;
-    private View emptyView;
+    /**
+     * 滑动冲突ScrollView
+     */
     private NestedScrollView nestedScrollView;
+    /**
+     * 列表适配器数据是否改变
+     */
+    private boolean isAdapterChanged = true;
 
 
     public SwipeLayout(@NonNull Context context) {
@@ -206,6 +215,7 @@ public abstract class SwipeLayout extends FrameLayout {
             onAttributeSet(context, attrs);
             typedArray.recycle();
         }
+        setMinimumHeight(1);
     }
 
     /**
@@ -284,16 +294,28 @@ public abstract class SwipeLayout extends FrameLayout {
     protected abstract void onFooterAnimationStart();
 
     /**
+     * 数据适配器数据改变监听
+     *
+     * @param change
+     */
+    protected abstract void onAdapterChange(boolean change);
+
+    /**
      * 停止头部动画
      */
     protected abstract void onFooterAnimationStop();
-
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         contentView = new View[getChildCount()];
         checkViewGroup(this, true);
+        if (scrollView != null) {
+
+        }
+        if (nestedScrollView != null) {
+
+        }
         if (absListView != null && absListView.getVisibility() == VISIBLE) {
             absListView.setOnScrollListener(new AbsListViewOnScrollListener());
         }
@@ -326,23 +348,25 @@ public abstract class SwipeLayout extends FrameLayout {
     /**
      * 是否滑动到底部
      */
-    private boolean isAbsListViewScrollBottom;
-    private boolean isRecyclerViewScrollBottom;
+    private boolean isAbsListViewScrollBottom = false;
+    private boolean isRecyclerViewScrollBottom = false;
 
     /**
      * 列表滑动事件
      */
-    private class AbsListViewOnScrollListener implements AbsListView.OnScrollListener {
+    private class AbsListViewOnScrollListener implements android.widget.AbsListView.OnScrollListener {
 
         @Override
-        public void onScrollStateChanged(AbsListView view, int scrollState) {
-            if (emptyView != null) {
-                emptyView.setVisibility(view.getCount() > 0 ? GONE : VISIBLE);
-            }
+        public void onScrollStateChanged(android.widget.AbsListView view, int scrollState) {
+
         }
 
         @Override
-        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        public void onScroll(android.widget.AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            if (view.getAdapter() != null && !isRegisterAbsListViewDataSetObserver) {
+                view.getAdapter().registerDataSetObserver(new AbsListViewDataSetObserver());
+                isRegisterAbsListViewDataSetObserver = true;
+            }
             if (firstVisibleItem == 0) {
                 View first_view = view.getChildAt(0);
                 if (first_view != null && first_view.getTop() == 0) {
@@ -362,15 +386,60 @@ public abstract class SwipeLayout extends FrameLayout {
         }
     }
 
-    private class RecyclerViewOnScrollListener extends RecyclerView.OnScrollListener {
 
+    private boolean isRegisterAbsListViewDataSetObserver;
+
+    private class AbsListViewDataSetObserver extends DataSetObserver {
+
+        @Override
+        public void onChanged() {
+            super.onChanged();
+            if (DEBUG) {
+                Log.i(TAG, "->AbsListViewDataSetObserver onChanged");
+            }
+            int count = absListView.getAdapter().getCount();
+            isAdapterChanged = count != getItemCount();
+            onAdapterChange(isAdapterChanged);
+            setItemCount(count);
+        }
+    }
+
+    public RecyclerView getRecyclerView() {
+        return recyclerView;
+    }
+
+    private boolean isRegisterAdapterDataObserver;
+
+    private class RecyclerViewOnScrollListener extends androidx.recyclerview.widget.RecyclerView.OnScrollListener {
 
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
+            if (recyclerView.getAdapter() != null && !isRegisterAdapterDataObserver) {
+                recyclerView.getAdapter().registerAdapterDataObserver(new RecyclerViewAdapterDataObserver());
+                isRegisterAdapterDataObserver = true;
+            }
             //检查向上滚动为负，检查向下滚动为正。
-            isRecyclerViewScrollTop = !recyclerView.canScrollVertically(-1);
-            isRecyclerViewScrollBottom = !recyclerView.canScrollVertically(1);
+            isRecyclerViewScrollTop = !getRecyclerView().canScrollVertically(-1);
+            isRecyclerViewScrollBottom = !getRecyclerView().canScrollVertically(1);
+            if (DEBUG) {
+                Log.i(TAG, "->isRecyclerViewScrollTop = " + isRecyclerViewScrollTop + ",isRecyclerViewScrollBottom=" + isRecyclerViewScrollBottom + ",dy=" + dy);
+            }
+        }
+    }
+
+    private class RecyclerViewAdapterDataObserver extends RecyclerView.AdapterDataObserver {
+
+        @Override
+        public void onChanged() {
+            super.onChanged();
+            if (DEBUG) {
+                Log.i(TAG, "->AdapterDataObserver onChanged");
+            }
+            int count = recyclerView.getAdapter().getItemCount();
+            isAdapterChanged = count != getItemCount();
+            onAdapterChange(isAdapterChanged);
+            setItemCount(count);
         }
     }
 
@@ -473,7 +542,7 @@ public abstract class SwipeLayout extends FrameLayout {
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent event) {
+    public boolean dispatchTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 downX = event.getX();
@@ -482,13 +551,37 @@ public abstract class SwipeLayout extends FrameLayout {
             case MotionEvent.ACTION_MOVE:
                 float moveX = event.getX() - downX;
                 float moveY = event.getY() - downY;
-                if (Math.abs(moveY) <= Math.abs(moveX)||Math.abs(moveY)<10||Math.abs(moveX)<10) {
+                if (DEBUG) {
+                    Log.i(TAG, "->dispatchTouchEvent ACTION_MOVE moveY=" + moveY + ",moveX=" + moveX);
+                }
+                break;
+        }
+        return super.dispatchTouchEvent(event);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                downX = event.getX();
+                downY = event.getY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (DEBUG) {
+                    Log.i(TAG, "->onInterceptTouchEvent ACTION_MOVE");
+                }
+                float moveX = event.getX() - downX;
+                float moveY = event.getY() - downY;
+                if (Math.abs(moveY) <= Math.abs(moveX) || Math.abs(moveY) < 10 || Math.abs(moveX) < 10) {
+                    Log.i(TAG, "->super.onInterceptTouchEvent");
                     return super.onInterceptTouchEvent(event);
                 }
                 if (moveY > 0 && refreshable) {
+                    Log.i(TAG, "->isContentViewRefreshEnable");
                     return isContentViewRefreshEnable();
                 }
                 if (moveY < 0 && loadable) {
+                    Log.i(TAG, "->isContentViewLoadEnable");
                     return isContentViewLoadEnable();
                 }
                 break;
@@ -534,6 +627,9 @@ public abstract class SwipeLayout extends FrameLayout {
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
+                if (DEBUG) {
+                    Log.i(TAG, "->onTouchEvent ACTION_MOVE");
+                }
                 if (isLoading || isRefreshing) {
                     isRefreshingRelease = false;
                     isLoadingRelease = false;
@@ -548,7 +644,7 @@ public abstract class SwipeLayout extends FrameLayout {
                     break;
                 }
                 //下滑
-                if (moveY > 0 && refreshable && !isLoading) {
+                if (moveY > 0 && refreshable && !isLoading && loadMoveY == 0) {
                     isTransfinite = Math.abs(moveY) >= headerHeight;
                     if (headerView != null) {
                         headerView.setScaleX(1);
@@ -651,16 +747,22 @@ public abstract class SwipeLayout extends FrameLayout {
      * @param isRefreshing 是否开始刷新
      */
     public void setRefreshing(boolean isRefreshing) {
+        if (DEBUG) {
+            Log.i(TAG, "->setRefreshing isRefreshing=" + isRefreshing);
+        }
         if (!isRefreshing) {
-            if (!isRefreshing()) {
-                return;
+            if (recyclerView != null) {
+                recyclerView.scrollBy(0, 0);
             }
             createScaleAnimator(headerView, REFRESH).start();
         } else {
             if (!refreshable) {
                 return;
             }
+            headerView.setScaleX(1.0F);
+            headerView.setScaleY(1.0F);
             refreshRemainY = headerHeight;
+            requestLayout();
             onHeaderAnimationStart();
             if (refreshListener != null) {
                 refreshListener.onSwipeRefresh();
@@ -679,28 +781,45 @@ public abstract class SwipeLayout extends FrameLayout {
         return isLoading;
     }
 
+    private int itemCount = 0;
+
+    public int getItemCount() {
+        return itemCount;
+    }
+
+    public void setItemCount(int itemCount) {
+        this.itemCount = itemCount;
+    }
+
     /**
      * 设置正在加载
      *
      * @param isLoading 是否开始加载
      */
     public void setLoading(boolean isLoading) {
+        if (DEBUG) {
+            Log.i(TAG, "->setLoading itemCount=" + itemCount + ",odl itemCount=" + getItemCount());
+        }
         if (!isLoading) {
-            if (!isLoading()) {
-                return;
-            }
             createTranslateAnimator(0, footerHeight, LOADING, delayDuration).start();
+            if (recyclerView != null && recyclerView.getVisibility() == VISIBLE) {
+                recyclerView.scrollBy(0, -1);
+            }
         } else {
             if (!loadable) {
                 return;
             }
             onFooterAnimationStart();
+            footerView.setScaleX(1.0F);
+            footerView.setScaleY(1.0F);
             loadRemainY = -footerHeight;
+            requestLayout();
             if (loadListener != null) {
                 loadListener.onSwipeLoad();
             }
         }
         this.isLoading = isLoading;
+        setItemCount(itemCount);
     }
 
     /**
@@ -770,7 +889,7 @@ public abstract class SwipeLayout extends FrameLayout {
      * @param type 刷新 {@link #REFRESH} , 加载 {@link #LOADING}
      * @return
      */
-    private synchronized ValueAnimator createScaleAnimator(final View view, final int type) {
+    private ValueAnimator createScaleAnimator(final View view, final int type) {
         if (scaleAnimator != null && scaleAnimator.isStarted() && scaleAnimator.isRunning()) {
             scaleAnimator.removeAllUpdateListeners();
             scaleAnimator = null;
@@ -847,7 +966,7 @@ public abstract class SwipeLayout extends FrameLayout {
             if (recyclerView.getChildCount() == 0) {
                 return true;
             }
-            return isRecyclerViewScrollTop;
+            return (isRecyclerViewScrollTop && !isRecyclerViewScrollBottom) || (isRecyclerViewScrollTop && isRecyclerViewScrollBottom);
         }
         return true;
     }
@@ -882,13 +1001,7 @@ public abstract class SwipeLayout extends FrameLayout {
             return isAbsListViewScrollBottom && (isRefreshingRelease || isLoadingRelease);
         }
         if (recyclerView != null) {
-            if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
-                LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
-                if (manager.findLastCompletelyVisibleItemPosition() != recyclerView.getAdapter().getItemCount() - 1) {
-                    isRecyclerViewScrollBottom = false;
-                }
-            }
-            return isRecyclerViewScrollBottom && (isRefreshingRelease || isLoadingRelease);
+            return (!isRecyclerViewScrollTop && isRecyclerViewScrollBottom) && (isRefreshingRelease || isLoadingRelease);
         }
         return true;
     }

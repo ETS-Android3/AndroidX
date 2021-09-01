@@ -1,5 +1,7 @@
 package com.androidx.net;
 
+import android.text.TextUtils;
+
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 
@@ -9,9 +11,14 @@ import javax.net.ssl.SSLSession;
  */
 public class HttpsHostnameVerifier implements HostnameVerifier {
 
+    public static String HOST_NAME = "";
+
     @Override
     public boolean verify(String hostname, SSLSession session) {
-        return true;
+        if (TextUtils.isEmpty(hostname)) {
+            return false;
+        }
+        return hostname.equals(HOST_NAME);
     }
-
 }
+

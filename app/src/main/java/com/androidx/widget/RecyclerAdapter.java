@@ -37,9 +37,6 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter implements
      */
     private ViewHolder viewHolder;
 
-    public RecyclerAdapter() {
-
-    }
 
     public RecyclerAdapter(Context context) {
         this.context = context;

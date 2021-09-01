@@ -68,16 +68,6 @@
     <declare-styleable name="LoadingView">
         <!--半径-->
         <attr name="android:radius" />
-        <!--方向-->
-        <attr name="android:orientation" />
-        <!--文字大小-->
-        <attr name="android:textSize" />
-        <!--文字-->
-        <attr name="android:text" />
-        <!--文字颜色-->
-        <attr name="android:textColor" />
-        <!--文字可见性-->
-        <attr name="textVisibility" />
         <!--线条颜色-->
         <attr name="streakColor" format="color" />
         <!--开始透明度-->
@@ -90,8 +80,6 @@
         <attr name="unitAngle" format="float" />
         <!--线条宽度-->
         <attr name="streakWidth" format="dimension" />
-        <!--线条间距-->
-        <attr name="streakSpace" format="dimension" />
     </declare-styleable>
 
     <!--状态-->

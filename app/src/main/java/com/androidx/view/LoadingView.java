@@ -4,11 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
@@ -26,21 +24,7 @@ import java.util.List;
  * Description:数据加载
  * Date:2020/12/14 22:01
  */
-public class LoadingView extends View {
-
-    /**
-     * 日志标识
-     */
-    public static final String TAG = LoadingView.class.getSimpleName();
-
-    /**
-     * 垂直方向
-     */
-    public final static int VERTICAL = 1;
-    /**
-     * 水平方向
-     */
-    public final static int HORIZONTAL = 0;
+public class LoadingView extends View implements ValueAnimator.AnimatorUpdateListener {
 
     /**
      * 线条画笔
@@ -50,18 +34,6 @@ public class LoadingView extends View {
      * 线条颜色
      */
     private int streakColor;
-    /**
-     * 文字颜色
-     */
-    private int textColor;
-    /**
-     * 宽度
-     */
-    private int width;
-    /**
-     * 高度
-     */
-    private int height;
     /**
      * 中心点
      */
@@ -74,20 +46,14 @@ public class LoadingView extends View {
      * 半径
      */
     private float radius = 0;
-
     /**
      * 线段宽度
      */
-    private float streakWidth = 6;
+    private float streakWidth = 8;
     /**
      * 线段长度
      */
     private float streakLength = 4;
-    /**
-     * 线段间距
-     */
-    private float streakSpace = 20;
-
     /**
      * 透明度位置
      */
@@ -107,28 +73,7 @@ public class LoadingView extends View {
     /**
      * 持续时间
      */
-    private long duration = 350;
-
-    /**
-     * 文字画笔
-     */
-    private Paint textPaint;
-    /**
-     * 文本
-     */
-    private String text = "测试中...";
-    /**
-     * 文本显示
-     */
-    private int textVisibility = View.GONE;
-    /**
-     * 文字大小
-     */
-    private float textSize = dpToPx(12);
-    /**
-     * 方向
-     */
-    private int orientation = VERTICAL;
+    private int duration = 350;
     /**
      * 透明度值
      */
@@ -137,12 +82,10 @@ public class LoadingView extends View {
      * 动画值
      */
     private ValueAnimator animator;
-
-    private int widthSpecMode;
-    private int heightSpecMode;
-    private int widthSpecSize;
-    private int heightSpecSize;
-    private boolean isStart;
+    /**
+     * 是否开始
+     */
+    private boolean loading;
 
     public LoadingView(Context context) {
         super(context);
@@ -162,40 +105,40 @@ public class LoadingView extends View {
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.LoadingView, defStyleAttr, 0);
         radius = typedArray.getDimension(R.styleable.LoadingView_android_radius, radius);
-        orientation = typedArray.getInteger(R.styleable.LoadingView_android_orientation, orientation);
-        textSize = typedArray.getDimension(R.styleable.LoadingView_android_textSize, textSize);
-        CharSequence charSequence = typedArray.getText(R.styleable.LoadingView_android_text);
-        text = charSequence == null || charSequence.length() == 0 ? "" : charSequence.toString();
-        textVisibility = text == null || text.length() == 0 ? View.GONE : View.VISIBLE;
-        textVisibility = typedArray.getInt(R.styleable.LoadingView_textVisibility, textVisibility);
-        textColor = context.getResources().getColor(R.color.colorLoadingText);
-        textColor = typedArray.getColor(R.styleable.LoadingView_android_textColor, textColor);
         streakColor = context.getResources().getColor(R.color.colorLoadingStreak);
         streakColor = typedArray.getColor(R.styleable.LoadingView_streakColor, streakColor);
         startAlpha = typedArray.getInt(R.styleable.LoadingView_startAlpha, startAlpha);
         endAlpha = typedArray.getInt(R.styleable.LoadingView_endAlpha, endAlpha);
-        duration = typedArray.getInteger(R.styleable.LoadingView_duration, (int) duration);
+        duration = typedArray.getInteger(R.styleable.LoadingView_duration, duration);
         unitAngle = typedArray.getFloat(R.styleable.LoadingView_unitAngle, unitAngle);
         streakWidth = typedArray.getDimension(R.styleable.LoadingView_streakWidth, streakWidth);
-        streakSpace = typedArray.getDimension(R.styleable.LoadingView_streakSpace, streakSpace);
         typedArray.recycle();
         //初始化透明度数据
         alphas = buildList(startAlpha, endAlpha, (int) (360 / unitAngle - 1));
         int alphaSize = alphas.size();
         initAnimator(alphaSize - 1);
-        textSize = textSize == 0 ? dpToPx(13) : textSize;
+        start();
         //初始化线条画笔
         streakPaint = new Paint();
-        streakPaint.setStyle(Paint.Style.STROKE);
-        streakPaint.setStrokeCap(Paint.Cap.ROUND);
-        streakPaint.setColor(streakColor);
         streakPaint.setAntiAlias(true);
-        streakPaint.setStrokeWidth(streakWidth);
-        //初始化文字画笔
-        textPaint = new Paint();
-        textPaint.setAntiAlias(true);
-        textPaint.setColor(textColor);
-        textPaint.setTextSize(textSize);
+        streakPaint.setStyle(Paint.Style.FILL);
+        streakPaint.setStrokeCap(Paint.Cap.ROUND);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        centerX = getMeasuredWidth() / 2F;
+        centerY = getMeasuredHeight() / 2F;
+        int width = getMeasuredWidth();
+        int height = getMeasuredHeight();
+        float diameter;
+        if (height >= width) {
+            diameter = width - getPaddingLeft() - getPaddingRight();
+        } else {
+            diameter = height - getPaddingTop() - getPaddingBottom();
+        }
+        radius = diameter * 0.90F / 2F;
     }
 
     /**
@@ -208,123 +151,32 @@ public class LoadingView extends View {
         animator.setDuration(duration);
         animator.setInterpolator(new LinearInterpolator());
         animator.setRepeatCount(ValueAnimator.INFINITE);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                alphaPosition = (int) animation.getAnimatedValue();
-                invalidate();
-            }
-        });
+        animator.addUpdateListener(this);
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                isStart = false;
+                loading = false;
             }
 
             @Override
             public void onAnimationCancel(Animator animation) {
                 super.onAnimationCancel(animation);
-                isStart = false;
+                loading = false;
             }
         });
     }
 
-    /**
-     * 转换文字大小
-     *
-     * @param size 大小
-     * @return
-     */
-    public float dpToPx(int size) {
-        return size * Resources.getSystem().getDisplayMetrics().density;
-    }
-
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);
-        widthSpecMode = MeasureSpec.getMode(widthMeasureSpec);
-        heightSpecSize = MeasureSpec.getSize(heightMeasureSpec);
-        heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
-        width = widthSpecSize;
-        height = heightSpecSize;
-        int sideSpecSize = widthSpecSize >= heightSpecSize ? heightSpecSize : widthSpecSize;
-        if (widthSpecMode == MeasureSpec.AT_MOST && heightSpecMode == MeasureSpec.AT_MOST) {
-            sideSpecSize = getResources().getDimensionPixelSize(R.dimen.loading_size);
-            width = widthSpecSize;
-            height = sideSpecSize;
-        }
-        if (widthSpecMode == MeasureSpec.AT_MOST && heightSpecMode != MeasureSpec.AT_MOST) {
-            width = sideSpecSize;
-            height = heightSpecSize;
-        }
-        if (widthSpecMode != MeasureSpec.AT_MOST && heightSpecMode == MeasureSpec.AT_MOST) {
-            width = widthSpecSize;
-            height = sideSpecSize;
-        }
-        initCenterSideStreakParams();
-        //文字宽高
-        int textWH[] = measureText(textPaint, text);
-
-        int requireWH[] = getRequireWH(textWH, radius, streakSpace, orientation);
-        if (widthSpecMode == MeasureSpec.AT_MOST && heightSpecMode == MeasureSpec.AT_MOST) {
-            width = requireWH[0] >= width ? width : requireWH[0];
-            initCenterSideStreakParams();
-        }
-        if (widthSpecMode == MeasureSpec.AT_MOST && heightSpecMode != MeasureSpec.AT_MOST) {
-            width = requireWH[0] >= width ? width : requireWH[0];
-            initCenterSideStreakParams();
-        }
-        if (widthSpecMode != MeasureSpec.AT_MOST && heightSpecMode == MeasureSpec.AT_MOST) {
-
-        }
-        //获取中心点
-        if (textVisibility == GONE) {
-            centerY = height / 2;
-        }
-        if (textVisibility == VISIBLE) {
-            if (orientation == HORIZONTAL) {
-                centerX = radius;
-            }
-            if (orientation == VERTICAL) {
-                centerY -= textWH[1];
-            }
-        }
-        centerX += getPaddingLeft() - getPaddingRight();
-        centerY += getPaddingTop() - getPaddingBottom();
-        //设置宽高
-        setMeasuredDimension(width, height);
+    public void onAnimationUpdate(ValueAnimator animation) {
+        alphaPosition = (int) animation.getAnimatedValue();
+        invalidate();
     }
-
-    /**
-     * 初始化中心点/边长/线段参数
-     */
-    private void initCenterSideStreakParams() {
-        centerX = width / 2;
-        centerY = height / 2;
-        sideLength = width >= height ? height : width;
-        radius = sideLength / 2.0f;
-        streakLength = streakLength == 0 ? radius : streakLength;
-        streakSpace = streakSpace == 0 ? (radius - streakLength) / 2.0f : streakSpace;
-    }
-
-    /**
-     * 获取需求宽高
-     *
-     * @return
-     */
-    private int[] getRequireWH(int[] textWH, float radius, float streakSpace, int orientation) {
-        int requireWidth = (int) (radius + textWH[0] + streakSpace * (orientation == HORIZONTAL ? 4.0f : 1.0f));
-        int requireHeight = (int) (radius + textWH[1] + streakSpace * 3.0f);
-        return new int[]{requireWidth, requireHeight};
-    }
-
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawLoading(canvas);
-        drawText(canvas);
     }
 
     /**
@@ -333,74 +185,20 @@ public class LoadingView extends View {
      * @param canvas 画布
      */
     protected void drawLoading(Canvas canvas) {
+        streakPaint.setColor(streakColor);
+        streakPaint.setStrokeWidth(streakWidth);
         int index = -1;
         for (float angle = 0; angle < 360; angle += unitAngle) {
-            double radians;
             index++;
             setStreakAlpha(index);
-            float startX, startY, endX, endY;
-            radians = Math.toRadians(angle - 2 * Math.PI);
-            startX = (float) (Math.sin(radians) * streakSpace);
-            startY = (float) (Math.cos(radians) * streakSpace);
-            endX = (float) (Math.sin(radians) * (streakLength + streakSpace));
-            endY = (float) (Math.cos(radians) * (streakLength + streakSpace));
-            canvas.drawLine(centerX + startX, centerY - startY, centerX + endX, centerY - endY, streakPaint);
+            double radians = Math.toRadians(angle - 2 * Math.PI);
+            float startX = (float) (Math.sin(radians) * (radius - streakLength));
+            float startY = (float) (Math.cos(radians) * (radius - streakLength));
+            float endX = (float) (Math.sin(radians) * radius);
+            float endY = (float) (Math.cos(radians) * radius);
+            canvas.drawLine(centerX + startX, centerY + startY, centerX + endX, centerY + endY, streakPaint);
         }
     }
-
-    /**
-     * 绘制文本
-     *
-     * @param canvas 画布
-     */
-    protected void drawText(Canvas canvas) {
-        if (isTextEmpty() || textVisibility == GONE) {
-            return;
-        }
-        int wh[] = measureText(textPaint, text);
-        if (orientation == HORIZONTAL) {
-            canvas.drawText(text, centerX + streakSpace + streakLength + streakSpace, centerY + wh[1] / 2-3, textPaint);
-        }
-        if (orientation == VERTICAL) {
-            canvas.drawText(text, centerX - wh[0] / 2, centerY + streakSpace + streakLength + streakSpace + wh[1], textPaint);
-        }
-    }
-
-    /**
-     * 设置方向
-     *
-     * @param orientation
-     */
-    public void setOrientation(int orientation) {
-        this.orientation = orientation;
-        invalidate();
-    }
-
-    /**
-     * 是否文字为空
-     *
-     * @return
-     */
-    public boolean isTextEmpty() {
-        return text == null || text.length() == 0;
-    }
-
-    /**
-     * 测量文本
-     *
-     * @param paint
-     * @param content
-     * @return
-     */
-    protected int[] measureText(Paint paint, String content) {
-        if (content == null || content.length() == 0) {
-            return new int[]{0, 0};
-        }
-        Rect rect = new Rect();
-        paint.getTextBounds(content, 0, content.length(), rect);
-        return new int[]{rect.width(), rect.height()};
-    }
-
 
     /**
      * 构建列表
@@ -452,10 +250,19 @@ public class LoadingView extends View {
     }
 
     /**
+     * 是否正在加载
+     *
+     * @return
+     */
+    public boolean isLoading() {
+        return loading;
+    }
+
+    /**
      * 开始
      */
     public void start() {
-        if (animator != null && !isStart) {
+        if (animator != null && !isLoading()) {
             animator.start();
         }
     }
@@ -467,7 +274,13 @@ public class LoadingView extends View {
         if (animator != null) {
             animator.cancel();
         }
-        isStart = false;
+        loading = false;
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        cancel();
     }
 
     /**
@@ -508,43 +321,6 @@ public class LoadingView extends View {
         invalidate();
     }
 
-    /**
-     * 获取文字颜色
-     *
-     * @return
-     */
-    public int getTextColor() {
-        return textColor;
-    }
-
-    /**
-     * 设置文字颜色
-     *
-     * @param textColor
-     */
-    public void setTextColor(int textColor) {
-        this.textColor = textColor;
-        invalidate();
-    }
-
-    /**
-     * 设置宽度
-     *
-     * @param width
-     */
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    /**
-     * 设置高度
-     *
-     * @param height
-     */
-    public void setHeight(int height) {
-        this.height = height;
-        invalidate();
-    }
 
     /**
      * 获取中心点x
@@ -661,25 +437,6 @@ public class LoadingView extends View {
     }
 
     /**
-     * 获取线段间隔
-     *
-     * @return
-     */
-    public float getStreakSpace() {
-        return streakSpace;
-    }
-
-    /**
-     * 设置线段间隔
-     *
-     * @param streakSpace
-     */
-    public void setStreakSpace(float streakSpace) {
-        this.streakSpace = streakSpace;
-        invalidate();
-    }
-
-    /**
      * 获取透明度位置
      *
      * @return
@@ -769,76 +526,9 @@ public class LoadingView extends View {
      *
      * @param duration
      */
-    public void setDuration(long duration) {
+    public void setDuration(int duration) {
         this.duration = duration;
         invalidate();
-    }
-
-    /**
-     * 获取文字画笔
-     *
-     * @return
-     */
-    public Paint getTextPaint() {
-        return textPaint;
-    }
-
-    /**
-     * 设置文字画笔
-     *
-     * @param textPaint
-     */
-    public void setTextPaint(Paint textPaint) {
-        this.textPaint = textPaint;
-        invalidate();
-    }
-
-    /**
-     * 获取文字
-     *
-     * @return
-     */
-    public String getText() {
-        return text;
-    }
-
-    /**
-     * 设置文字
-     *
-     * @param text
-     */
-    public void setText(String text) {
-        this.text = text;
-        textVisibility = isTextEmpty() ? GONE : VISIBLE;
-        invalidate();
-    }
-
-    /**
-     * 获取文字大小
-     *
-     * @return
-     */
-    public float getTextSize() {
-        return textSize;
-    }
-
-    /**
-     * 设置文字大小
-     *
-     * @param textSize
-     */
-    public void setTextSize(int textSize) {
-        this.textSize = dpToPx(textSize);
-        invalidate();
-    }
-
-    /**
-     * 获取方向
-     *
-     * @return
-     */
-    public int getOrientation() {
-        return orientation;
     }
 
     /**
@@ -878,4 +568,5 @@ public class LoadingView extends View {
         this.animator = animator;
         invalidate();
     }
+
 }

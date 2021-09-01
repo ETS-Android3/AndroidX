@@ -4,36 +4,54 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
+import androidx.core.content.ContextCompat;
 
 import com.androidx.R;
 import com.androidx.util.Log;
+import com.androidx.video.Orientation;
 import com.androidx.view.LoadingView;
+import com.androidx.view.ShapeButton;
 
 /**
  * Author: Relin
  * Describe:数据加载
  * Date:2020/12/14 21:52
  */
-public class Loading {
+public class Loading implements View.OnClickListener {
 
     public final String TAG = Loading.class.getSimpleName();
-
     /**
      * 上方
      */
-    public final static int TOP = 0;
+    public final static int TOP = 2;
     /**
      * 中间
      */
-    public final static int CENTER = 1;
+    public final static int CENTER = 3;
+    /**
+     * 上方
+     */
+    public final static int HORIZONTAL = 0;
+    /**
+     * 中间
+     */
+    public final static int VERTICAL = 1;
     /**
      * 上下文对象
      */
@@ -51,9 +69,17 @@ public class Loading {
      */
     private LoadingView loading;
     /**
+     * 加载文字
+     */
+    private TextView textView;
+    /**
      * 内容布局
      */
-    private RelativeLayout contentLayout;
+    private FrameLayout rootLayout;
+    /**
+     * 内容布局
+     */
+    private LinearLayout contentLayout;
     /**
      * 消失延迟时间
      */
@@ -105,10 +131,38 @@ public class Loading {
      */
     public void onCreate(View loadingView) {
         delayMillis = context.getResources().getInteger(R.integer.loading_delay_millis_duration);
-        loading = loadingView.findViewById(R.id.android_loading);
+        rootLayout = loadingView.findViewById(R.id.android_loading_root);
         contentLayout = loadingView.findViewById(R.id.android_loading_content);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-        contentLayout.setLayoutParams(params);
+        loading = loadingView.findViewById(R.id.android_loading);
+        textView = loadingView.findViewById(R.id.android_loading_txt);
+    }
+
+    /**
+     * 设置加载文字
+     *
+     * @param text
+     */
+    public void setLoadingText(String text) {
+        textView.setText(text);
+        textView.setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
+    }
+
+    /**
+     * 获取文本控件
+     *
+     * @return
+     */
+    public TextView getTextView() {
+        return textView;
+    }
+
+    /**
+     * 获取根布局
+     *
+     * @return
+     */
+    public FrameLayout getRootLayout() {
+        return rootLayout;
     }
 
     /**
@@ -117,8 +171,8 @@ public class Loading {
      * @param enabled
      */
     public void setEnabled(boolean enabled) {
-        if (contentLayout != null) {
-            contentLayout.setEnabled(enabled);
+        if (rootLayout != null) {
+            rootLayout.setEnabled(enabled);
         }
     }
 
@@ -129,6 +183,30 @@ public class Loading {
      */
     public void setLoadingTopMargin(int loadingTopMargin) {
         this.loadingTopMargin = loadingTopMargin;
+    }
+
+    /**
+     * 设置根布局背景
+     *
+     * @param resId
+     */
+    public void setRootBackgroundResource(@DrawableRes int resId) {
+        if (rootLayout == null) {
+            return;
+        }
+        rootLayout.setBackgroundResource(resId);
+    }
+
+    /**
+     * 设置内容背景
+     *
+     * @param background 背景Drawable
+     */
+    public void setContentBackground(Drawable background) {
+        if (contentLayout == null) {
+            return;
+        }
+        contentLayout.setBackground(background);
     }
 
     /**
@@ -146,6 +224,18 @@ public class Loading {
     /**
      * 设置加载控件背景
      *
+     * @param background 背景Drawable
+     */
+    public void setLoadingBackground(Drawable background) {
+        if (loading == null) {
+            return;
+        }
+        loading.setBackground(background);
+    }
+
+    /**
+     * 设置加载控件背景
+     *
      * @param resId 资源
      */
     public void setLoadingBackgroundResource(@DrawableRes int resId) {
@@ -155,62 +245,63 @@ public class Loading {
         loading.setBackgroundResource(resId);
     }
 
-    /**
-     * 设置内容背景
-     *
-     * @param background 背景Drawable
-     */
-    public void setContentBackground(Drawable background) {
-        if (contentLayout == null) {
-            return;
-        }
-        contentLayout.setBackground(background);
-    }
 
     /**
-     * 设置加载控件背景
+     * 设置线条颜色
      *
-     * @param background 背景Drawable
+     * @param color 颜色
      */
-    public void setLoadingBackground(Drawable background) {
-        if (contentLayout == null) {
-            return;
-        }
-        contentLayout.setBackground(background);
+    public void setLoadingStreakColor(int color) {
+        loading.setStreakColor(color);
     }
+
 
     /**
      * 设置加载视图参数
      *
      * @param params 参数
      */
-    public void setLoadingLayoutParams(RelativeLayout.LayoutParams params) {
-        if (loading != null) {
-            loading.setLayoutParams(params);
+    public void setContentLayoutParams(FrameLayout.LayoutParams params) {
+        if (contentLayout != null) {
+            contentLayout.setLayoutParams(params);
         }
     }
 
     /**
      * 水平居中参数
      *
-     * @param loading   加载View
-     * @param topMargin 上部分间距
+     * @param contentLayout 加载View
+     * @param topMargin     上部分间距
      */
-    protected RelativeLayout.LayoutParams buildHorizontalCenterLayoutParams(LoadingView loading, int topMargin) {
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) loading.getLayoutParams();
+    protected FrameLayout.LayoutParams buildHorizontalCenterLayoutParams(LinearLayout contentLayout, int topMargin) {
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) contentLayout.getLayoutParams();
+        params.gravity = Gravity.CENTER_HORIZONTAL;
+        params.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        params.width = LinearLayout.LayoutParams.MATCH_PARENT;
         params.topMargin = topMargin;
-        params.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
         return params;
     }
 
     /**
      * 居中参数
      *
-     * @param loading 加载View
+     * @param contentLayout 内容
+     * @param orientation   方向
      */
-    protected RelativeLayout.LayoutParams buildCenterInParentParams(LoadingView loading) {
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) loading.getLayoutParams();
-        params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+    protected FrameLayout.LayoutParams buildCenterInParentParams(LinearLayout contentLayout, int orientation) {
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) contentLayout.getLayoutParams();
+        params.gravity = Gravity.CENTER;
+        LinearLayout.LayoutParams textParams = (LinearLayout.LayoutParams) textView.getLayoutParams();
+        if (orientation == HORIZONTAL) {
+            textParams.leftMargin = context.getResources().getDimensionPixelSize(R.dimen.loading_text_margin_left);
+            textParams.rightMargin = context.getResources().getDimensionPixelSize(R.dimen.loading_text_margin_right);
+            params.height = context.getResources().getDimensionPixelSize(R.dimen.loading_dialog_height_horizontal);
+        }
+        if (orientation == VERTICAL) {
+            params.height = context.getResources().getDimensionPixelSize(R.dimen.loading_dialog_height_vertical);
+            textParams.leftMargin = 0;
+            textParams.rightMargin = 0;
+        }
         return params;
     }
 
@@ -227,7 +318,16 @@ public class Loading {
      * 显示顶部Loading
      */
     public void show() {
-        show(TOP);
+        show(TOP, LinearLayout.HORIZONTAL, "");
+    }
+
+    /**
+     * 显示顶部Loading
+     *
+     * @param text 文字
+     */
+    public void show(String text) {
+        show(TOP, LinearLayout.HORIZONTAL, text);
     }
 
     /**
@@ -244,38 +344,106 @@ public class Loading {
         return location;
     }
 
-    private float loadingY;
+    /**
+     * 设置显示方向
+     *
+     * @param orientation
+     */
+    public void setOrientation(int orientation) {
+        contentLayout.setOrientation(orientation);
+    }
+
+    /**
+     * 显示Dialog类型
+     *
+     * @param orientation 方向
+     * @param text        文字
+     */
+    public void showDialog(int orientation, String text) {
+        showDialog(orientation, text, R.drawable.android_shape_radius8_grayf8);
+    }
+
+    /**
+     * 显示Dialog类型
+     *
+     * @param orientation     方向
+     * @param text            文字
+     * @param backgroundResId 背景资源
+     */
+    public void showDialog(int orientation, String text, @DrawableRes int backgroundResId) {
+        contentLayout.setBackgroundResource(backgroundResId);
+        loading.setBackground(null);
+        show(CENTER, orientation, text);
+    }
+
+    /**
+     * 显示Cover类型
+     *
+     * @param orientation 方向
+     * @param text        文字
+     */
+    public void showCover(int orientation, String text) {
+        showCover(orientation, text, R.color.colorLoadingBackground);
+    }
+
+    /**
+     * 显示Cover类型
+     *
+     * @param orientation 方向
+     * @param text        文字
+     * @param color       背景颜色
+     */
+    public void showCover(int orientation, String text, @ColorRes int color) {
+        int value = context.getResources().getColor(color);
+        rootLayout.setBackgroundColor(value);
+        contentLayout.setBackgroundColor(value);
+        loading.setBackground(null);
+        show(CENTER, orientation, text);
+    }
+
+    /**
+     * 显示顶部类型
+     */
+    public void showUpper() {
+        show(TOP, HORIZONTAL, "");
+    }
 
     /**
      * 显示
      *
-     * @param location 位置{@link Loading#TOP} OR {@link Loading#CENTER}
+     * @param location    位置{@link Loading#TOP} OR {@link Loading#CENTER}
+     * @param orientation 方向
+     * @param text        文字
      */
-    public void show(int location) {
+    public void show(int location, int orientation, String text) {
         if (isShowing()) {
             return;
         }
         this.location = location;
         if (location == Loading.TOP) {
-            loading.setScaleX(1.0F);
-            loading.setScaleY(1.0F);
+            rootLayout.setScaleX(1.0F);
+            rootLayout.setScaleY(1.0F);
         }
         if (location == Loading.CENTER) {
-            loading.setScaleX(1.0F);
-            loading.setScaleY(1.0F);
+            rootLayout.setScaleX(1.0F);
+            rootLayout.setScaleY(1.0F);
         }
+        contentLayout.setOrientation(orientation);
         addLoadingLayout();
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) loading.getLayoutParams();
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) contentLayout.getLayoutParams();
         if (location == Loading.CENTER) {
-            params = buildCenterInParentParams(loading);
+            rootLayout.setOnClickListener(this);
+            params = buildCenterInParentParams(contentLayout, orientation);
         }
         if (location == Loading.TOP) {
+            rootLayout.setBackgroundColor(Color.TRANSPARENT);
             if (loadingTopMargin == -1) {
                 loadingTopMargin = context.getResources().getDimensionPixelOffset(R.dimen.loading_margin_top);
             }
-            params = buildHorizontalCenterLayoutParams(loading, loadingTopMargin);
+            params = buildHorizontalCenterLayoutParams(contentLayout, loadingTopMargin);
         }
-        setLoadingLayoutParams(params);
+        setContentLayoutParams(params);
+        setLoadingText(text);
         if (loading != null) {
             loading.start();
             showing = true;
@@ -287,16 +455,14 @@ public class Loading {
      */
     public void dismiss() {
         if (isShowing()) {
-            if (location == Loading.CENTER) {
-                startAnimator(loading, 1, 0, ANIMATOR_SCALE);
-            }
             if (location == Loading.TOP) {
-                float y = loadingY + loading.getMeasuredHeight() + loadingTopMargin;
-                startAnimator(loading, 1, 0, ANIMATOR_SCALE);
+                startAnimator(rootLayout, 1, 0, ANIMATOR_SCALE);
+            }
+            if (location == Loading.CENTER) {
+                startAnimator(rootLayout, 1, 0, ANIMATOR_SCALE);
             }
         }
     }
-
 
     /**
      * 动画类型
@@ -396,7 +562,7 @@ public class Loading {
      * @return
      */
     protected boolean isAddLoadingLayout() {
-        return contentLayout.getParent() != null;
+        return rootLayout.getParent() != null;
     }
 
     /**
@@ -406,7 +572,7 @@ public class Loading {
         if (isAddLoadingLayout()) {
             removeLoadingLayout();
         }
-        parent.addView(contentLayout);
+        parent.addView(rootLayout);
     }
 
     /**
@@ -422,8 +588,8 @@ public class Loading {
      * 删除loading
      */
     protected void removeLoadingLayout() {
-        if (contentLayout.getParent() != null) {
-            parent.removeView(contentLayout);
+        if (rootLayout.getParent() != null) {
+            parent.removeView(rootLayout);
         }
     }
 
@@ -496,7 +662,7 @@ public class Loading {
      *
      * @return
      */
-    public RelativeLayout getContentLayout() {
+    public LinearLayout getContentLayout() {
         return contentLayout;
     }
 
@@ -505,7 +671,7 @@ public class Loading {
      *
      * @param contentLayout
      */
-    public void setContentLayout(RelativeLayout contentLayout) {
+    public void setContentLayout(LinearLayout contentLayout) {
         this.contentLayout = contentLayout;
     }
 
@@ -525,6 +691,11 @@ public class Loading {
      */
     public long getDelayMillis() {
         return delayMillis;
+    }
+
+    @Override
+    public void onClick(View v) {
+
     }
 
 }

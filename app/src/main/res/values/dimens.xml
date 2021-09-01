@@ -29,6 +29,14 @@
     <dimen name="debug_layout_marginRight">10dp</dimen>
     <dimen name="debug_padding">5dp</dimen>
     <!--页面Loading-->
-    <dimen name="loading_margin_top">40dp</dimen>
-    <dimen name="loading_size">60dp</dimen>
+    <dimen name="loading_dialog_height_horizontal">60dp</dimen>
+    <dimen name="loading_dialog_height_vertical">85dp</dimen>
+    <dimen name="loading_dialog_padding_left">15dp</dimen>
+    <dimen name="loading_dialog_padding_right">15dp</dimen>
+    <dimen name="loading_margin_top">35dp</dimen>
+    <dimen name="loading_size">40dp</dimen>
+    <dimen name="loading_padding">8dp</dimen>
+    <dimen name="loading_text_size">14sp</dimen>
+    <dimen name="loading_text_margin_left">3dp</dimen>
+    <dimen name="loading_text_margin_right">8dp</dimen>
 </resources>

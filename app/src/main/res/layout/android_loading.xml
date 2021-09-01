@@ -1,13 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/android_loading_content"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/android_loading_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorLoadingRootBackground">
 
-    <com.androidx.view.LoadingView
-        android:id="@+id/android_loading"
+    <LinearLayout
+        android:id="@+id/android_loading_content"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/android_loading_background" />
+        android:layout_height="@dimen/loading_dialog_height_horizontal"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/loading_margin_top"
+        android:gravity="center"
+        android:paddingLeft="@dimen/loading_dialog_padding_left"
+        android:paddingRight="@dimen/loading_dialog_padding_right">
 
-</RelativeLayout>
+        <com.androidx.view.LoadingView
+            android:id="@+id/android_loading"
+            android:layout_width="@dimen/loading_size"
+            android:layout_height="@dimen/loading_size"
+            android:background="@drawable/android_loading_background"
+            android:padding="@dimen/loading_padding" />
+
+        <TextView
+            android:id="@+id/android_loading_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/loading_text_margin_left"
+            android:text="@string/loading_text"
+            android:textColor="@color/colorLoadingText"
+            android:textSize="@dimen/loading_text_size"/>
+    </LinearLayout>
+
+</FrameLayout>

@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">AndroidX</string>
+    <string name="loading_text">正在加载...</string>
     <string name="swipe_layout_load_more">加载更多...</string>
+    <string name="swipe_layout_load_more_disable">没有更多数据</string>
     <string name="document_selector_take_photo">拍照</string>
     <string name="document_selector_photo_album">相册</string>
     <string name="document_selector_cancel">取消</string>

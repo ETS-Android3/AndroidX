@@ -3,14 +3,17 @@ package com.androidx.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.androidx.R;
+import com.androidx.util.Log;
 import com.androidx.view.LoadingView;
 
 /**
@@ -52,6 +55,10 @@ public class SwipeRequestLayout extends SwipeLayout {
      * 脚部Loading文字大小
      */
     private int footerLoadingTextSize;
+    /**
+     * 脚部文字
+     */
+    private TextView footerText;
 
 
     public SwipeRequestLayout(@NonNull Context context) {
@@ -70,13 +77,13 @@ public class SwipeRequestLayout extends SwipeLayout {
     protected void onAttributeSet(Context context, AttributeSet attrs) {
         super.onAttributeSet(context, attrs);
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.SwipeRequestLayout);
-        headerLoadingWidth = array.getDimensionPixelOffset(R.styleable.SwipeRequestLayout_footerLoadingWidth, 120);
-        headerLoadingHeight = array.getDimensionPixelOffset(R.styleable.SwipeRequestLayout_headerLoadingHeight, 120);
-        footerLoadingWidth = array.getDimensionPixelOffset(R.styleable.SwipeRequestLayout_footerLoadingWidth, LayoutParams.WRAP_CONTENT);
-        footerLoadingHeight = array.getDimensionPixelOffset(R.styleable.SwipeRequestLayout_footerLoadingHeight,  LayoutParams.WRAP_CONTENT);
+        headerLoadingWidth = array.getDimensionPixelOffset(R.styleable.SwipeRequestLayout_footerLoadingWidth, 100);
+        headerLoadingHeight = array.getDimensionPixelOffset(R.styleable.SwipeRequestLayout_headerLoadingHeight, 100);
+        footerLoadingWidth = array.getDimensionPixelOffset(R.styleable.SwipeRequestLayout_footerLoadingWidth, 40);
+        footerLoadingHeight = array.getDimensionPixelOffset(R.styleable.SwipeRequestLayout_footerLoadingHeight, 40);
         footerLoadingText = array.getString(R.styleable.SwipeRequestLayout_footerLoadingText);
         footerLoadingText = footerLoadingText == null ? context.getResources().getString(R.string.swipe_layout_load_more) : footerLoadingText;
-        footerLoadingTextSize = array.getDimensionPixelSize(R.styleable.SwipeRequestLayout_footerLoadingTextSize,12);
+        footerLoadingTextSize = array.getDimensionPixelSize(R.styleable.SwipeRequestLayout_footerLoadingTextSize, 12);
         array.recycle();
     }
 
@@ -92,6 +99,7 @@ public class SwipeRequestLayout extends SwipeLayout {
         header.setBackgroundResource(R.drawable.android_swipe_header_loading_background);
         header.setStreakColor(getResources().getColor(R.color.colorSwipeHeaderLoadingStreak));
         header.setLayoutParams(headerParams);
+        header.setPadding(20, 20, 20, 20);
         headerParent.addView(header);
         return headerParent;
     }
@@ -102,20 +110,24 @@ public class SwipeRequestLayout extends SwipeLayout {
         LinearLayout footerParent = new LinearLayout(getContext());
         footerParent.setOrientation(LinearLayout.HORIZONTAL);
         footerParent.setGravity(Gravity.CENTER);
-        //脚步控件
+        //脚部控件
         footer = new LoadingView(context);
         LayoutParams footerParams = new LayoutParams(footerLoadingWidth, footerLoadingHeight);
         footer.setLayoutParams(footerParams);
         footer.setStreakWidth(dpToPx(1));
-        footer.setStreakSpace(dpToPx(5));
-        footer.setUnitAngle(90/3F);
+        footer.setUnitAngle(15);
+        footer.setStreakLength(dpToPx(2));
         footer.setBackgroundResource(R.drawable.android_swipe_footer_loading_background);
         footer.setStreakColor(getResources().getColor(R.color.colorSwipeFooterLoadingStreak));
-        footer.setTextColor(getResources().getColor(R.color.colorSwipeFooterLoadingText));
-        footer.setText(footerLoadingText);
-        footer.setTextSize(footerLoadingTextSize);
-        footer.setOrientation(LoadingView.HORIZONTAL);
         footerParent.addView(footer);
+        MarginLayoutParams marginParams = (MarginLayoutParams) footer.getLayoutParams();
+        marginParams.rightMargin = (int) dpToPx(5);
+        //文字
+        footerText = new TextView(getContext());
+        footerText.setTextColor(getResources().getColor(R.color.colorSwipeFooterLoadingStreak));
+        footerText.setText(footerLoadingText);
+        footerText.setTextSize(TypedValue.COMPLEX_UNIT_SP, footerLoadingTextSize);
+        footerParent.addView(footerText);
         return footerParent;
     }
 
@@ -135,8 +147,20 @@ public class SwipeRequestLayout extends SwipeLayout {
 
     @Override
     protected void onFooterAnimationStart() {
-        if (footer != null) {
+        if (footer != null&&footer.getVisibility()==VISIBLE) {
             footer.start();
+        }
+    }
+
+    @Override
+    protected void onAdapterChange(boolean change) {
+        Log.i(TAG,"->onAdapterChange change="+change);
+        if (change){
+            footer.setVisibility(VISIBLE);
+            footerText.setText(getContext().getResources().getString(R.string.swipe_layout_load_more));
+        }else{
+            footer.setVisibility(GONE);
+            footerText.setText(getContext().getResources().getString(R.string.swipe_layout_load_more_disable));
         }
     }
 

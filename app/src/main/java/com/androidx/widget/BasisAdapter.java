@@ -91,20 +91,21 @@ public abstract class BasisAdapter<T> extends BaseAdapter implements ViewHolder.
      * @param item     单个数据
      * @param position 位置
      */
-    public abstract void onItemBindViewHolder(ViewHolder holder, T item, int position);
+    protected abstract void onItemBindViewHolder(ViewHolder holder, T item, int position);
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             convertView = getItemView(parent, getItemViewType(position));
             viewHolder = new ViewHolder(convertView);
-            viewHolder.setItemPosition(position);
-            viewHolder.setOnItemClickLister(this);
-            viewHolder.setOnItemFocusChangeListener(this);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+        viewHolder.setItemPosition(position);
+        viewHolder.setItemView(convertView);
+        viewHolder.setOnItemClickLister(this);
+        viewHolder.setOnItemFocusChangeListener(this);
         onItemBindViewHolder(viewHolder, getItem(position), position);
         return convertView;
     }
@@ -164,9 +165,6 @@ public abstract class BasisAdapter<T> extends BaseAdapter implements ViewHolder.
      */
     public void setItems(List<T> data, boolean notify) {
         this.data = data;
-        if (emptyView != null) {
-            emptyView.setVisibility(getCount() == 0 ? View.GONE : View.VISIBLE);
-        }
         if (notify) {
             notifyDataSetChanged();
         }

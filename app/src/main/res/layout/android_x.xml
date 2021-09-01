@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.androidx.widget.SwipeRequestLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:refreshable="true">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_content"
+        tools:listitem="@layout/androidx_items"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ListView
+        android:id="@+id/lv_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></ListView>
+
+</com.androidx.widget.SwipeRequestLayout>
