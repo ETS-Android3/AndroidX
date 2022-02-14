@@ -4,6 +4,8 @@ Android开发框架（Android development integration tools）
 2.0.0版本不向下兼容1.0-2.0之间的版本
 2.0.0以下版本是兼容1.0-2.0之间的版本,
 2.0.0以上版本进行了代码重构，在2.0以后版本完全兼容2.0以上版本。
+2022年开始，此框架不在维护，考虑项目多变，采用部分工具组合方式，请使用[IOCore](https://github.com/RelinRan/IOCore) + [OkApi](https://github.com/RelinRan/OkApi)
+在所需之条件下使用对应工具框架即可
 
 ## Maven
 1.build.grade
